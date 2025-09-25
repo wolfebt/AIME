@@ -1,0 +1,112 @@
+<!--
+    File: universe.html
+    Reference: Universe Crucible
+    Creator: Wolfe.BT, TangentLLC
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIME - Universe Crucible</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../script/element-bundle.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <a href="../index.html" class="logo-title animated-gradient">AIME</a>
+        <nav class="main-nav">
+            <a href="writer.html">Writer</a>
+            <a href="elements.html" class="active">Elements</a>
+            <a href="imaging.html">Imaging</a>
+            <a href="audio.html">Audio</a>
+            <a href="3d.html">3D</a>
+            <a href="video.html">Video</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="element-header">
+            <h2 class="element-title animated-gradient">Universe Crucible</h2>
+            <div class="header-actions">
+                <p class="element-subtitle">Establish the foundational framework of the story's universe.</p>
+                <button id="clear-fields-button" class="clear-btn">Clear All Fields</button>
+            </div>
+        </div>
+
+        <div class="workspace-layout">
+            <div class="main-column">
+                <div class="accordion glass-panel">
+                     <button class="accordion-header">
+                        <span>Traits</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <form id="traits-form" class="element-form">
+                            <div class="form-section">
+                                <h3 class="section-title">Core Identity</h3>
+                                <label for="universeName">Universe Name:</label>
+                                <input type="text" id="universeName" class="input-field" placeholder="e.g., 'The Ashen Stars,' 'Aethelgard'">
+                                <label for="primaryGenre">Primary Genre:</label>
+                                <input type="text" id="primaryGenre" class="input-field" placeholder="e.g., Fantasy, Science Fiction, Horror">
+                                <label for="subgenres">Subgenre(s):</label>
+                                <input type="text" id="subgenres" class="input-field" placeholder="e.g., High Fantasy, Cyberpunk, Cosmic Horror">
+                                <label for="oneLinePitch">One-Line Pitch:</label>
+                                <textarea id="oneLinePitch" class="input-field" rows="2" placeholder="A single, concise sentence that captures the core concept."></textarea>
+                            </div>
+                            <div class="form-section">
+                                <h3 class="section-title">Thematic Foundation</h3>
+                                <label for="coreThemes">Core Themes:</label>
+                                <textarea id="coreThemes" class="input-field" rows="3" placeholder="e.g., 'the struggle between faith and reason,' 'the price of progress'"></textarea>
+                                <label for="generalToneMood">General Tone & Mood:</label>
+                                <input type="text" id="generalToneMood" class="input-field" placeholder="e.g., Optimistic, Pessimistic, Satirical, Serious">
+                            </div>
+                            <div class="form-section">
+                                <h3 class="section-title">Governing Principles</h3>
+                                <label for="governingPrinciples">Laws of Physics, Magic, etc.:</label>
+                                <textarea id="governingPrinciples" class="input-field" rows="4" placeholder="The fundamental laws that dictate how your universe functions."></textarea>
+                            </div>
+                            <div class="form-section">
+                                <h3 class="section-title">Inspirations</h3>
+                                <label for="keyInspirations">Key Inspirations:</label>
+                                <textarea id="keyInspirations" class="input-field" rows="3" placeholder="Real-world cultures, historical eras, mythologies, or other fictional works."></textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="side-column">
+                <div class="accordion glass-panel">
+                    <button class="accordion-header">
+                        <span>Guidance</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                         <div id="guidance-gems-container"></div>
+                    </div>
+                </div>
+                 <div class="accordion glass-panel">
+                    <button class="accordion-header">
+                        <span>Asset Hub</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content asset-hub-container">
+                        <p class="asset-hub-subtitle">Import related Worlds, Philosophies, etc.</p>
+                        <div class="asset-import-area">
+                            <input type="file" id="asset-upload" multiple style="display: none;">
+                            <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
+                        </div>
+                        <div id="asset-list" class="asset-list"></div>
+                    </div>
+                </div>
+                <div class="generation-column">
+                    <button id="generate-button" data-element-type="UNIVERSE">Generate</button>
+                    <div id="response-container" class="response-container glass-panel"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

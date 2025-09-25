@@ -1,0 +1,110 @@
+<!--
+    File: species.html
+    Reference: Species Creator
+    Creator: Wolfe.BT, TangentLLC
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIME - Species Creator</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../script/element-bundle.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <a href="../index.html" class="logo-title animated-gradient">AIME</a>
+        <nav class="main-nav">
+            <a href="writer.html">Writer</a>
+            <a href="elements.html" class="active">Elements</a>
+            <a href="imaging.html">Imaging</a>
+            <a href="audio.html">Audio</a>
+            <a href="3d.html">3D</a>
+            <a href="video.html">Video</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="element-header">
+            <h2 class="element-title animated-gradient">Species Creator</h2>
+            <div class="header-actions">
+                <p class="element-subtitle">Design the biology and culture of a new species.</p>
+                <button id="clear-fields-button" class="clear-btn">Clear All Fields</button>
+            </div>
+        </div>
+        
+        <div class="workspace-layout">
+            <div class="main-column">
+                <div class="accordion glass-panel">
+                    <button class="accordion-header">
+                        <span>Traits</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <form id="traits-form" class="element-form">
+                            <div class="form-section">
+                                 <h3 class="section-title">Core Identity</h3>
+                                <label for="speciesName">Species Name:</label>
+                                <input type="text" id="speciesName" class="input-field" placeholder="e.g., K'tharr">
+                                <label for="classification">Classification:</label>
+                                <input type="text" id="classification" class="input-field" placeholder="e.g., Sentient Mammal, Silicon-based Flora">
+                            </div>
+                            <div class="form-section">
+                                <h3 class="section-title">Biology & Physiology</h3>
+                                <label for="physicalDescription">Physical Description:</label>
+                                <textarea id="physicalDescription" class="input-field" rows="4" placeholder="Appearance, biology, life cycle..."></textarea>
+                                <label for="abilitiesPowers">Abilities & Powers:</label>
+                                <textarea id="abilitiesPowers" class="input-field" rows="3" placeholder="Special traits, unique skills, natural defenses..."></textarea>
+                            </div>
+                            <div class="form-section">
+                                <h3 class="section-title">Behavior & Ecology</h3>
+                                <label for="behaviorDiet">Behavior & Diet:</label>
+                                <textarea id="behaviorDiet" class="input-field" rows="3" placeholder="Social structure, temperament, food sources..."></textarea>
+                                 <label for="habitatOrigin">Habitat & Origin:</label>
+                                <textarea id="habitatOrigin" class="input-field" rows="3" placeholder="Native environment, evolutionary history..."></textarea>
+                            </div>
+                            <div class="form-section">
+                                <h3 class="section-title">Societal Role</h3>
+                                 <label for="roleInWorld">Role in the World:</label>
+                                <textarea id="roleInWorld" class="input-field" rows="3" placeholder="Ecological impact or societal role (e.g., builders, warriors)."></textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="side-column">
+                 <div class="accordion glass-panel">
+                    <button class="accordion-header">
+                        <span>Guidance</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                         <div id="guidance-gems-container"></div>
+                    </div>
+                </div>
+                 <div class="accordion glass-panel">
+                    <button class="accordion-header">
+                        <span>Asset Hub</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content asset-hub-container">
+                        <p class="asset-hub-subtitle">Import files to provide contextual reference for this Species.</p>
+                        <div class="asset-import-area">
+                            <input type="file" id="asset-upload" multiple style="display: none;">
+                            <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
+                        </div>
+                        <div id="asset-list" class="asset-list"></div>
+                    </div>
+                </div>
+                <div class="generation-column">
+                    <button id="generate-button" data-element-type="SPECIES">Generate</button>
+                    <div id="response-container" class="response-container glass-panel"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

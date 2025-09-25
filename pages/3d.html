@@ -1,0 +1,76 @@
+<!--
+    File: 3d.html
+    Reference: 3D Workshop
+    Creator: Wolfe.BT, TangentLLC
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIME - 3D Workshop</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../script/3d-bundle.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <a href="../index.html" class="logo-title animated-gradient">AIME</a>
+        <nav class="main-nav">
+            <a href="writer.html">Writer</a>
+            <a href="elements.html">Elements</a>
+            <a href="imaging.html">Imaging</a>
+            <a href="audio.html">Audio</a>
+            <a href="3d.html" class="active">3D</a>
+            <a href="video.html">Video</a>
+        </nav>
+    </header>
+
+    <main class="container">
+         <div class="workspace-layout">
+            <div class="main-column">
+                <div class="element-header" style="text-align: left; margin-bottom: 2rem;">
+                    <h2 class="element-title animated-gradient">3D Workshop</h2>
+                    <p class="element-subtitle">Generate 3D models and scenes from your creative Elements.</p>
+                </div>
+                <div class="glass-panel" style="width: 100%; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center;">
+                    <span class="text-gray-500">Your generated 3D viewport will appear here.</span>
+                </div>
+            </div>
+
+            <div class="side-column">
+                <div class="accordion glass-panel">
+                    <button class="accordion-header">
+                        <span>Generation Controls</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="element-form">
+                            <textarea class="input-field" rows="5" placeholder="e.g., A low-poly model of a sci-fi shuttle..."></textarea>
+                            <button id="generate-button">Generate Model</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion glass-panel">
+                    <button class="accordion-header">
+                        <span>3D Scene Properties</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <p>Controls for modeling, texturing, rendering, etc.</p>
+                    </div>
+                </div>
+                <div class="accordion glass-panel">
+                    <button class="accordion-header">
+                        <span>Asset Hub</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                         <p>Asset Hub functionality will be implemented here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

@@ -1,0 +1,101 @@
+<!--
+    File: writer.html
+    Reference: Story Weaver
+    Creator: Wolfe.BT, TangentLLC
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIME - Story Weaver</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../script/writer-bundle.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <a href="../index.html" class="logo-title animated-gradient">AIME</a>
+        <nav class="main-nav">
+            <a href="writer.html" class="active">Writer</a>
+            <a href="elements.html">Elements</a>
+            <a href="imaging.html">Imaging</a>
+            <a href="audio.html">Audio</a>
+            <a href="3d.html">3D</a>
+            <a href="video.html">Video</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="writer-nav glass-panel">
+            <button class="writer-nav-button active" data-tab="brainstorm">1. Brainstorm</button>
+            <button class="writer-nav-button" data-tab="outline">2. Outline</button>
+            <button class="writer-nav-button" data-tab="treatment">3. Treatment</button>
+            <button class="writer-nav-button" data-tab="write">4. Write</button>
+        </div>
+
+        <div class="workspace-layout">
+            <div class="main-column">
+                <div id="brainstorm" class="writer-tab active">
+                    <div class="glass-panel" style="padding: 2rem;">
+                        <h2 class="element-title animated-gradient" style="text-align: left; font-size: 2rem; margin-bottom: 0.5rem;">Brainstorm</h2>
+                        <p class="element-subtitle" style="text-align: left; margin-bottom: 1.5rem;">Plant the seed of your story. Explore core concepts, "what if" scenarios, and foundational ideas with your AI partner.</p>
+                        <textarea id="brainstorm-input" class="input-field writer-input" placeholder="Start with a simple idea... e.g., 'A detective who can see the last five minutes of a victim's life.'"></textarea>
+                        <button id="generate-brainstorm-button" class="generate-btn" style="align-self: flex-start; margin-top: 1rem;">Generate Ideas</button>
+                    </div>
+                </div>
+
+                <div id="outline" class="writer-tab">
+                     <div class="glass-panel" style="padding: 2rem;">
+                        <h2 class="element-title animated-gradient" style="text-align: left; font-size: 2rem; margin-bottom: 0.5rem;">Outline</h2>
+                        <p class="element-subtitle" style="text-align: left; margin-bottom: 1.5rem;">Give your story a skeleton. Structure your ideas into a plot using narrative frameworks.</p>
+                        <ul id="outline-list" class="outline-list">
+                            <!-- Scene cards will be generated here by JS -->
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="treatment" class="writer-tab">
+                    <div class="glass-panel" style="padding: 2rem; text-align: center;">
+                        <h2 class="element-title animated-gradient" style="font-size: 2rem; margin-bottom: 0.5rem;">Treatment</h2>
+                        <p class="element-subtitle">Flesh out the first draft based on your detailed outline. (Canvas to be implemented)</p>
+                    </div>
+                </div>
+
+                <div id="write" class="writer-tab">
+                    <div class="glass-panel" style="padding: 2rem; text-align: center;">
+                        <h2 class="element-title animated-gradient" style="font-size: 2rem; margin-bottom: 0.5rem;">Write & Refine</h2>
+                        <p class="element-subtitle">Sculpt your narrative and infuse your unique voice. (Editor to be implemented)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side-column">
+                <div class="accordion glass-panel">
+                    <button class="accordion-header">
+                        <span>Guidance</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                         <div id="guidance-gems-container"></div>
+                    </div>
+                </div>
+                <div class="accordion glass-panel">
+                    <button class="accordion-header">
+                        <span>Asset Hub</span>
+                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content asset-hub-container">
+                        <p class="asset-hub-subtitle">Import files to guide the story.</p>
+                        <div class="asset-import-area">
+                            <input type="file" id="asset-upload" multiple style="display: none;">
+                            <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
+                        </div>
+                        <div id="asset-list" class="asset-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

@@ -1,0 +1,103 @@
+<!--
+    File: philosophy.html
+    Reference: Philosophy Scribe
+    Creator: Wolfe.BT, TangentLLC
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIME - Philosophy Scribe</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../script/element-bundle.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <a href="../index.html" class="logo-title animated-gradient">AIME</a>
+        <nav class="main-nav">
+            <a href="writer.html">Writer</a>
+            <a href="elements.html" class="active">Elements</a>
+            <a href="imaging.html">Imaging</a>
+            <a href="audio.html">Audio</a>
+            <a href="3d.html">3D</a>
+            <a href="video.html">Video</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="element-header">
+            <h2 class="element-title animated-gradient">Philosophy Scribe</h2>
+            <div class="header-actions">
+                <p class="element-subtitle">Define a religion, belief system, or societal creed.</p>
+                <button id="clear-fields-button" class="clear-btn">Clear All Fields</button>
+            </div>
+        </div>
+
+        <div class="workspace-layout">
+            <div class="main-column">
+                <div class="accordion glass-panel">
+                    <button class="accordion-header">
+                        <span>Traits</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <form id="traits-form" class="element-form">
+                            <div class="form-section">
+                                <h3 class="section-title">Core Identity</h3>
+                                <label for="philosophyName">Name:</label>
+                                <input type="text" id="philosophyName" class="input-field" placeholder="e.g., The Path of the Silent Star">
+                                 <label for="coreTenetsBeliefs">Core Tenets & Beliefs:</label>
+                                <textarea id="coreTenetsBeliefs" class="input-field" rows="4" placeholder="Foundational principles, doctrines, worldview..."></textarea>
+                            </div>
+                            <div class="form-section">
+                                <h3 class="section-title">Practices & Symbols</h3>
+                                <label for="ritualsPractices">Rituals & Practices:</label>
+                                <textarea id="ritualsPractices" class="input-field" rows="3" placeholder="Ceremonies, traditions, rites of passage..."></textarea>
+                                <label for="symbolsIconography">Symbols & Iconography:</label>
+                                <textarea id="symbolsIconography" class="input-field" rows="3" placeholder="Key images, emblems, sacred objects..."></textarea>
+                            </div>
+                            <div class="form-section">
+                                <h3 class="section-title">Societal Impact</h3>
+                                <label for="influenceRoleInSociety">Influence & Role in Society:</label>
+                                <textarea id="influenceRoleInSociety" class="input-field" rows="4" placeholder="Impact on culture, laws, social structures..."></textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="side-column">
+                <div class="accordion glass-panel">
+                    <button class="accordion-header">
+                        <span>Guidance</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                         <div id="guidance-gems-container"></div>
+                    </div>
+                </div>
+                 <div class="accordion glass-panel">
+                    <button class="accordion-header">
+                        <span>Asset Hub</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content asset-hub-container">
+                        <p class="asset-hub-subtitle">Import Worlds or Factions influenced by this Philosophy.</p>
+                        <div class="asset-import-area">
+                            <input type="file" id="asset-upload" multiple style="display: none;">
+                            <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
+                        </div>
+                        <div id="asset-list" class="asset-list"></div>
+                    </div>
+                </div>
+                <div class="generation-column">
+                    <button id="generate-button" data-element-type="PHILOSOPHY">Generate</button>
+                    <div id="response-container" class="response-container glass-panel"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+
