@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIME - Technology Forge</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <link rel="stylesheet" href="../style/accordion.css">
+    <link rel="stylesheet" href="../style/asset_hub.css">
+    <link rel="stylesheet" href="../style/guidance.css">
+    <link rel="stylesheet" href="../style/refinement.css">
+</head>
+<body class="bg-dark text-light">
+    <header class="main-header">
+        <a href="../index.html" class="logo-title animated-gradient" style="text-decoration: none;">AIME</a>
+        <nav class="main-nav">
+            <a href="writer.html">Writer</a>
+            <a href="elements.html" class="active">Elements</a>
+            <a href="imaging.html">Imaging</a>
+            <a href="3d.html">3D</a>
+            <a href="audio.html">Audio</a>
+            <a href="video.html">Video</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="element-header">
+            <h2 class="element-title animated-gradient">Technology Forge</h2>
+            <div class="header-actions">
+                <p class="element-subtitle">Define a specific piece of technology and its impact.</p>
+                <button id="clear-fields-button" class="clear-btn">Clear All Fields</button>
+            </div>
+        </div>
+
+        <div class="form-column">
+            <div class="accordion">
+                <button class="accordion-header">Guidance</button>
+                <div class="accordion-content">
+                     <div id="guidance-gems-container"></div>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <button class="accordion-header">Traits</button>
+                <div class="accordion-content">
+                    <form id="traits-form" class="element-form">
+                        <div class="form-section">
+                             <h3 class="section-title">Core Concept</h3>
+                            <label for="technologyName">Technology Name:</label>
+                            <input type="text" id="technologyName" class="input-field" placeholder="e.g., Quantum Entanglement Communicator">
+                            <label for="techLevel">Tech Level:</label>
+                            <input type="text" id="techLevel" class="input-field" placeholder="e.g., Near-Future, Magitech, Ancient">
+                        </div>
+                        <div class="form-section">
+                            <h3 class="section-title">Functionality</h3>
+                            <label for="functionPurpose">Function & Purpose:</label>
+                            <textarea id="functionPurpose" class="input-field" rows="3" placeholder="What the technology does and the problem it solves."></textarea>
+                             <label for="mechanismPowerSource">Mechanism & Power Source:</label>
+                            <textarea id="mechanismPowerSource" class="input-field" rows="3" placeholder="How it operates and what fuels it."></textarea>
+                        </div>
+                        <div class="form-section">
+                            <h3 class="section-title">Impact</h3>
+                            <label for="socialEconomicImpact">Social & Economic Impact:</label>
+                            <textarea id="socialEconomicImpact" class="input-field" rows="4" placeholder="How it has altered society, culture, and the economy."></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+             <div class="asset-hub-container">
+                <h3 class="asset-hub-title">Asset Hub</h3>
+                <p class="asset-hub-subtitle">Import the World or Factions that use this Technology.</p>
+                <div class="asset-import-area">
+                    <input type="file" id="asset-upload" multiple style="display: none;">
+                    <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
+                </div>
+                <div id="asset-list" class="asset-list"></div>
+            </div>
+        </div>
+        
+        <div class="generation-column">
+            <button id="generate-button" data-element-type="TECHNOLOGY">Generate</button>
+            <div id="response-container" class="response-container"></div>
+        </div>
+    </main>
+
+    <div id="refinement-menu" class="refinement-menu">
+        <button class="refinement-button" data-action="rewrite">Rewrite</button>
+        <button class="refinement-button" data-action="expand">Expand</button>
+        <button class="refinement-button" data-action="shorten">Shorten</button>
+        <div class="refinement-button tone-changer">
+            <span>Change Tone</span>
+            <div class="tone-options">
+                <button class="tone-option-button" data-tone="formal">Formal</button>
+                <button class="tone-option-button" data-tone="humorous">Humorous</button>
+                <button class="tone-option-button" data-tone="suspenseful">Suspenseful</button>
+                <button class="tone-option-button" data-tone="cynical">Cynical</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../script/export.js"></script>
+    <script src="../script/accordion.js"></script>
+    <script src="../script/import.js"></script>
+    <script src="../script/guidance.js"></script>
+    <script src="../script/dom_parser.js"></script>
+    <script src="../script/prompt_crafter.js"></script>
+    <script src="../script/refinement_prompt_crafter.js"></script>
+    <script src="../script/generator.js"></script>
+    <script src="../script/generation_handler.js"></script>
+    <script src="../script/refinement.js"></script>
+    <script src="../script/persistence.js"></script>
+</body>
+</html>
