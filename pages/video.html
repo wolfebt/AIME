@@ -24,57 +24,92 @@
             <a href="video.html" class="active">Video</a>
         </nav>
     </header>
-
-     <main class="container">
+    <main class="container">
         <div class="workspace-layout">
             <div class="main-column">
-                <div class="element-header" style="text-align: left; margin-bottom: 1rem;">
+                <div class="element-header" style="text-align: left;">
                     <h2 class="element-title animated-gradient">Director's Suite</h2>
-                    <p class="element-subtitle">Generate animated video clips and assemble them into a complete scene.</p>
+                    <p class="element-subtitle">Combine your characters, settings, and scenes into dynamic video sequences.</p>
                 </div>
-                <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 2rem; aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center;">
-                    <p>Video Preview Player</p>
+                <div class="generation-column">
+                    <div id="video-preview-container" class="image-container glass-panel">
+                        <span class="placeholder-text">Video Preview</span>
+                    </div>
                 </div>
-                 <div class="glass-panel" style="padding: 1.5rem;">
-                    <p>Multi-track Timeline</p>
+                 <div class="glass-panel" style="padding: 2rem; margin-top: 1.5rem;">
+                     <h3 class="section-title">Timeline</h3>
+                     <div class="timeline-container">
+                        <div class="timeline-track">
+                            <span class="track-label">Video</span>
+                        </div>
+                        <div class="timeline-track">
+                            <span class="track-label">Audio 1</span>
+                        </div>
+                        <div class="timeline-track">
+                             <span class="track-label">Audio 2</span>
+                        </div>
+                     </div>
                 </div>
             </div>
-
+            <div class="resize-handle"></div>
             <div class="side-column">
                 <div class="accordion glass-panel">
                     <button class="accordion-header">
                         <span>Clip Generation</span>
-                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <p>Controls for generating video clips.</p>
+                        <textarea id="prompt-input" class="input-field" rows="4" placeholder="e.g., An epic cinematic drone shot of a medieval castle..."></textarea>
+                        <button id="generate-button" style="margin-top: 1rem;">Generate Clip</button>
                     </div>
                 </div>
-                <div class="accordion glass-panel">
+                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
                     <button class="accordion-header">
                         <span>Media Bin</span>
-                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <p>Bin for video and audio assets.</p>
+                        <div id="media-bin" class="media-bin">
+                            <p class="placeholder-text">Generated clips will appear here.</p>
+                        </div>
                     </div>
                 </div>
-                <div class="accordion glass-panel">
+                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
                     <button class="accordion-header">
                         <span>Editing Tools</span>
-                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <p>Tools for transitions, effects, etc.</p>
+                        <div class="form-section">
+                            <label>Transitions:</label>
+                            <select class="input-field">
+                                <option>None</option>
+                                <option>Cross Fade</option>
+                                <option>Wipe Left</option>
+                            </select>
+                        </div>
+                         <div class="form-section">
+                            <label>Effects:</label>
+                             <select class="input-field">
+                                <option>None</option>
+                                <option>Black & White</option>
+                                <option>Sepia</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                 <div class="accordion glass-panel">
+                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
                     <button class="accordion-header">
                         <span>Asset Hub</span>
-                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div class="accordion-content">
-                        <p>Asset Hub for contextual files.</p>
+                    <div class="accordion-content asset-hub-container">
+                        <p class="asset-hub-subtitle">Import Scene, Persona, and Audio files to build your video.</p>
+                        <div class="asset-import-area">
+                            <input type="file" id="asset-upload" multiple style="display: none;">
+                            <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
+                        </div>
+                        <div id="asset-list" class="asset-list"></div>
                     </div>
                 </div>
             </div>

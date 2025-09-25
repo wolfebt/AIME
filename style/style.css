@@ -162,28 +162,53 @@ body {
 /* Workspace Layout Styles */
 .workspace-layout {
     display: flex;
-    gap: 2rem;
-    flex-direction: column;
-}
-@media (min-width: 1024px) {
-    .workspace-layout {
-        flex-direction: row;
-    }
+    width: 100%;
 }
 
 .main-column {
-    flex: 3;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
+    flex: 0 1 50%; /* Default to 50% width */
+    min-width: 0; /* Prevents flexbox overflow issues */
 }
 
 .side-column {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    min-width: 0;
+    flex: 0 1 50%; /* Default to 50% width */
+    min-width: 0; /* Prevents flexbox overflow issues */
+}
+
+/* New Resizable Handle Styles */
+.resize-handle {
+    flex: 0 0 18px; /* The grabbable area for the handle */
+    cursor: col-resize;
+    position: relative;
+    margin: 0 -9px; /* Visually centers the handle line between the columns */
+    z-index: 10;
+}
+
+.resize-handle::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 2rem;
+    bottom: 2rem;
+    width: 2px;
+    transform: translateX(-50%);
+    /* This gradient creates the line with a dot at the top and bottom */
+    background-image:
+        /* Top dot (4px radius) */
+        radial-gradient(circle at center 4px, var(--accent-purple) 4px, transparent 4px),
+        /* The main line connecting the dots */
+        linear-gradient(to bottom, var(--accent-purple), var(--accent-purple)),
+        /* Bottom dot (4px radius) */
+        radial-gradient(circle at center calc(100% - 4px), var(--accent-purple) 4px, transparent 4px);
+    background-size: 100% 8px, 100% calc(100% - 16px), 100% 8px;
+    background-repeat: no-repeat;
+    background-position: top, center, bottom;
+    opacity: 0.6;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.resize-handle:hover::before {
+    opacity: 1;
 }
 
 /* Element Page Header Styles */

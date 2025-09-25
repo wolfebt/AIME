@@ -1,36 +1,70 @@
-/**
- * File: writer-bundle.js
- * Reference: Story Weaver Logic
- * Creator: Wolfe.BT, TangentLLC
- */
+/*
+    File: writer-bundle.js
+    Reference: Story Weaver Logic
+    Creator: Wolfe.BT, TangentLLC
+*/
 
-/**
- * ==================================================================================
- * AIME Accordion Logic
- * ==================================================================================
- */
-document.addEventListener('DOMContentLoaded', () => {
-    // Accordion functionality
-    document.querySelectorAll('.accordion .accordion-header').forEach(header => {
+// --- Resizable Columns ---
+function initializeResizableColumns() {
+    const workspace = document.querySelector('.workspace-layout');
+    if (!workspace) return;
+
+    const mainColumn = workspace.querySelector('.main-column');
+    const sideColumn = workspace.querySelector('.side-column');
+    const resizeHandle = workspace.querySelector('.resize-handle');
+
+    let isResizing = false;
+
+    resizeHandle.addEventListener('mousedown', (e) => {
+        isResizing = true;
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.removeEventListener('mousemove', handleMouseMove);
+            resizeHandle.classList.remove('resizing');
+        });
+        resizeHandle.classList.add('resizing');
+    });
+
+    function handleMouseMove(e) {
+        if (!isResizing) return;
+
+        const containerRect = workspace.getBoundingClientRect();
+        const newLeftWidth = e.clientX - containerRect.left;
+        let newLeftPercent = (newLeftWidth / containerRect.width) * 100;
+
+        // Enforce 20% to 80% constraints
+        newLeftPercent = Math.max(20, Math.min(80, newLeftPercent));
+
+        mainColumn.style.width = `calc(${newLeftPercent}% - 6px)`;
+        sideColumn.style.width = `calc(${100 - newLeftPercent}% - 6px)`;
+    }
+}
+
+
+// --- Accordion Logic ---
+function initializeAccordions() {
+    const accordions = document.querySelectorAll('.accordion');
+    accordions.forEach(accordion => {
+        const header = accordion.querySelector('.accordion-header');
+        const content = accordion.querySelector('.accordion-content');
+        const chevron = header.querySelector('.accordion-chevron');
+
         header.addEventListener('click', () => {
-            const content = header.nextElementSibling;
-            header.classList.toggle('active');
-            if (content.style.maxHeight) {
+            const isOpen = header.classList.toggle('active');
+            chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+            if (isOpen) {
+                content.style.maxHeight = content.scrollHeight + "px";
+                content.style.padding = '1.5rem';
+            } else {
                 content.style.maxHeight = null;
                 content.style.padding = '0 1.5rem';
-            } else {
-                content.style.padding = '1.5rem';
-                content.style.maxHeight = content.scrollHeight + "px";
             }
         });
     });
-});
+}
 
-/**
- * ==================================================================================
- * AIME Guidance Gems Logic
- * ==================================================================================
- */
+// --- Guidance Gems Logic ---
 const guidanceData = {
     Genre: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Sci-Fi', 'Horror', 'Mystery', 'Romance', 'Thriller'],
     Tone: ['Serious', 'Humorous', 'Formal', 'Informal', 'Optimistic', 'Pessimistic', 'Joyful', 'Sad', 'Hopeful', 'Cynical'],
@@ -40,46 +74,40 @@ const guidanceData = {
     Structure: ['Linear', 'Non-linear', 'Episodic', 'In Medias Res', 'Frame Story']
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+function initializeGuidanceGems() {
     const container = document.getElementById('guidance-gems-container');
-    if (container) {
-        Object.entries(guidanceData).forEach(([title, options]) => {
-            const gemElement = document.createElement('div');
-            gemElement.className = 'gem';
-            
-            const titleElement = document.createElement('h4');
-            titleElement.className = 'gem-title';
-            titleElement.textContent = title;
+    if (!container) return;
 
-            const optionsContainer = document.createElement('div');
-            optionsContainer.className = 'gem-options';
+    Object.entries(guidanceData).forEach(([title, options]) => {
+        const gemElement = document.createElement('div');
+        gemElement.className = 'gem';
+        gemElement.innerHTML = `<h4 class="gem-title">${title}</h4>`;
 
-            options.forEach(option => {
-                const button = document.createElement('button');
-                button.className = 'gem-button';
-                button.textContent = option;
-                button.addEventListener('click', () => {
-                    optionsContainer.querySelectorAll('.gem-button').forEach(btn => {
-                        if (btn !== button) btn.classList.remove('active');
-                    });
-                    button.classList.toggle('active');
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = 'gem-options';
+
+        options.forEach(option => {
+            const button = document.createElement('button');
+            button.className = 'gem-button';
+            button.textContent = option;
+            button.addEventListener('click', () => {
+                const siblings = optionsContainer.querySelectorAll('.gem-button');
+                siblings.forEach(sib => {
+                    if (sib !== button) sib.classList.remove('active');
                 });
-                optionsContainer.appendChild(button);
+                button.classList.toggle('active');
             });
-
-            gemElement.appendChild(titleElement);
-            gemElement.appendChild(optionsContainer);
-            container.appendChild(gemElement);
+            optionsContainer.appendChild(button);
         });
-    }
-});
 
-/**
- * ==================================================================================
- * AIME Asset Import Logic (Mockup)
- * ==================================================================================
- */
-document.addEventListener('DOMContentLoaded', () => {
+        gemElement.appendChild(optionsContainer);
+        container.appendChild(gemElement);
+    });
+}
+
+
+// --- Asset Import Logic ---
+function initializeAssetImporter() {
     const importBtn = document.getElementById('import-asset-btn');
     const fileInput = document.getElementById('asset-upload');
     const assetList = document.getElementById('asset-list');
@@ -88,59 +116,127 @@ document.addEventListener('DOMContentLoaded', () => {
         importBtn.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', (event) => {
             for (const file of event.target.files) {
-                // Mockup: Just display the file name. Full implementation will read file content.
-                const assetItem = document.createElement('div');
-                assetItem.className = 'asset-item';
-                assetItem.textContent = file.name;
-                assetList.appendChild(assetItem);
+                addAssetToList(file, assetList);
             }
         });
     }
-});
+}
 
-/**
- * ==================================================================================
- * AIME Writer Tab Logic
- * ==================================================================================
- */
-document.addEventListener('DOMContentLoaded', () => {
+function addAssetToList(file, assetList) {
+    const assetItem = document.createElement('div');
+    assetItem.className = 'asset-item';
+    assetItem.innerHTML = `
+        <div class="asset-info">
+            <span class="asset-name">${file.name}</span>
+            <button class="remove-asset-btn">&times;</button>
+        </div>
+    `;
+    assetList.appendChild(assetItem);
+    assetItem.querySelector('.remove-asset-btn').addEventListener('click', () => {
+        assetItem.remove();
+    });
+}
+
+
+// --- Writer Tab Logic ---
+function initializeWriterTabs() {
     const writerNavButtons = document.querySelectorAll('.writer-nav-button');
     const writerTabs = document.querySelectorAll('.writer-tab');
 
-    if(writerNavButtons.length > 0 && writerTabs.length > 0) {
-        writerNavButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const targetTabId = button.dataset.tab;
+    if (writerNavButtons.length === 0 || writerTabs.length === 0) return;
 
-                writerNavButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
+    writerNavButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const targetTab = button.dataset.tab;
 
-                writerTabs.forEach(tab => {
-                    tab.classList.toggle('active', tab.id === targetTabId);
-                });
+            writerNavButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            writerTabs.forEach(tab => {
+                tab.classList.toggle('active', tab.id === targetTab);
             });
         });
-    }
-});
+    });
+}
 
-/**
- * ==================================================================================
- * AIME Outline & Asset Browser Logic (Combined)
- * ==================================================================================
- */
-document.addEventListener('DOMContentLoaded', () => {
+
+// --- Outline Logic ---
+function initializeOutline() {
     const outlineList = document.getElementById('outline-list');
-    const importSceneBtn = document.getElementById('import-scene'); // Note: This button is currently removed from HTML
+    const addPlotPointBtn = document.getElementById('add-plot-point');
 
-    // Mock data for scene assets
-    const mockSceneAssets = [
-        { id: 'scn001', title: 'The Standoff on the Bridge', location: 'INT. STARSHIP VENTURE - BRIDGE' },
-        { id: 'scn002', title: 'A Meeting in the Shadows', location: 'EXT. NEO-TOKYO ALLEY - NIGHT' },
-        { id: 'scn003', title: 'The King\'s Decree', location: 'INT. AETHELGARD THRONE ROOM - DAY' }
-    ];
+    if (!outlineList || !addPlotPointBtn) return;
+    
+    let draggingElement = null;
 
-    if (outlineList) {
-        // Drag and Drop functionality would go here if needed in future
+    outlineList.addEventListener('dragstart', (e) => {
+        if (e.target.classList.contains('scene-card')) {
+            draggingElement = e.target;
+            setTimeout(() => e.target.classList.add('dragging'), 0);
+        }
+    });
+
+    outlineList.addEventListener('dragend', () => {
+        if (draggingElement) {
+            draggingElement.classList.remove('dragging');
+            draggingElement = null;
+        }
+    });
+
+    outlineList.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        const afterElement = getDragAfterElement(outlineList, e.clientY);
+        const container = e.target.closest('.outline-list');
+        if (draggingElement && container) {
+            if (afterElement == null) {
+                container.appendChild(draggingElement);
+            } else {
+                container.insertBefore(draggingElement, afterElement);
+            }
+        }
+    });
+
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.scene-card:not(.dragging)')];
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
+
+    addPlotPointBtn.addEventListener('click', () => {
+        const newCard = createSceneCard('New Plot Point', 'Describe the location or event...');
+        outlineList.appendChild(newCard);
+    });
+}
+
+function createSceneCard(title, subtitle) {
+    const card = document.createElement('li');
+    card.className = 'scene-card';
+    card.draggable = true;
+    card.innerHTML = `
+        <div class="scene-card-details">
+            <h4 class="scene-card-title">${title}</h4>
+            <p class="scene-card-subtitle">${subtitle}</p>
+        </div>
+        <div class="scene-card-handle"></div>
+    `;
+    return card;
+}
+
+
+// --- DOMContentLoaded Initializer ---
+document.addEventListener('DOMContentLoaded', () => {
+    initializeResizableColumns();
+    initializeAccordions();
+    initializeGuidanceGems();
+    initializeAssetImporter();
+    initializeWriterTabs();
+    initializeOutline();
 });
 

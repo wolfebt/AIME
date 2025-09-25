@@ -28,15 +28,18 @@
     <main class="container">
         <div class="workspace-layout">
             <div class="main-column">
-                <div class="element-header" style="text-align: left; margin-bottom: 2rem;">
+                <div class="element-header" style="text-align: left;">
                     <h2 class="element-title animated-gradient">Imaging Studio</h2>
-                    <p class="element-subtitle">Generate concept art, character portraits, and cinematic scenes from your creative Elements.</p>
+                    <p class="element-subtitle">Generate concept art, character portraits, and landscapes.</p>
                 </div>
-                <div class="glass-panel" style="width: 100%; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center;">
-                    <span class="text-gray-500">Your generated image will appear here.</span>
+                <div class="generation-column">
+                    <div id="image-container" class="image-container glass-panel">
+                        <!-- Generated image will appear here -->
+                        <span class="placeholder-text">Your generated image will appear here.</span>
+                    </div>
                 </div>
             </div>
-
+            <div class="resize-handle"></div>
             <div class="side-column">
                 <div class="accordion glass-panel">
                     <button class="accordion-header">
@@ -44,28 +47,47 @@
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <div class="element-form">
-                            <textarea class="input-field" rows="5" placeholder="e.g., A cinematic portrait of a rogue knight in a dark forest..."></textarea>
-                            <button id="generate-button">Generate Image</button>
-                        </div>
+                        <textarea id="prompt-input" class="input-field" rows="5" placeholder="e.g., A cinematic portrait of a rogue knight in futuristic armor, standing on a rainy neo-tokyo street..."></textarea>
+                        <button id="generate-button" style="margin-top: 1rem;">Generate Image</button>
                     </div>
                 </div>
-                <div class="accordion glass-panel">
+                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
                     <button class="accordion-header">
                         <span>Visual Traits</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <p>Trait selectors will be implemented here.</p>
+                        <div class="form-section">
+                            <label>Art Style:</label>
+                            <select id="art-style-select" class="input-field">
+                                <option>Painting</option>
+                                <option>Sketch</option>
+                                <option>Anime</option>
+                                <option>Photorealistic</option>
+                            </select>
+                        </div>
+                         <div class="form-section">
+                            <label>Composition:</label>
+                            <select id="composition-select" class="input-field">
+                                <option>Close-up Portrait</option>
+                                <option>Full Body</option>
+                                <option>Action Pose</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                <div class="accordion glass-panel">
+                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
                     <button class="accordion-header">
                         <span>Asset Hub</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div class="accordion-content">
-                         <p>Asset Hub functionality will be implemented here.</p>
+                    <div class="accordion-content asset-hub-container">
+                        <p class="asset-hub-subtitle">Import Element files to guide the visual generation.</p>
+                        <div class="asset-import-area">
+                            <input type="file" id="asset-upload" multiple style="display: none;">
+                            <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
+                        </div>
+                        <div id="asset-list" class="asset-list"></div>
                     </div>
                 </div>
             </div>

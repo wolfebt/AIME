@@ -36,7 +36,7 @@
 
         <div class="workspace-layout">
             <div class="main-column">
-                 <div class="accordion glass-panel">
+                <div class="accordion glass-panel">
                     <button class="accordion-header">
                         <span>Traits</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -48,29 +48,29 @@
                                 <label for="sceneName">Scene Name / Slugline:</label>
                                 <input type="text" id="sceneName" class="input-field" placeholder="e.g., INT. COFFEE SHOP - DAY">
                                 <label for="overview">Overview:</label>
-                                <textarea id="overview" class="input-field" rows="3" placeholder="A high-level summary of the scene's purpose and events."></textarea>
+                                <textarea id="overview" class="input-field" rows="3" placeholder="A high-level summary of the scene..."></textarea>
                             </div>
                             <div class="form-section">
                                  <h3 class="section-title">Atmosphere & Setting</h3>
-                                <label for="locationDescription">Location Description:</label>
-                                <textarea id="locationDescription" class="input-field" rows="4" placeholder="Detailed description of the physical space."></textarea>
-                                <label for="atmosphereMood">Atmosphere & Mood:</label>
-                                <input type="text" id="atmosphereMood" class="input-field" placeholder="e.g., Tense, humorous, melancholic, mysterious">
+                                <label for="atmosphere">Atmosphere / Mood:</label>
+                                <textarea id="atmosphere" class="input-field" rows="3" placeholder="e.g., Oppressive and tense..."></textarea>
                                 <label for="timeOfDay">Time of Day:</label>
-                                <input type="text" id="timeOfDay" class="input-field" placeholder="e.g., Sunrise, Mid-afternoon, Dead of night">
+                                <input type="text" id="timeOfDay" class="input-field" placeholder="e.g., Sunrise, Night">
                                 <label for="weather">Weather:</label>
-                                <input type="text" id="weather" class="input-field" placeholder="e.g., Light rain, Blazing sun, Overcast">
+                                <input type="text" id="weather" class="input-field" placeholder="e.g., Sunny, Raining">
                             </div>
                              <div class="form-section">
-                                <h3 class="section-title">Interaction</h3>
-                                <label for="keyObjects">Key Objects & Interactivity:</label>
-                                <textarea id="keyObjects" class="input-field" rows="3" placeholder="Important props characters can interact with."></textarea>
+                                <h3 class="section-title">Description</h3>
+                                <label for="interior">Interior Description:</label>
+                                <textarea id="interior" class="input-field" rows="4" placeholder="Describe the scene from the inside..."></textarea>
+                                <label for="exterior">Exterior Description:</label>
+                                <textarea id="exterior" class="input-field" rows="4" placeholder="Describe the scene from the outside..."></textarea>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-
+            <div class="resize-handle"></div>
             <div class="side-column">
                 <div class="accordion glass-panel">
                     <button class="accordion-header">
@@ -81,7 +81,7 @@
                          <div id="guidance-gems-container"></div>
                     </div>
                 </div>
-                 <div class="accordion glass-panel">
+                 <div class="accordion glass-panel" style="margin-top: 1.5rem;">
                     <button class="accordion-header">
                         <span>Asset Hub</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -95,7 +95,7 @@
                         <div id="asset-list" class="asset-list"></div>
                     </div>
                 </div>
-                <div class="generation-column">
+                <div class="generation-column" style="margin-top: 1.5rem;">
                     <button id="generate-button" data-element-type="SCENE">Generate</button>
                     <div id="response-container" class="response-container glass-panel"></div>
                 </div>

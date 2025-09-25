@@ -28,44 +28,60 @@
     <main class="container">
         <div class="workspace-layout">
             <div class="main-column">
-                <div class="element-header" style="text-align: left; margin-bottom: 1rem;">
+                <div class="element-header" style="text-align: left;">
                     <h2 class="element-title animated-gradient">Audio Lab</h2>
-                    <p class="element-subtitle">Generate dialogue, music, and sound effects. Mix them together on the timeline.</p>
+                    <p class="element-subtitle">Generate dialogue, soundscapes, and musical scores.</p>
                 </div>
-                <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 2rem;">
-                    <p>Audio Preview Player</p>
-                </div>
-                 <div class="glass-panel" style="padding: 1.5rem;">
-                    <p>Multi-track Timeline</p>
+                <div class="glass-panel" style="padding: 2rem;">
+                     <h3 class="section-title">Timeline</h3>
+                     <div class="timeline-container">
+                        <div class="timeline-track">
+                            <span class="track-label">Narration</span>
+                        </div>
+                        <div class="timeline-track">
+                            <span class="track-label">Music</span>
+                        </div>
+                        <div class="timeline-track">
+                             <span class="track-label">SFX</span>
+                        </div>
+                     </div>
                 </div>
             </div>
-
+            <div class="resize-handle"></div>
             <div class="side-column">
                 <div class="accordion glass-panel">
                     <button class="accordion-header">
                         <span>Audio Generation</span>
-                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <p>Controls for generating audio clips.</p>
+                        <textarea id="prompt-input" class="input-field" rows="4" placeholder="e.g., An epic orchestral score for a battle scene..."></textarea>
+                        <button id="generate-button" style="margin-top: 1rem;">Generate Clip</button>
                     </div>
                 </div>
-                <div class="accordion glass-panel">
+                 <div class="accordion glass-panel" style="margin-top: 1.5rem;">
                     <button class="accordion-header">
                         <span>Media Bin</span>
-                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <p>Bin for generated and imported audio assets.</p>
+                        <div id="media-bin" class="media-bin">
+                            <p class="placeholder-text">Generated audio clips will appear here.</p>
+                        </div>
                     </div>
                 </div>
-                 <div class="accordion glass-panel">
+                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
                     <button class="accordion-header">
                         <span>Asset Hub</span>
-                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div class="accordion-content">
-                        <p>Asset Hub for contextual files.</p>
+                    <div class="accordion-content asset-hub-container">
+                        <p class="asset-hub-subtitle">Import Persona files for dialogue or Scene files for atmosphere.</p>
+                        <div class="asset-import-area">
+                            <input type="file" id="asset-upload" multiple style="display: none;">
+                            <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
+                        </div>
+                        <div id="asset-list" class="asset-list"></div>
                     </div>
                 </div>
             </div>

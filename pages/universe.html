@@ -29,7 +29,7 @@
         <div class="element-header">
             <h2 class="element-title animated-gradient">Universe Crucible</h2>
             <div class="header-actions">
-                <p class="element-subtitle">Establish the foundational framework of the story's universe.</p>
+                <p class="element-subtitle">Establish the foundational framework of your story's universe.</p>
                 <button id="clear-fields-button" class="clear-btn">Clear All Fields</button>
             </div>
         </div>
@@ -37,7 +37,7 @@
         <div class="workspace-layout">
             <div class="main-column">
                 <div class="accordion glass-panel">
-                     <button class="accordion-header">
+                    <button class="accordion-header">
                         <span>Traits</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
@@ -51,33 +51,35 @@
                                 <input type="text" id="primaryGenre" class="input-field" placeholder="e.g., Fantasy, Science Fiction, Horror">
                                 <label for="subgenres">Subgenre(s):</label>
                                 <input type="text" id="subgenres" class="input-field" placeholder="e.g., High Fantasy, Cyberpunk, Cosmic Horror">
-                                <label for="oneLinePitch">One-Line Pitch:</label>
-                                <textarea id="oneLinePitch" class="input-field" rows="2" placeholder="A single, concise sentence that captures the core concept."></textarea>
                             </div>
                             <div class="form-section">
-                                <h3 class="section-title">Thematic Foundation</h3>
+                                <h3 class="section-title">Narrative Foundation</h3>
+                                <label for="oneLinePitch">One-Line Pitch:</label>
+                                <textarea id="oneLinePitch" class="input-field" rows="2" placeholder="e.g., A universe where magic is a dwindling resource..."></textarea>
                                 <label for="coreThemes">Core Themes:</label>
                                 <textarea id="coreThemes" class="input-field" rows="3" placeholder="e.g., 'the struggle between faith and reason,' 'the price of progress'"></textarea>
-                                <label for="generalToneMood">General Tone & Mood:</label>
-                                <input type="text" id="generalToneMood" class="input-field" placeholder="e.g., Optimistic, Pessimistic, Satirical, Serious">
                             </div>
                             <div class="form-section">
                                 <h3 class="section-title">Governing Principles</h3>
-                                <label for="governingPrinciples">Laws of Physics, Magic, etc.:</label>
-                                <textarea id="governingPrinciples" class="input-field" rows="4" placeholder="The fundamental laws that dictate how your universe functions."></textarea>
+                                <label for="lawsOfPhysics">Laws of Physics:</label>
+                                <textarea id="lawsOfPhysics" class="input-field" rows="3" placeholder="Do they mirror our own, or are there key differences?"></textarea>
+                                <label for="lawsOfMagic">Laws of Magic/Supernatural:</label>
+                                <textarea id="lawsOfMagic" class="input-field" rows="3" placeholder="What are the rules, limitations, and costs?"></textarea>
                             </div>
                             <div class="form-section">
-                                <h3 class="section-title">Inspirations</h3>
+                                <h3 class="section-title">Atmosphere & Influence</h3>
+                                <label for="generalTone">General Tone & Mood:</label>
+                                <input type="text" id="generalTone" class="input-field" placeholder="e.g., optimistic, pessimistic, satirical, serious, wondrous, or terrifying">
                                 <label for="keyInspirations">Key Inspirations:</label>
-                                <textarea id="keyInspirations" class="input-field" rows="3" placeholder="Real-world cultures, historical eras, mythologies, or other fictional works."></textarea>
+                                <textarea id="keyInspirations" class="input-field" rows="3" placeholder="Real-world cultures, historical eras, mythologies, or other fictional works..."></textarea>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-            
+            <div class="resize-handle"></div>
             <div class="side-column">
-                <div class="accordion glass-panel">
+                 <div class="accordion glass-panel">
                     <button class="accordion-header">
                         <span>Guidance</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -86,13 +88,13 @@
                          <div id="guidance-gems-container"></div>
                     </div>
                 </div>
-                 <div class="accordion glass-panel">
+                 <div class="accordion glass-panel" style="margin-top: 1.5rem;">
                     <button class="accordion-header">
                         <span>Asset Hub</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content asset-hub-container">
-                        <p class="asset-hub-subtitle">Import related Worlds, Philosophies, etc.</p>
+                        <p class="asset-hub-subtitle">Import related assets to provide context.</p>
                         <div class="asset-import-area">
                             <input type="file" id="asset-upload" multiple style="display: none;">
                             <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
@@ -100,7 +102,7 @@
                         <div id="asset-list" class="asset-list"></div>
                     </div>
                 </div>
-                <div class="generation-column">
+                <div class="generation-column" style="margin-top: 1.5rem;">
                     <button id="generate-button" data-element-type="UNIVERSE">Generate</button>
                     <div id="response-container" class="response-container glass-panel"></div>
                 </div>

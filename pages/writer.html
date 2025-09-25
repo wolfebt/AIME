@@ -37,38 +37,40 @@
             <div class="main-column">
                 <div id="brainstorm" class="writer-tab active">
                     <div class="glass-panel" style="padding: 2rem;">
-                        <h2 class="element-title animated-gradient" style="text-align: left; font-size: 2rem; margin-bottom: 0.5rem;">Brainstorm</h2>
-                        <p class="element-subtitle" style="text-align: left; margin-bottom: 1.5rem;">Plant the seed of your story. Explore core concepts, "what if" scenarios, and foundational ideas with your AI partner.</p>
-                        <textarea id="brainstorm-input" class="input-field writer-input" placeholder="Start with a simple idea... e.g., 'A detective who can see the last five minutes of a victim's life.'"></textarea>
-                        <button id="generate-brainstorm-button" class="generate-btn" style="align-self: flex-start; margin-top: 1rem;">Generate Ideas</button>
+                        <h2 class="element-title animated-gradient" style="text-align: left; margin-bottom: 0.5rem;">Brainstorm</h2>
+                        <p class="element-subtitle" style="text-align: left; margin-bottom: 2rem;">Plant the seed of your story. Explore core concepts, "what if" scenarios, and foundational ideas with your AI partner.</p>
+                        <textarea class="input-field writer-input" placeholder="Start with a simple idea... e.g., 'A detective who can see the last five minutes of a victim's life.'"></textarea>
+                        <button id="generate-brainstorm-button" style="margin-top: 1.5rem;">Generate Ideas</button>
                     </div>
                 </div>
-
                 <div id="outline" class="writer-tab">
-                     <div class="glass-panel" style="padding: 2rem;">
-                        <h2 class="element-title animated-gradient" style="text-align: left; font-size: 2rem; margin-bottom: 0.5rem;">Outline</h2>
-                        <p class="element-subtitle" style="text-align: left; margin-bottom: 1.5rem;">Give your story a skeleton. Structure your ideas into a plot using narrative frameworks.</p>
+                    <div class="glass-panel" style="padding: 2rem;">
+                        <h2 class="element-title animated-gradient" style="text-align: left; margin-bottom: 0.5rem;">Outline</h2>
+                        <p class="element-subtitle" style="text-align: left; margin-bottom: 2rem;">Give your story a skeleton. Structure your ideas into a plot using narrative frameworks.</p>
                         <ul id="outline-list" class="outline-list">
                             <!-- Scene cards will be generated here by JS -->
                         </ul>
+                         <div class="outline-actions" style="margin-top: 1.5rem;">
+                            <button id="add-plot-point">Add Plot Point</button>
+                        </div>
                     </div>
                 </div>
-
                 <div id="treatment" class="writer-tab">
-                    <div class="glass-panel" style="padding: 2rem; text-align: center;">
-                        <h2 class="element-title animated-gradient" style="font-size: 2rem; margin-bottom: 0.5rem;">Treatment</h2>
-                        <p class="element-subtitle">Flesh out the first draft based on your detailed outline. (Canvas to be implemented)</p>
+                     <div class="glass-panel" style="padding: 2rem; text-align: center;">
+                        <h2 class="element-title animated-gradient">Treatment</h2>
+                        <p class="element-subtitle">Flesh out the first draft based on your detailed outline.</p>
+                        <p style="margin-top: 2rem;">Treatment generation canvas will be implemented here.</p>
                     </div>
                 </div>
-
                 <div id="write" class="writer-tab">
                     <div class="glass-panel" style="padding: 2rem; text-align: center;">
-                        <h2 class="element-title animated-gradient" style="font-size: 2rem; margin-bottom: 0.5rem;">Write & Refine</h2>
-                        <p class="element-subtitle">Sculpt your narrative and infuse your unique voice. (Editor to be implemented)</p>
+                        <h2 class="element-title animated-gradient">Write & Refine</h2>
+                        <p class="element-subtitle">Sculpt your narrative and infuse your unique voice.</p>
+                        <p style="margin-top: 2rem;">The final writing and refinement editor will be implemented here.</p>
                     </div>
                 </div>
             </div>
-
+            <div class="resize-handle"></div>
             <div class="side-column">
                 <div class="accordion glass-panel">
                     <button class="accordion-header">
@@ -79,10 +81,10 @@
                          <div id="guidance-gems-container"></div>
                     </div>
                 </div>
-                <div class="accordion glass-panel">
+                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
                     <button class="accordion-header">
                         <span>Asset Hub</span>
-                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content asset-hub-container">
                         <p class="asset-hub-subtitle">Import files to guide the story.</p>

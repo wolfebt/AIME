@@ -1,36 +1,69 @@
-/**
- * File: element-bundle.js
- * Reference: Element Pages Logic
- * Creator: Wolfe.BT, TangentLLC
- */
+/*
+    File: element-bundle.js
+    Reference: Element Pages Logic
+    Creator: Wolfe.BT, TangentLLC
+*/
 
-/**
- * ==================================================================================
- * AIME Accordion Logic
- * ==================================================================================
- */
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.accordion .accordion-header').forEach(header => {
+// --- Resizable Columns ---
+function initializeResizableColumns() {
+    const workspace = document.querySelector('.workspace-layout');
+    if (!workspace) return;
+
+    const mainColumn = workspace.querySelector('.main-column');
+    const sideColumn = workspace.querySelector('.side-column');
+    const resizeHandle = workspace.querySelector('.resize-handle');
+
+    let isResizing = false;
+
+    resizeHandle.addEventListener('mousedown', (e) => {
+        isResizing = true;
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.removeEventListener('mousemove', handleMouseMove);
+            resizeHandle.classList.remove('resizing');
+        });
+        resizeHandle.classList.add('resizing');
+    });
+
+    function handleMouseMove(e) {
+        if (!isResizing) return;
+
+        const containerRect = workspace.getBoundingClientRect();
+        const newLeftWidth = e.clientX - containerRect.left;
+        let newLeftPercent = (newLeftWidth / containerRect.width) * 100;
+
+        // Enforce 20% to 80% constraints
+        newLeftPercent = Math.max(20, Math.min(80, newLeftPercent));
+
+        mainColumn.style.width = `calc(${newLeftPercent}% - 6px)`;
+        sideColumn.style.width = `calc(${100 - newLeftPercent}% - 6px)`;
+    }
+}
+
+// --- Accordion Logic ---
+function initializeAccordions() {
+    const accordions = document.querySelectorAll('.accordion');
+    accordions.forEach(accordion => {
+        const header = accordion.querySelector('.accordion-header');
+        const content = accordion.querySelector('.accordion-content');
+        const chevron = header.querySelector('.accordion-chevron');
+
         header.addEventListener('click', () => {
-            const content = header.nextElementSibling;
-            header.classList.toggle('active');
-            if (content.style.maxHeight) {
-                content.style.maxHeight = null;
-                 content.style.padding = '0 1.5rem';
-            } else {
-                content.style.padding = '1.5rem';
+            const isOpen = header.classList.toggle('active');
+            chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+            if (isOpen) {
                 content.style.maxHeight = content.scrollHeight + "px";
+                content.style.padding = '1.5rem';
+            } else {
+                content.style.maxHeight = null;
+                content.style.padding = '0 1.5rem';
             }
         });
     });
-});
+}
 
-
-/**
- * ==================================================================================
- * AIME Guidance Gems Logic
- * ==================================================================================
- */
+// --- Guidance Gems Logic ---
 const guidanceData = {
     Genre: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Sci-Fi', 'Horror', 'Mystery', 'Romance', 'Thriller'],
     Tone: ['Serious', 'Humorous', 'Formal', 'Informal', 'Optimistic', 'Pessimistic', 'Joyful', 'Sad', 'Hopeful', 'Cynical'],
@@ -40,108 +73,81 @@ const guidanceData = {
     Structure: ['Linear', 'Non-linear', 'Episodic', 'In Medias Res', 'Frame Story']
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+function initializeGuidanceGems() {
     const container = document.getElementById('guidance-gems-container');
-    if (container) {
-        Object.entries(guidanceData).forEach(([title, options]) => {
-            const gemElement = document.createElement('div');
-            gemElement.className = 'gem';
-            
-            const titleElement = document.createElement('h4');
-            titleElement.className = 'gem-title';
-            titleElement.textContent = title;
+    if (!container) return;
 
-            const optionsContainer = document.createElement('div');
-            optionsContainer.className = 'gem-options';
+    Object.entries(guidanceData).forEach(([title, options]) => {
+        const gemElement = document.createElement('div');
+        gemElement.className = 'gem';
+        gemElement.innerHTML = `<h4 class="gem-title">${title}</h4>`;
 
-            options.forEach(option => {
-                const button = document.createElement('button');
-                button.className = 'gem-button';
-                button.textContent = option;
-                button.addEventListener('click', () => {
-                    optionsContainer.querySelectorAll('.gem-button').forEach(btn => {
-                         if (btn !== button) btn.classList.remove('active');
-                    });
-                    button.classList.toggle('active');
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = 'gem-options';
+
+        options.forEach(option => {
+            const button = document.createElement('button');
+            button.className = 'gem-button';
+            button.textContent = option;
+            button.addEventListener('click', () => {
+                const siblings = optionsContainer.querySelectorAll('.gem-button');
+                siblings.forEach(sib => {
+                    if (sib !== button) sib.classList.remove('active');
                 });
-                optionsContainer.appendChild(button);
+                button.classList.toggle('active');
             });
-
-            gemElement.appendChild(titleElement);
-            gemElement.appendChild(optionsContainer);
-            container.appendChild(gemElement);
+            optionsContainer.appendChild(button);
         });
-    }
-});
 
-/**
- * ==================================================================================
- * AIME DOM Parser, Prompt Crafter, and Generator Logic (Simplified for Mockup)
- * ==================================================================================
- */
-function parseAllElementData(elementType) {
-    // This is a placeholder for parsing data from the form fields.
-    console.log(`Parsing data for element type: ${elementType}`);
-    return { elementType, traits: {}, guidance: {}, assets: [] };
+        gemElement.appendChild(optionsContainer);
+        container.appendChild(gemElement);
+    });
 }
 
-function craftSuperPrompt(elementData) {
-    // This is a placeholder for crafting the AI prompt.
-    console.log('Crafting super prompt with data:', elementData);
-    return `This is a mocked prompt for a ${elementData.elementType}.`;
-}
+// --- Asset Import Logic (Mockup) ---
+function initializeAssetImporter() {
+    const importBtn = document.getElementById('import-asset-btn');
+    const fileInput = document.getElementById('asset-upload');
+    const assetList = document.getElementById('asset-list');
 
-async function handleGenerationRequest(elementType) {
-    console.log(`[Generator] Initiating request for ${elementType}`);
-    const generateButton = document.getElementById('generate-button');
-    const responseContainer = document.getElementById('response-container');
-
-    if (generateButton) generateButton.disabled = true;
-    if (responseContainer) {
-        responseContainer.innerHTML = '<em>Generating...</em>';
-        responseContainer.style.display = 'block';
-    }
-
-    // Mock API call
-    setTimeout(() => {
-        const elementData = parseAllElementData(elementType);
-        const prompt = craftSuperPrompt(elementData);
-        const mockResponse = `This is a mock AI response for a ${elementType} based on the prompt:\n"${prompt}"`;
-        
-        if (responseContainer) {
-            responseContainer.innerHTML = `<div class="response-content">${mockResponse}</div>`;
-        }
-        if (generateButton) generateButton.disabled = false;
-        console.log('[Generator] Mock response displayed.');
-    }, 1500);
-}
-
-
-/**
- * ==================================================================================
- * AIME Event Handlers & Persistence (Simplified)
- * ==================================================================================
- */
-document.addEventListener('DOMContentLoaded', () => {
-    // Generate button handler
-    const generateButton = document.getElementById('generate-button');
-    if (generateButton) {
-        generateButton.addEventListener('click', () => {
-            const elementType = generateButton.dataset.elementType;
-            if (elementType) {
-                handleGenerationRequest(elementType);
+    if (importBtn && fileInput && assetList) {
+        importBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (event) => {
+            for (const file of event.target.files) {
+                addAssetToList(file, assetList);
             }
         });
     }
+}
 
-    // Clear button handler
-    const clearButton = document.getElementById('clear-fields-button');
-    if (clearButton) {
-        clearButton.addEventListener('click', () => {
-            const form = document.getElementById('traits-form');
-            if (form) form.reset();
-            document.querySelectorAll('.gem-button.active').forEach(btn => btn.classList.remove('active'));
-            console.log('Fields cleared.');
+function addAssetToList(file, assetList) {
+    const assetItem = document.createElement('div');
+    assetItem.className = 'asset-item';
+    assetItem.innerHTML = `
+        <div class="asset-info">
+            <span class="asset-name">${file.name}</span>
+            <button class="remove-asset-btn">&times;</button>
+        </div>
+    `;
+    assetList.appendChild(assetItem);
+    assetItem.querySelector('.remove-asset-btn').addEventListener('click', () => {
+        assetItem.remove();
+    });
+}
+
+// --- DOMContentLoaded Initializer ---
+document.addEventListener('DOMContentLoaded', () => {
+    initializeResizableColumns();
+    initializeAccordions();
+    initializeGuidanceGems();
+    initializeAssetImporter();
+    
+    // Placeholder for future generation logic
+    const generateButton = document.getElementById('generate-button');
+    if (generateButton) {
+        generateButton.addEventListener('click', () => {
+            const responseContainer = document.getElementById('response-container');
+            responseContainer.innerHTML = '<p>Generation logic not yet implemented.</p>';
         });
     }
 });
