@@ -179,42 +179,53 @@ function craftSuperPrompt() {
     return prompt;
 }
 
-function runGenerator(prompt) {
-    console.log("--- Running Generator with Super-Prompt ---");
-    console.log(prompt);
-
-    // --- Mock AI Response ---
-    // This section simulates a call to an external AI service.
-    // To implement a real AI, replace this mock logic with an actual API call.
-    /*
-    try {
-        const response = await fetch('YOUR_AI_API_ENDPOINT', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt: prompt })
-        });
-        if (!response.ok) {
-            throw new Error(`API Error: ${response.statusText}`);
-        }
-        const data = await response.json();
-        return data.choices[0].text; // Adjust based on your API's response structure
-    } catch (error) {
-        console.error("AI Generation Failed:", error);
-        return `<p style="color:var(--error-text);">Error: AI generation failed.</p>`;
+async function runGenerator(prompt) {
+    const apiKey = localStorage.getItem('gemini_api_key');
+    if (!apiKey) {
+        return '<p style="padding: 1rem; color: var(--error-text);">Error: API Key not found. Please set your Google Gemini API key in the settings.</p>';
     }
-    */
 
-    const mockResponse = `
-        <p><strong>Analysis Complete.</strong> Based on the provided Persona Profile and contextual assets, here is a generated narrative scene:</p>
-        <p>Captain Eva Rostova stood on the bridge of the *Wanderer*, the star-dusted abyss reflected in her cybernetic eye. The ship groaned, a familiar complaint from a vessel that, like her, had seen too many battles. Her hand instinctively went to the worn photo she kept tucked in her jacket, a relic of a life before the K'tharr invasion—a life she had failed to protect. The incoming transmission from the Rebel outpost crackled, their plea echoing the same desperation she felt all those years ago. This time, however, would be different. This time, she wouldn't fail.</p>
-    `;
+    const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(mockResponse);
-        }, 1200); // Simulate network latency
-    });
+    const requestBody = {
+        contents: [{
+            parts: [{ "text": prompt }]
+        }]
+    };
+
+    try {
+        const response = await fetch(`${API_URL}?key=${apiKey}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("API Error:", errorData);
+            return `<p style="padding: 1rem; color: var(--error-text);">API Error: ${errorData.error.message}</p>`;
+        }
+
+        const data = await response.json();
+
+        if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0) {
+            // Using a simple regex to format the text for better readability
+            let formattedText = data.candidates[0].content.parts[0].text;
+            formattedText = formattedText.replace(/\n/g, '<br>');
+            return `<div style="padding: 1rem;">${formattedText}</div>`;
+        } else {
+            console.error("Invalid response structure:", data);
+            return '<p style="padding: 1rem; color: var(--error-text);">Error: Received an invalid response from the AI. Check the console for details.</p>';
+        }
+
+    } catch (error) {
+        console.error("Network or other error:", error);
+        return `<p style="padding: 1rem; color: var(--error-text);">Error: Could not connect to the AI service. Check your network connection and console for details.</p>`;
+    }
 }
+
 
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
