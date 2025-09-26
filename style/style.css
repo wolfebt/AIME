@@ -61,6 +61,11 @@ body {
     height: 69px; /* Fixed height */
     box-sizing: border-box;
 }
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
 .logo-title {
     font-size: 2rem;
     font-weight: 700;
