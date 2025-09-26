@@ -10,6 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIME - 3D Workshop</title>
     <link rel="stylesheet" href="../style/style.css">
+    <!-- Three.js library for 3D rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="../script/3d-bundle.js"></script>
 </head>
 <body>
@@ -32,67 +34,81 @@
                     <h2 class="element-title animated-gradient">3D Workshop</h2>
                     <p class="element-subtitle">Generate 3D models of characters, props, and environments.</p>
                 </div>
-                <div class="generation-column">
-                    <div id="image-container" class="image-container glass-panel">
-                        <span class="placeholder-text">Your generated 3D model viewport will appear here.</span>
+                <div id="model-viewer-container" class="image-container glass-panel">
+                    <!-- The 3D canvas will be inserted here by the script -->
+                    <div id="viewport-toolbar" class="image-toolbar">
+                        <button class="toolbar-btn" id="generate-new-btn" title="Generate New Model">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path><path d="M12 22v-6"></path></svg>
+                        </button>
+                         <div class="toolbar-divider"></div>
+                        <button class="toolbar-btn" id="view-top-btn" title="Top View">T</button>
+                        <button class="toolbar-btn" id="view-front-btn" title="Front View">F</button>
+                        <button class="toolbar-btn" id="view-side-btn" title="Side View">S</button>
+                         <div class="toolbar-divider"></div>
+                        <button class="toolbar-btn" id="render-solid-btn" title="Solid Render">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5-10-5-10 5z"></path></svg>
+                        </button>
+                        <button class="toolbar-btn" id="render-wireframe-btn" title="Wireframe Render">
+                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5-10-5-10 5zM2 7v10M22 7v10M12 12v10"></path></svg>
+                        </button>
+                         <div class="toolbar-divider"></div>
+                        <button class="toolbar-btn" id="export-btn" title="Export Model (not implemented)">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        </button>
                     </div>
                 </div>
             </div>
+
             <div class="resize-handle"></div>
+
             <div class="side-column">
-                <div class="accordion glass-panel">
-                    <button class="accordion-header">
+                 <div class="accordion glass-panel">
+                    <button class="accordion-header active">
                         <span>Generation Controls</span>
-                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="accordion-chevron" style="transform: rotate(180deg);" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div class="accordion-content">
-                        <textarea id="prompt-input" class="input-field" rows="5" placeholder="e.g., A low-poly model of a sci-fi shuttle..."></textarea>
-                        <button id="generate-button" style="margin-top: 1rem;">Generate 3D Model</button>
+                    <div class="accordion-content" style="max-height: 500px; padding: 1.5rem;">
+                        <textarea id="prompt-input" class="input-field" rows="5" placeholder="e.g., A detailed model of a futuristic starship..."></textarea>
+                        <button id="generate-button" class="generate-btn-large" style="margin-top: 1rem;">Generate Model</button>
                     </div>
                 </div>
+
                 <div class="accordion glass-panel" style="margin-top: 1.5rem;">
                     <button class="accordion-header">
-                        <span>3D Properties</span>
+                        <span>Model Properties</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <div class="form-section">
-                            <label>Modeling Style:</label>
-                            <select class="input-field">
-                                <option>Low-poly</option>
-                                <option>High-poly</option>
-                                <option>Voxel</option>
-                            </select>
-                        </div>
-                        <div class="form-section">
-                            <label>Texturing Style:</label>
-                            <select class="input-field">
-                                <option>Hand-painted</option>
-                                <option>Photorealistic PBR</option>
-                                <option>Cel-shaded</option>
-                            </select>
-                        </div>
-                         <div class="form-section">
-                            <label>Rendering Style:</label>
-                            <select class="input-field">
-                                <option>Clay Render</option>
-                                <option>Wireframe</option>
-                                <option>Realistic Path Tracing</option>
-                            </select>
+                       <div id="model-gems-container" style="padding: 1.5rem;">
+                           <!-- Guidance Gems will be inserted here by script -->
+                       </div>
+                    </div>
+                </div>
+
+                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
+                    <button class="accordion-header">
+                        <span>Environment Controls</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                       <div class="form-section" style="padding: 1.5rem;">
+                            <div class="control-row"><label for="grid-toggle">Show Grid</label><input type="checkbox" id="grid-toggle" checked></div>
+                            <label for="bg-color">Background Color:</label><input type="color" id="bg-color" value="#0d1117">
+                            <label for="light-color">Light Color:</label><input type="color" id="light-color" value="#ffffff">
+                            <label for="light-intensity">Light Intensity:</label><input type="range" id="light-intensity" min="0" max="2" step="0.1" value="0.8">
                         </div>
                     </div>
                 </div>
+                
                 <div class="accordion glass-panel" style="margin-top: 1.5rem;">
                     <button class="accordion-header">
                         <span>Asset Hub</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content asset-hub-container">
-                        <p class="asset-hub-subtitle">Import Element files to guide the 3D generation.</p>
-                        <div class="asset-import-area">
-                            <input type="file" id="asset-upload" multiple style="display: none;">
-                            <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
-                        </div>
+                        <p class="asset-hub-subtitle">Import images or Elements to guide the 3D generation.</p>
+                        <input type="file" id="asset-upload" multiple accept="image/*,.txt,.json" style="display: none;">
+                        <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
                         <div id="asset-list" class="asset-list"></div>
                     </div>
                 </div>

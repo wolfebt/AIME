@@ -31,36 +31,50 @@
                     <h2 class="element-title animated-gradient">Director's Suite</h2>
                     <p class="element-subtitle">Combine your characters, settings, and scenes into dynamic video sequences.</p>
                 </div>
-                <div class="generation-column">
-                    <div id="video-preview-container" class="image-container glass-panel">
-                        <span class="placeholder-text">Video Preview</span>
+                <div class="video-player-container glass-panel">
+                    <div id="video-placeholder" class="video-placeholder">
+                        <p>Video Preview</p>
                     </div>
                 </div>
-                 <div class="glass-panel" style="padding: 2rem; margin-top: 1.5rem;">
-                     <h3 class="section-title">Timeline</h3>
-                     <div class="timeline-container">
-                        <div class="timeline-track">
+                <div id="timeline-container" class="timeline-container glass-panel">
+                    <div id="timeline-ruler"></div>
+                    <div class="timeline-tracks-container">
+                        <div class="playhead"></div>
+                        <div class="timeline-track" data-track-type="video">
                             <span class="track-label">Video</span>
                         </div>
-                        <div class="timeline-track">
-                            <span class="track-label">Audio 1</span>
+                        <div class="timeline-track" data-track-type="audio">
+                             <span class="track-label">Audio 1</span>
                         </div>
-                        <div class="timeline-track">
+                         <div class="timeline-track" data-track-type="audio">
                              <span class="track-label">Audio 2</span>
                         </div>
-                     </div>
+                    </div>
                 </div>
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
                 <div class="accordion glass-panel">
                     <button class="accordion-header">
-                        <span>Clip Generation</span>
+                        <span>Generation Controls</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <textarea id="prompt-input" class="input-field" rows="4" placeholder="e.g., An epic cinematic drone shot of a medieval castle..."></textarea>
-                        <button id="generate-button" style="margin-top: 1rem;">Generate Clip</button>
+                        <div class="form-section">
+                            <label for="video-prompt">Prompt</label>
+                            <textarea id="video-prompt" class="input-field" rows="4" placeholder="e.g., A wide shot of the hero entering the tavern..."></textarea>
+                        </div>
+                        <button id="generate-shot-button" class="generate-btn-large">Generate Shot</button>
+                    </div>
+                </div>
+                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
+                    <button class="accordion-header">
+                        <span>Shot Properties</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <!-- Restored to the standard, working ID -->
+                        <div id="guidance-gems-container" class="gem-container"></div>
                     </div>
                 </div>
                 <div class="accordion glass-panel" style="margin-top: 1.5rem;">
@@ -69,32 +83,8 @@
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <div id="media-bin" class="media-bin">
-                            <p class="placeholder-text">Generated clips will appear here.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
-                    <button class="accordion-header">
-                        <span>Editing Tools</span>
-                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="accordion-content">
-                        <div class="form-section">
-                            <label>Transitions:</label>
-                            <select class="input-field">
-                                <option>None</option>
-                                <option>Cross Fade</option>
-                                <option>Wipe Left</option>
-                            </select>
-                        </div>
-                         <div class="form-section">
-                            <label>Effects:</label>
-                             <select class="input-field">
-                                <option>None</option>
-                                <option>Black & White</option>
-                                <option>Sepia</option>
-                            </select>
+                        <div id="media-bin-list" class="media-bin-list">
+                            <p class="placeholder-text">Generated video and audio clips will appear here.</p>
                         </div>
                     </div>
                 </div>

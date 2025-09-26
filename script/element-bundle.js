@@ -17,25 +17,26 @@ function initializeResizableColumns() {
 
     resizeHandle.addEventListener('mousedown', (e) => {
         isResizing = true;
+        document.body.style.userSelect = 'none';
+        document.body.style.cursor = 'col-resize';
         document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', () => {
-            isResizing = false;
-            document.removeEventListener('mousemove', handleMouseMove);
-            resizeHandle.classList.remove('resizing');
-        });
-        resizeHandle.classList.add('resizing');
+        document.addEventListener('mouseup', stopResizing);
     });
+    
+    function stopResizing() {
+        isResizing = false;
+        document.body.style.userSelect = '';
+        document.body.style.cursor = '';
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', stopResizing);
+    }
 
     function handleMouseMove(e) {
         if (!isResizing) return;
-
         const containerRect = workspace.getBoundingClientRect();
         const newLeftWidth = e.clientX - containerRect.left;
         let newLeftPercent = (newLeftWidth / containerRect.width) * 100;
-
-        // Enforce 20% to 80% constraints
         newLeftPercent = Math.max(20, Math.min(80, newLeftPercent));
-
         mainColumn.style.width = `calc(${newLeftPercent}% - 6px)`;
         sideColumn.style.width = `calc(${100 - newLeftPercent}% - 6px)`;
     }
@@ -43,17 +44,17 @@ function initializeResizableColumns() {
 
 // --- Accordion Logic ---
 function initializeAccordions() {
-    const accordions = document.querySelectorAll('.accordion');
-    accordions.forEach(accordion => {
-        const header = accordion.querySelector('.accordion-header');
-        const content = accordion.querySelector('.accordion-content');
-        const chevron = header.querySelector('.accordion-chevron');
-
+    document.querySelectorAll('.accordion .accordion-header').forEach(header => {
         header.addEventListener('click', () => {
+            const content = header.nextElementSibling;
+            const chevron = header.querySelector('.accordion-chevron');
             const isOpen = header.classList.toggle('active');
-            chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+
+            if (chevron) {
+                chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+            }
             if (isOpen) {
-                content.style.maxHeight = content.scrollHeight + "px";
+                content.style.maxHeight = content.scrollHeight + 48 + "px";
                 content.style.padding = '1.5rem';
             } else {
                 content.style.maxHeight = null;
@@ -63,91 +64,94 @@ function initializeAccordions() {
     });
 }
 
-// --- Guidance Gems Logic ---
-const guidanceData = {
-    Genre: ['Action', 'Adventure', 'Comedy', 'Drama', 'Fantasy', 'Sci-Fi', 'Horror', 'Mystery', 'Romance', 'Thriller'],
-    Tone: ['Serious', 'Humorous', 'Formal', 'Informal', 'Optimistic', 'Pessimistic', 'Joyful', 'Sad', 'Hopeful', 'Cynical'],
-    Pacing: ['Fast-paced', 'Slow-burn', 'Steady', 'Urgent', 'Relaxed', 'Meditative'],
-    'Point of View': ['First Person', 'Third Person Limited', 'Third Person Omniscient', 'Second Person'],
-    'Literary Devices': ['Metaphor', 'Simile', 'Personification', 'Alliteration', 'Symbolism', 'Irony', 'Foreshadowing'],
-    Structure: ['Linear', 'Non-linear', 'Episodic', 'In Medias Res', 'Frame Story']
-};
-
-function initializeGuidanceGems() {
-    const container = document.getElementById('guidance-gems-container');
-    if (!container) return;
-
-    Object.entries(guidanceData).forEach(([title, options]) => {
-        const gemElement = document.createElement('div');
-        gemElement.className = 'gem';
-        gemElement.innerHTML = `<h4 class="gem-title">${title}</h4>`;
-
-        const optionsContainer = document.createElement('div');
-        optionsContainer.className = 'gem-options';
-
-        options.forEach(option => {
-            const button = document.createElement('button');
-            button.className = 'gem-button';
-            button.textContent = option;
-            button.addEventListener('click', () => {
-                const siblings = optionsContainer.querySelectorAll('.gem-button');
-                siblings.forEach(sib => {
-                    if (sib !== button) sib.classList.remove('active');
-                });
-                button.classList.toggle('active');
-            });
-            optionsContainer.appendChild(button);
-        });
-
-        gemElement.appendChild(optionsContainer);
-        container.appendChild(gemElement);
-    });
-}
-
-// --- Asset Import Logic (Mockup) ---
+// --- Asset Hub (REWRITTEN & STABLE) ---
 function initializeAssetImporter() {
     const importBtn = document.getElementById('import-asset-btn');
     const fileInput = document.getElementById('asset-upload');
     const assetList = document.getElementById('asset-list');
 
-    if (importBtn && fileInput && assetList) {
-        importBtn.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', (event) => {
-            for (const file of event.target.files) {
-                addAssetToList(file, assetList);
-            }
-        });
-    }
+    if (!importBtn || !fileInput || !assetList) return;
+
+    importBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (event) => {
+        for (const file of event.target.files) {
+            addAssetToList(file, assetList);
+        }
+        fileInput.value = ''; // Reset input
+    });
 }
 
 function addAssetToList(file, assetList) {
     const assetItem = document.createElement('div');
     assetItem.className = 'asset-item';
-    assetItem.innerHTML = `
-        <div class="asset-info">
-            <span class="asset-name">${file.name}</span>
-            <button class="remove-asset-btn">&times;</button>
-        </div>
-    `;
+
+    const assetInfo = document.createElement('div');
+    assetInfo.className = 'asset-info';
+
+    if (file.type.startsWith('image/')) {
+        const thumbnail = document.createElement('img');
+        const imageURL = URL.createObjectURL(file); // Correct Method
+        thumbnail.src = imageURL;
+        thumbnail.className = 'asset-thumbnail';
+        thumbnail.onload = () => URL.revokeObjectURL(imageURL); // Clean up memory
+        assetInfo.prepend(thumbnail);
+    } else {
+        const textIcon = document.createElement('div');
+        textIcon.className = 'asset-icon-text';
+        textIcon.textContent = 'TXT';
+        assetInfo.prepend(textIcon);
+    }
+
+    const assetName = document.createElement('span');
+    assetName.className = 'asset-name';
+    assetName.textContent = file.name;
+    assetInfo.appendChild(assetName);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'remove-asset-btn';
+    removeBtn.innerHTML = '&times;';
+    removeBtn.onclick = () => assetItem.remove();
+
+    assetItem.appendChild(assetInfo);
+    assetItem.appendChild(removeBtn);
     assetList.appendChild(assetItem);
-    assetItem.querySelector('.remove-asset-btn').addEventListener('click', () => {
-        assetItem.remove();
-    });
+}
+
+
+// --- Guidance Gems (Placeholder for Element Pages) ---
+function initializeGuidanceGems() {
+    const container = document.getElementById('guidance-gems-container');
+    if (container) {
+        // In a real app, you'd fetch gems based on element type
+        container.innerHTML = '<p style="padding: 1.5rem; color: var(--medium-text);">Guidance Gem options will be available here.</p>';
+    }
 }
 
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     initializeResizableColumns();
     initializeAccordions();
-    initializeGuidanceGems();
     initializeAssetImporter();
-    
-    // Placeholder for future generation logic
+    initializeGuidanceGems();
+
     const generateButton = document.getElementById('generate-button');
     if (generateButton) {
         generateButton.addEventListener('click', () => {
             const responseContainer = document.getElementById('response-container');
-            responseContainer.innerHTML = '<p>Generation logic not yet implemented.</p>';
+            if(responseContainer) {
+                responseContainer.innerHTML = '<p style="padding: 1rem;">Generation logic for this element is not yet implemented.</p>';
+            }
+        });
+    }
+
+    const clearButton = document.getElementById('clear-fields-button');
+    if(clearButton) {
+        clearButton.addEventListener('click', () => {
+            document.querySelectorAll('.main-column .input-field').forEach(input => input.value = '');
+             const responseContainer = document.getElementById('response-container');
+            if(responseContainer) {
+                responseContainer.innerHTML = '';
+            }
         });
     }
 });
