@@ -1,0 +1,61 @@
+AIME Project Directory Map
+This document outlines the complete file structure for the AIME application, organized for development on GitHub. Each file is listed with its user-facing name and its corresponding file path.
+
+
+PROJECT FOLDER
+(/AIME/)
+This is the main directory of the project.
+Main Hub - index.html
+
+
+PAGES FOLDER
+(/AIME/pages/)
+This folder contains all the user-facing HTML pages of the application.
+Story Weaver - writer.html
+Element Forge - elements.html
+Persona Maker Page - persona.html
+Species Creator Page - species.html
+Scene Builder Page - scene.html
+World Anvil Page - world.html
+Setting Architect Page - setting.html
+Philosophy Scribe Page - philosophy.html
+Technology Forge Page - technology.html
+Imaging Studio - imaging.html
+3D Workshop - 3d.html
+Audio Lab - audio.html
+Director's Suite - video.html
+
+
+STYLEFOLDER
+(/AIME/style/)
+This folder contains all the CSS files used for styling the application.
+Main Stylesheet - style.css
+Accordion Styles - accordion.css
+Asset Hub Styles - asset_hub.css
+Guidance Gems Styles - guidance.css
+Refinement Tools Styles - refinement.css
+Writer Tab Styles - writer.css
+
+
+SCRIPT FOLDER
+(/AIME/script/)
+This folder contains all the JavaScript files that provide the application's functionality.
+Accordion Logic - accordion.js
+DOM Parser for Forms - dom_parser.js
+Asset Export Logic - export.js
+Generation Orchestrator - generator.js
+Event Handler for Generate Button - generation_handler.js
+Guidance Gems Logic - guidance.js
+Asset Import Logic - import.js
+Form Persistence Logic - persistence.js
+Super-Prompt Crafting Function - prompt_crafter.js
+Refinement Prompt Crafter - refinement_prompt_crafter.js
+Refinement Canvas Logic - refinement.js
+General Script - script.js
+Writer Tab Logic - writer.js
+
+
+PROJECT DOCUMENTS
+(Documentation)
+These are the Markdown files that serve as the project's official documentation. They do not reside within the application's directory structure but are part of the overall project assets.
+AIME Project Plan: The AI-Infused Meta-Creative Environment - AIME_Project_Plan.md
