@@ -22,7 +22,7 @@ function initializeResizableColumns() {
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', stopResizing);
     });
-    
+
     function stopResizing() {
         isResizing = false;
         document.body.style.userSelect = '';
@@ -84,22 +84,35 @@ function initializeAssetImporter() {
 function addAssetToList(file, assetList) {
     const assetItem = document.createElement('div');
     assetItem.className = 'asset-item';
+    assetItem.dataset.filename = file.name; // Store filename
 
     const assetInfo = document.createElement('div');
     assetInfo.className = 'asset-info';
 
     if (file.type.startsWith('image/')) {
         const thumbnail = document.createElement('img');
-        const imageURL = URL.createObjectURL(file); // Correct Method
+        const imageURL = URL.createObjectURL(file);
         thumbnail.src = imageURL;
         thumbnail.className = 'asset-thumbnail';
-        thumbnail.onload = () => URL.revokeObjectURL(imageURL); // Clean up memory
+        // Revoke the URL after the image is loaded to free up memory,
+        // but the browser will still display the cached image.
+        thumbnail.onload = () => URL.revokeObjectURL(imageURL);
         assetInfo.prepend(thumbnail);
     } else {
         const textIcon = document.createElement('div');
         textIcon.className = 'asset-icon-text';
         textIcon.textContent = 'TXT';
         assetInfo.prepend(textIcon);
+
+        if (file.type.startsWith('text/') || file.type === "application/json") {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                assetItem.dataset.content = e.target.result;
+                console.log(`Content of ${file.name} stored.`);
+            };
+            reader.onerror = () => console.error(`Error reading ${file.name}`);
+            reader.readAsText(file);
+        }
     }
 
     const assetName = document.createElement('span');
@@ -110,7 +123,14 @@ function addAssetToList(file, assetList) {
     const removeBtn = document.createElement('button');
     removeBtn.className = 'remove-asset-btn';
     removeBtn.innerHTML = '&times;';
-    removeBtn.onclick = () => assetItem.remove();
+    removeBtn.onclick = () => {
+        // Before removing, check for and revoke any object URLs to prevent memory leaks
+        const thumbnail = assetItem.querySelector('.asset-thumbnail');
+        if (thumbnail && thumbnail.src.startsWith('blob:')) {
+            URL.revokeObjectURL(thumbnail.src);
+        }
+        assetItem.remove();
+    };
 
     assetItem.appendChild(assetInfo);
     assetItem.appendChild(removeBtn);
@@ -122,9 +142,78 @@ function addAssetToList(file, assetList) {
 function initializeGuidanceGems() {
     const container = document.getElementById('guidance-gems-container');
     if (container) {
-        // In a real app, you'd fetch gems based on element type
         container.innerHTML = '<p style="padding: 1.5rem; color: var(--medium-text);">Guidance Gem options will be available here.</p>';
     }
+}
+
+// --- AI Pipeline ---
+
+function craftSuperPrompt() {
+    const form = document.getElementById('traits-form');
+    if (!form) {
+        console.error("Could not find the 'traits-form'.");
+        return null;
+    }
+
+    let prompt = "## Persona Profile\n\n";
+
+    const inputs = form.querySelectorAll('.input-field');
+    inputs.forEach(input => {
+        const label = document.querySelector(`label[for="${input.id}"]`);
+        if (input.value.trim() !== '') {
+            prompt += `**${label ? label.textContent : input.id}:** ${input.value}\n`;
+        }
+    });
+
+    const assetItems = document.querySelectorAll('#asset-list .asset-item');
+    if (assetItems.length > 0) {
+        prompt += "\n## Contextual Assets\n\n";
+        assetItems.forEach(item => {
+            if (item.dataset.content) {
+                prompt += `### Asset: ${item.dataset.filename}\n`;
+                prompt += `${item.dataset.content}\n\n`;
+            }
+        });
+    }
+
+    return prompt;
+}
+
+function runGenerator(prompt) {
+    console.log("--- Running Generator with Super-Prompt ---");
+    console.log(prompt);
+
+    // --- Mock AI Response ---
+    // This section simulates a call to an external AI service.
+    // To implement a real AI, replace this mock logic with an actual API call.
+    /*
+    try {
+        const response = await fetch('YOUR_AI_API_ENDPOINT', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt: prompt })
+        });
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.statusText}`);
+        }
+        const data = await response.json();
+        return data.choices[0].text; // Adjust based on your API's response structure
+    } catch (error) {
+        console.error("AI Generation Failed:", error);
+        return `<p style="color:var(--error-text);">Error: AI generation failed.</p>`;
+    }
+    */
+
+    const mockResponse = `
+        <p><strong>Analysis Complete.</strong> Based on the provided Persona Profile and contextual assets, here is a generated narrative scene:</p>
+        <p>Captain Eva Rostova stood on the bridge of the *Wanderer*, the star-dusted abyss reflected in her cybernetic eye. The ship groaned, a familiar complaint from a vessel that, like her, had seen too many battles. Her hand instinctively went to the worn photo she kept tucked in her jacket, a relic of a life before the K'tharr invasion—a life she had failed to protect. The incoming transmission from the Rebel outpost crackled, their plea echoing the same desperation she felt all those years ago. This time, however, would be different. This time, she wouldn't fail.</p>
+    `;
+
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(mockResponse);
+        }, 1200); // Simulate network latency
+    });
 }
 
 // --- DOMContentLoaded Initializer ---
@@ -135,11 +224,19 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeGuidanceGems();
 
     const generateButton = document.getElementById('generate-button');
-    if (generateButton) {
-        generateButton.addEventListener('click', () => {
-            const responseContainer = document.getElementById('response-container');
-            if(responseContainer) {
-                responseContainer.innerHTML = '<p style="padding: 1rem;">Generation logic for this element is not yet implemented.</p>';
+    const responseContainer = document.getElementById('response-container');
+    const assetList = document.getElementById('asset-list');
+
+    if (generateButton && responseContainer) {
+        generateButton.addEventListener('click', async () => {
+            responseContainer.innerHTML = '<p style="padding: 1rem;">Generating response...</p>';
+
+            const prompt = craftSuperPrompt();
+            if (prompt) {
+                const result = await runGenerator(prompt);
+                responseContainer.innerHTML = result;
+            } else {
+                responseContainer.innerHTML = '<p style="padding: 1rem; color: var(--error-text);">Could not generate prompt. Please fill out some fields.</p>';
             }
         });
     }
@@ -147,12 +244,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const clearButton = document.getElementById('clear-fields-button');
     if(clearButton) {
         clearButton.addEventListener('click', () => {
+            // Clear all form inputs
             document.querySelectorAll('.main-column .input-field').forEach(input => input.value = '');
-             const responseContainer = document.getElementById('response-container');
+
+            // Clear the response container
             if(responseContainer) {
                 responseContainer.innerHTML = '';
+            }
+
+            // Clear the asset hub and revoke any object URLs to prevent memory leaks
+            if (assetList) {
+                assetList.querySelectorAll('.asset-thumbnail').forEach(thumb => {
+                    if (thumb.src.startsWith('blob:')) {
+                        URL.revokeObjectURL(thumb.src);
+                    }
+                });
+                assetList.innerHTML = '';
             }
         });
     }
 });
-
