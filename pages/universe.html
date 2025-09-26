@@ -33,59 +33,34 @@
                 <button id="clear-fields-button" class="clear-btn">Clear All Fields</button>
             </div>
         </div>
-
         <div class="workspace-layout">
             <div class="main-column">
-                <div class="accordion glass-panel">
-                    <button class="accordion-header">
-                        <span>Traits</span>
-                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="accordion-content">
-                        <form id="traits-form" class="element-form">
-                            <div class="form-section">
-                                <h3 class="section-title">Core Identity</h3>
-                                <label for="universeName">Universe Name:</label>
-                                <input type="text" id="universeName" class="input-field" placeholder="e.g., 'The Ashen Stars,' 'Aethelgard'">
-                                <label for="primaryGenre">Primary Genre:</label>
-                                <input type="text" id="primaryGenre" class="input-field" placeholder="e.g., Fantasy, Science Fiction, Horror">
-                                <label for="subgenres">Subgenre(s):</label>
-                                <input type="text" id="subgenres" class="input-field" placeholder="e.g., High Fantasy, Cyberpunk, Cosmic Horror">
-                            </div>
-                            <div class="form-section">
-                                <h3 class="section-title">Narrative Foundation</h3>
-                                <label for="oneLinePitch">One-Line Pitch:</label>
-                                <textarea id="oneLinePitch" class="input-field" rows="2" placeholder="e.g., A universe where magic is a dwindling resource..."></textarea>
-                                <label for="coreThemes">Core Themes:</label>
-                                <textarea id="coreThemes" class="input-field" rows="3" placeholder="e.g., 'the struggle between faith and reason,' 'the price of progress'"></textarea>
-                            </div>
-                            <div class="form-section">
-                                <h3 class="section-title">Governing Principles</h3>
-                                <label for="lawsOfPhysics">Laws of Physics:</label>
-                                <textarea id="lawsOfPhysics" class="input-field" rows="3" placeholder="Do they mirror our own, or are there key differences?"></textarea>
-                                <label for="lawsOfMagic">Laws of Magic/Supernatural:</label>
-                                <textarea id="lawsOfMagic" class="input-field" rows="3" placeholder="What are the rules, limitations, and costs?"></textarea>
-                            </div>
-                            <div class="form-section">
-                                <h3 class="section-title">Atmosphere & Influence</h3>
-                                <label for="generalTone">General Tone & Mood:</label>
-                                <input type="text" id="generalTone" class="input-field" placeholder="e.g., optimistic, pessimistic, satirical, serious, wondrous, or terrifying">
-                                <label for="keyInspirations">Key Inspirations:</label>
-                                <textarea id="keyInspirations" class="input-field" rows="3" placeholder="Real-world cultures, historical eras, mythologies, or other fictional works..."></textarea>
-                            </div>
-                        </form>
-                    </div>
+                <div class="form-section glass-panel" style="padding: 1.5rem;">
+                    <h4>Core Concept</h4>
+                    <div class="form-group"><label for="universe-name">Universe Name</label><input type="text" id="universe-name" class="input-field"></div>
+                    <div class="form-group"><label for="primary-genre">Primary Genre</label><input type="text" id="primary-genre" class="input-field"></div>
+                    <div class="form-group"><label for="one-line-pitch">One-Line Pitch</label><input type="text" id="one-line-pitch" class="input-field"></div>
                 </div>
+                <div id="response-container" class="response-container glass-panel"></div>
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
-                 <div class="accordion glass-panel">
-                    <button class="accordion-header">
-                        <span>Guidance</span>
+                <div class="accordion glass-panel active">
+                    <button class="accordion-header active">
+                        <span>Generation Controls</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                         <div id="guidance-gems-container"></div>
+                         <button id="generate-button" data-element-type="UNIVERSE" class="generate-btn-large">Generate</button>
+                    </div>
+                </div>
+                <div class="accordion glass-panel active" style="margin-top: 1.5rem;">
+                    <button class="accordion-header active">
+                        <span>Guidance Gems</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div id="guidance-gems-container"></div>
                     </div>
                 </div>
                  <div class="accordion glass-panel" style="margin-top: 1.5rem;">
@@ -101,10 +76,6 @@
                         </div>
                         <div id="asset-list" class="asset-list"></div>
                     </div>
-                </div>
-                <div class="generation-column" style="margin-top: 1.5rem;">
-                    <button id="generate-button" data-element-type="UNIVERSE">Generate</button>
-                    <div id="response-container" class="response-container glass-panel"></div>
                 </div>
             </div>
         </div>

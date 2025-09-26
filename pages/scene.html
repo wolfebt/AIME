@@ -10,9 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIME - Scene Builder</title>
     <link rel="stylesheet" href="../style/style.css">
-    <link rel="stylesheet" href="../style/settings.css">
-    <script src="../script/element-bundle.js" defer></script>
-    <script src="../script/settings.js" defer></script>
+    <script src="../script/element-bundle.js"></script>
 </head>
 <body>
     <header class="main-header">
@@ -33,57 +31,36 @@
             <div class="header-actions">
                 <p class="element-subtitle">Construct the narrative beats of a single scene.</p>
                 <button id="clear-fields-button" class="clear-btn">Clear All Fields</button>
-                <button id="settings-btn" class="settings-btn" title="API Settings">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                </button>
             </div>
         </div>
-
         <div class="workspace-layout">
             <div class="main-column">
-                <div class="accordion glass-panel">
-                    <button class="accordion-header">
-                        <span>Traits</span>
-                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <div class="accordion-content">
-                        <form id="traits-form" class="element-form">
-                            <div class="form-section">
-                                <h3 class="section-title">Core Details</h3>
-                                <label for="sceneName">Scene Name / Slugline:</label>
-                                <input type="text" id="sceneName" class="input-field" placeholder="e.g., INT. COFFEE SHOP - DAY">
-                                <label for="overview">Overview:</label>
-                                <textarea id="overview" class="input-field" rows="3" placeholder="A high-level summary of the scene..."></textarea>
-                            </div>
-                            <div class="form-section">
-                                 <h3 class="section-title">Atmosphere & Setting</h3>
-                                <label for="atmosphere">Atmosphere / Mood:</label>
-                                <textarea id="atmosphere" class="input-field" rows="3" placeholder="e.g., Oppressive and tense..."></textarea>
-                                <label for="timeOfDay">Time of Day:</label>
-                                <input type="text" id="timeOfDay" class="input-field" placeholder="e.g., Sunrise, Night">
-                                <label for="weather">Weather:</label>
-                                <input type="text" id="weather" class="input-field" placeholder="e.g., Sunny, Raining">
-                            </div>
-                             <div class="form-section">
-                                <h3 class="section-title">Description</h3>
-                                <label for="interior">Interior Description:</label>
-                                <textarea id="interior" class="input-field" rows="4" placeholder="Describe the scene from the inside..."></textarea>
-                                <label for="exterior">Exterior Description:</label>
-                                <textarea id="exterior" class="input-field" rows="4" placeholder="Describe the scene from the outside..."></textarea>
-                            </div>
-                        </form>
-                    </div>
+                <div class="form-section glass-panel" style="padding: 1.5rem;">
+                     <h4>Core Details</h4>
+                     <div class="form-group"><label for="scene-name">Scene Name / Slugline</label><input type="text" id="scene-name" class="input-field"></div>
+                     <div class="form-group"><label for="scene-location">Location (Setting)</label><input type="text" id="scene-location" class="input-field"></div>
+                     <div class="form-group"><label for="scene-overview">Overview of Action</label><textarea id="scene-overview" class="input-field"></textarea></div>
                 </div>
+                <div id="response-container" class="response-container glass-panel"></div>
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
-                <div class="accordion glass-panel">
-                    <button class="accordion-header">
-                        <span>Guidance</span>
+                 <div class="accordion glass-panel active">
+                    <button class="accordion-header active">
+                        <span>Generation Controls</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                         <div id="guidance-gems-container"></div>
+                        <button id="generate-button" data-element-type="SCENE" class="generate-btn-large">Generate</button>
+                    </div>
+                </div>
+                <div class="accordion glass-panel active" style="margin-top: 1.5rem;">
+                    <button class="accordion-header active">
+                        <span>Guidance Gems</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div id="guidance-gems-container"></div>
                     </div>
                 </div>
                  <div class="accordion glass-panel" style="margin-top: 1.5rem;">
@@ -100,27 +77,9 @@
                         <div id="asset-list" class="asset-list"></div>
                     </div>
                 </div>
-                <div class="generation-column" style="margin-top: 1.5rem;">
-                    <button id="generate-button" data-element-type="SCENE">Generate</button>
-                    <div id="response-container" class="response-container glass-panel"></div>
-                </div>
             </div>
         </div>
     </main>
-
-    <!-- Settings Modal -->
-    <div id="settings-modal-overlay" class="settings-modal-overlay">
-        <div class="settings-modal">
-            <div class="settings-modal-header">
-                <h3 class="settings-modal-title">AI Settings</h3>
-                <button id="close-modal-btn" class="close-modal-btn">&times;</button>
-            </div>
-            <div class="settings-modal-content">
-                <label for="api-key-input">Google Gemini API Key:</label>
-                <input type="password" id="api-key-input" class="input-field" placeholder="Enter your API key">
-                <button id="save-settings-btn" class="save-settings-btn">Save Key</button>
-            </div>
-        </div>
-    </div>
 </body>
 </html>
+

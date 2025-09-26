@@ -2,7 +2,13 @@
     File: 3d-bundle.js
     Reference: 3D Workshop Logic
     Creator: Wolfe.BT, TangentLLC
+*//*
+    File: 3d-bundle.js
+    Reference: 3D Workshop Logic
+    Creator: Wolfe.BT, TangentLLC
 */
+
+// Using three.js library which is assumed to be imported in the HTML file
 
 // --- Resizable Columns ---
 function initializeResizableColumns() {
@@ -15,85 +21,78 @@ function initializeResizableColumns() {
 
     let isResizing = false;
 
-    if (!resizeHandle) return;
-
     resizeHandle.addEventListener('mousedown', (e) => {
         isResizing = true;
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', () => {
             isResizing = false;
             document.removeEventListener('mousemove', handleMouseMove);
-            if(resizeHandle) {
-                resizeHandle.classList.remove('resizing');
-            }
+            resizeHandle.classList.remove('resizing');
         });
         resizeHandle.classList.add('resizing');
     });
 
     function handleMouseMove(e) {
-        if (!isResizing || !workspace || !mainColumn || !sideColumn) return;
-
+        if (!isResizing) return;
         const containerRect = workspace.getBoundingClientRect();
         const newLeftWidth = e.clientX - containerRect.left;
         let newLeftPercent = (newLeftWidth / containerRect.width) * 100;
-
         newLeftPercent = Math.max(20, Math.min(80, newLeftPercent));
-
         mainColumn.style.width = `calc(${newLeftPercent}% - 6px)`;
         sideColumn.style.width = `calc(${100 - newLeftPercent}% - 6px)`;
     }
 }
 
-
 // --- Accordion Logic ---
 function initializeAccordions() {
-    document.querySelectorAll('.accordion .accordion-header').forEach(header => {
+    const accordions = document.querySelectorAll('.accordion');
+    accordions.forEach(accordion => {
+        const header = accordion.querySelector('.accordion-header');
+        const content = accordion.querySelector('.accordion-content');
+        const chevron = header.querySelector('.accordion-chevron');
+        if (!header || !content || !chevron) return;
+
         header.addEventListener('click', () => {
-            const accordion = header.parentElement;
-            const content = accordion.querySelector('.accordion-content');
-            const chevron = header.querySelector('.accordion-chevron');
             const isOpen = header.classList.toggle('active');
-
-            if (chevron) {
-                chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-            }
-
+            chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
             if (isOpen) {
-                content.style.maxHeight = content.scrollHeight + 48 + "px";
                 content.style.padding = '1.5rem';
+                content.style.maxHeight = content.scrollHeight + "px";
             } else {
                 content.style.maxHeight = null;
                 content.style.padding = '0 1.5rem';
             }
         });
+        if (header.classList.contains('active')) {
+            content.style.padding = '1.5rem';
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
     });
 }
 
 // --- Guidance Gems ---
 function initializeGuidanceGems() {
-    const container = document.getElementById('model-gems-container');
+    const container = document.getElementById('guidance-gems-container');
     if (!container) return;
-
     const gemsData = {
         "Polygon Count": ["Low-Poly", "Mid-Poly", "High-Poly"],
-        "Texture Style": ["Stylized", "Hand-Painted", "PBR Realistic", "Cartoon"],
-        "Render Style": ["Clay", "Toon-Shaded", "Photorealistic"]
+        "Texture Style": ["Stylized", "Realistic", "PBR", "Hand-painted"],
+        "Render Style": ["Solid", "Wireframe", "Solid + Wireframe"]
     };
 
-    let gemsHTML = '';
-    for (const category in gemsData) {
-        gemsHTML += `<div class="gem-category"><h4 class="gem-title">${category}</h4><div class="gem-options">`;
-        gemsData[category].forEach(option => {
-            gemsHTML += `<button class="gem-option" data-category="${category}">${option}</button>`;
+    let html = '';
+    for (const [title, options] of Object.entries(gemsData)) {
+        html += `<div class="gem-category"><h4 class="gem-title">${title}</h4><div class="gem-options">`;
+        options.forEach(option => {
+            html += `<button class="gem-option">${option}</button>`;
         });
-        gemsHTML += `</div></div>`;
+        html += `</div></div>`;
     }
-    container.innerHTML = gemsHTML;
-
-    container.querySelectorAll('.gem-option').forEach(button => {
-        button.addEventListener('click', () => {
-            button.classList.toggle('active');
-        });
+    container.innerHTML = html;
+    container.addEventListener('click', (e) => {
+        if (e.target.classList.contains('gem-option')) {
+            e.target.classList.toggle('active');
+        }
     });
 }
 
@@ -102,7 +101,6 @@ function initializeAssetImporter() {
     const importBtn = document.getElementById('import-asset-btn');
     const fileInput = document.getElementById('asset-upload');
     const assetList = document.getElementById('asset-list');
-
     if (!importBtn || !fileInput || !assetList) return;
 
     importBtn.addEventListener('click', () => fileInput.click());
@@ -110,146 +108,142 @@ function initializeAssetImporter() {
         for (const file of event.target.files) {
             addAssetToList(file, assetList);
         }
-        fileInput.value = '';
     });
 }
 
 function addAssetToList(file, assetList) {
     const assetItem = document.createElement('div');
     assetItem.className = 'asset-item';
+    const fileURL = URL.createObjectURL(file);
 
-    const assetInfo = document.createElement('div');
-    assetInfo.className = 'asset-info';
-
+    let assetInfoHtml = '';
     if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const thumbnail = document.createElement('img');
-            thumbnail.src = e.target.result;
-            thumbnail.alt = file.name;
-            thumbnail.className = 'asset-thumbnail';
-            assetInfo.prepend(thumbnail);
-        };
-        reader.readAsDataURL(file);
+        assetInfoHtml = `
+            <div class="asset-info">
+                <img src="${fileURL}" alt="${file.name}" class="asset-thumbnail">
+                <span class="asset-name">${file.name}</span>
+            </div>`;
     } else {
-        const textIcon = document.createElement('div');
-        textIcon.className = 'asset-icon-text';
-        textIcon.textContent = 'TXT';
-        assetInfo.prepend(textIcon);
+        assetInfoHtml = `
+             <div class="asset-info">
+                <span class="asset-icon-text">TXT</span>
+                <span class="asset-name">${file.name}</span>
+            </div>`;
     }
 
-    const assetName = document.createElement('span');
-    assetName.className = 'asset-name';
-    assetName.textContent = file.name;
-    assetInfo.appendChild(assetName);
-
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'remove-asset-btn';
-    removeBtn.innerHTML = '&times;';
-    removeBtn.onclick = () => assetItem.remove();
-
-    assetItem.appendChild(assetInfo);
-    assetItem.appendChild(removeBtn);
+    assetItem.innerHTML = `${assetInfoHtml}<button class="remove-asset-btn">&times;</button>`;
     assetList.appendChild(assetItem);
+    assetItem.querySelector('.remove-asset-btn').addEventListener('click', () => {
+        URL.revokeObjectURL(fileURL);
+        assetItem.remove();
+    });
 }
 
 
-// --- 3D Viewer Logic ---
-let scene, camera, renderer, model;
-function initialize3DViewer() {
-    const container = document.getElementById('model-viewer-container');
-    if (!container || typeof THREE === 'undefined') {
-        if(container) container.innerHTML = '<p class="placeholder-text">Error: three.js library not found.</p>';
+// --- 3D Viewer Logic (Three.js) ---
+let scene, camera, renderer, controls, modelGroup;
+
+function init3DViewer() {
+    const container = document.getElementById('viewer-3d');
+    if (!container || !window.THREE) {
+        console.error("3D viewer container or Three.js not found.");
         return;
     }
-    container.innerHTML = ''; // Clear placeholder
 
-    // Scene setup
+    // Scene
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0x0d1117);
 
-    // Camera setup
+    // Camera
     camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
     camera.position.z = 5;
 
-    // Renderer setup
+    // Renderer
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
+    container.innerHTML = ''; // Clear placeholder
     container.appendChild(renderer.domElement);
-
+    
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    const ambientLight = new THREE.AmbientLight(0x404040, 2);
     scene.add(ambientLight);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(5, 10, 7.5);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+    directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
 
-    // Initial model
-    generateNewModel();
-
-    // Mouse Controls
-    let isDragging = false;
-    let previousMousePosition = { x: 0, y: 0 };
-    container.addEventListener('mousedown', e => { isDragging = true; });
-    container.addEventListener('mouseup', e => { isDragging = false; });
-    container.addEventListener('mousemove', e => {
-        if (isDragging && model) {
-            const deltaMove = {
-                x: e.offsetX - previousMousePosition.x,
-                y: e.offsetY - previousMousePosition.y
-            };
-            model.rotation.y += deltaMove.x * 0.01;
-            model.rotation.x += deltaMove.y * 0.01;
-        }
-        previousMousePosition = { x: e.offsetX, y: e.offsetY };
-    });
-    container.addEventListener('wheel', e => {
-        camera.position.z += e.deltaY * 0.01;
-    });
-
-
-    // Animation loop
-    function animate() {
-        requestAnimationFrame(animate);
-        renderer.render(scene, camera);
+    // Controls
+    if (window.OrbitControls) {
+         controls = new THREE.OrbitControls(camera, renderer.domElement);
+    } else {
+        console.warn("OrbitControls not found. Make sure it's included in the HTML.");
     }
-    animate();
 
-    // Handle resize
-    window.addEventListener('resize', () => {
-        camera.aspect = container.clientWidth / container.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, container.clientHeight);
-    });
+    // Model Group
+    modelGroup = new THREE.Group();
+    scene.add(modelGroup);
+    
+    // Handle Resize
+    window.addEventListener('resize', onWindowResize, false);
+    
+    animate();
 }
 
-function generateNewModel() {
-    if (model) {
-        scene.remove(model);
+function onWindowResize() {
+    const container = document.getElementById('viewer-3d');
+    if (!container) return;
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
+}
+
+function animate() {
+    requestAnimationFrame(animate);
+    if (controls) controls.update();
+    renderer.render(scene, camera);
+}
+
+function generateRandomModel() {
+    // Clear previous model
+    while (modelGroup.children.length > 0) {
+        modelGroup.remove(modelGroup.children[0]);
     }
+
     const geometries = [
         new THREE.BoxGeometry(2, 2, 2),
         new THREE.SphereGeometry(1.5, 32, 16),
         new THREE.TorusKnotGeometry(1, 0.4, 100, 16),
+        new THREE.ConeGeometry(1.5, 3, 32),
         new THREE.IcosahedronGeometry(1.5),
     ];
     const geometry = geometries[Math.floor(Math.random() * geometries.length)];
-    const material = new THREE.MeshStandardMaterial({ color: 0x5b21b6, metalness: 0.3, roughness: 0.5 });
-    model = new THREE.Mesh(geometry, material);
-    scene.add(model);
+    const material = new THREE.MeshStandardMaterial({ 
+        color: Math.random() * 0xffffff,
+        roughness: 0.5,
+        metalness: 0.5
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    modelGroup.add(mesh);
 }
+
+function initializeGeneration() {
+    const generateBtn = document.getElementById('generate-button');
+    if(generateBtn) {
+        generateBtn.addEventListener('click', () => {
+            console.log("Generating new 3D model...");
+            generateRandomModel();
+        });
+    }
+}
+
 
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
-    initializeResizableColumns();
+    // initializeResizableColumns(); // Disabled for now
     initializeAccordions();
     initializeGuidanceGems();
     initializeAssetImporter();
-    initialize3DViewer();
-    // Add listener for our new generate button
-    const genBtn = document.getElementById('generate-button');
-    if (genBtn) {
-        genBtn.addEventListener('click', generateNewModel);
-    }
+    init3DViewer();
+    initializeGeneration();
+    generateRandomModel(); // Start with a default model
 });
 

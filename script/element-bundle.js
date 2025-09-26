@@ -17,19 +17,14 @@ function initializeResizableColumns() {
 
     resizeHandle.addEventListener('mousedown', (e) => {
         isResizing = true;
-        document.body.style.userSelect = 'none';
-        document.body.style.cursor = 'col-resize';
         document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', stopResizing);
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.removeEventListener('mousemove', handleMouseMove);
+            resizeHandle.classList.remove('resizing');
+        });
+        resizeHandle.classList.add('resizing');
     });
-
-    function stopResizing() {
-        isResizing = false;
-        document.body.style.userSelect = '';
-        document.body.style.cursor = '';
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', stopResizing);
-    }
 
     function handleMouseMove(e) {
         if (!isResizing) return;
@@ -44,32 +39,66 @@ function initializeResizableColumns() {
 
 // --- Accordion Logic ---
 function initializeAccordions() {
-    document.querySelectorAll('.accordion .accordion-header').forEach(header => {
-        header.addEventListener('click', () => {
-            const content = header.nextElementSibling;
-            const chevron = header.querySelector('.accordion-chevron');
-            const isOpen = header.classList.toggle('active');
+    const accordions = document.querySelectorAll('.accordion');
+    accordions.forEach(accordion => {
+        const header = accordion.querySelector('.accordion-header');
+        const content = accordion.querySelector('.accordion-content');
+        const chevron = header.querySelector('.accordion-chevron');
+        if (!header || !content || !chevron) return;
 
-            if (chevron) {
-                chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-            }
+        header.addEventListener('click', () => {
+            const isOpen = header.classList.toggle('active');
+            chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
             if (isOpen) {
-                content.style.maxHeight = content.scrollHeight + 48 + "px";
                 content.style.padding = '1.5rem';
+                content.style.maxHeight = content.scrollHeight + "px";
             } else {
                 content.style.maxHeight = null;
                 content.style.padding = '0 1.5rem';
             }
         });
+         // Set initial state for active accordions
+        if (header.classList.contains('active')) {
+            content.style.padding = '1.5rem';
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
     });
 }
 
-// --- Asset Hub (REWRITTEN & STABLE) ---
+// --- Guidance Gems ---
+function initializeGuidanceGems() {
+    const container = document.getElementById('guidance-gems-container');
+    if (!container) return;
+
+    const gemsData = {
+        "Tone": ["Serious", "Humorous", "Dark", "Optimistic", "Gritty"],
+        "Pacing": ["Fast-paced", "Slow-burn", "Methodical"],
+        "Complexity": ["Simple & Direct", "Nuanced & Layered", "Intricate & Detailed"],
+        "Style": ["Cinematic", "Literary", "Scientific", "Mythological"]
+    };
+
+    let html = '';
+    for (const [title, options] of Object.entries(gemsData)) {
+        html += `<div class="gem-category"><h4 class="gem-title">${title}</h4><div class="gem-options">`;
+        options.forEach(option => {
+            html += `<button class="gem-option">${option}</button>`;
+        });
+        html += `</div></div>`;
+    }
+    container.innerHTML = html;
+
+    container.addEventListener('click', (e) => {
+        if (e.target.classList.contains('gem-option')) {
+            e.target.classList.toggle('active');
+        }
+    });
+}
+
+// --- Asset Hub Importer ---
 function initializeAssetImporter() {
     const importBtn = document.getElementById('import-asset-btn');
     const fileInput = document.getElementById('asset-upload');
     const assetList = document.getElementById('asset-list');
-
     if (!importBtn || !fileInput || !assetList) return;
 
     importBtn.addEventListener('click', () => fileInput.click());
@@ -77,201 +106,181 @@ function initializeAssetImporter() {
         for (const file of event.target.files) {
             addAssetToList(file, assetList);
         }
-        fileInput.value = ''; // Reset input
     });
 }
 
 function addAssetToList(file, assetList) {
     const assetItem = document.createElement('div');
     assetItem.className = 'asset-item';
-    assetItem.dataset.filename = file.name; // Store filename
+    const fileURL = URL.createObjectURL(file);
 
-    const assetInfo = document.createElement('div');
-    assetInfo.className = 'asset-info';
-
+    let assetInfoHtml = '';
     if (file.type.startsWith('image/')) {
-        const thumbnail = document.createElement('img');
-        const imageURL = URL.createObjectURL(file);
-        thumbnail.src = imageURL;
-        thumbnail.className = 'asset-thumbnail';
-        // Revoke the URL after the image is loaded to free up memory,
-        // but the browser will still display the cached image.
-        thumbnail.onload = () => URL.revokeObjectURL(imageURL);
-        assetInfo.prepend(thumbnail);
+        assetInfoHtml = `
+            <div class="asset-info">
+                <img src="${fileURL}" alt="${file.name}" class="asset-thumbnail">
+                <span class="asset-name">${file.name}</span>
+            </div>`;
     } else {
-        const textIcon = document.createElement('div');
-        textIcon.className = 'asset-icon-text';
-        textIcon.textContent = 'TXT';
-        assetInfo.prepend(textIcon);
-
-        if (file.type.startsWith('text/') || file.type === "application/json") {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                assetItem.dataset.content = e.target.result;
-                console.log(`Content of ${file.name} stored.`);
-            };
-            reader.onerror = () => console.error(`Error reading ${file.name}`);
-            reader.readAsText(file);
-        }
+        assetInfoHtml = `
+             <div class="asset-info">
+                <span class="asset-icon-text">TXT</span>
+                <span class="asset-name">${file.name}</span>
+            </div>`;
     }
 
-    const assetName = document.createElement('span');
-    assetName.className = 'asset-name';
-    assetName.textContent = file.name;
-    assetInfo.appendChild(assetName);
-
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'remove-asset-btn';
-    removeBtn.innerHTML = '&times;';
-    removeBtn.onclick = () => {
-        // Before removing, check for and revoke any object URLs to prevent memory leaks
-        const thumbnail = assetItem.querySelector('.asset-thumbnail');
-        if (thumbnail && thumbnail.src.startsWith('blob:')) {
-            URL.revokeObjectURL(thumbnail.src);
-        }
+    assetItem.innerHTML = `${assetInfoHtml}<button class="remove-asset-btn">&times;</button>`;
+    assetList.appendChild(assetItem);
+    assetItem.querySelector('.remove-asset-btn').addEventListener('click', () => {
+        URL.revokeObjectURL(fileURL);
         assetItem.remove();
+    });
+}
+
+
+// --- AI Generation Logic ---
+
+function craftSuperPrompt(elementType) {
+    let promptData = {
+        elementType: elementType,
+        fields: {},
+        gems: [],
+        assets: []
     };
 
-    assetItem.appendChild(assetInfo);
-    assetItem.appendChild(removeBtn);
-    assetList.appendChild(assetItem);
-}
-
-
-// --- Guidance Gems (Placeholder for Element Pages) ---
-function initializeGuidanceGems() {
-    const container = document.getElementById('guidance-gems-container');
-    if (container) {
-        container.innerHTML = '<p style="padding: 1.5rem; color: var(--medium-text);">Guidance Gem options will be available here.</p>';
-    }
-}
-
-// --- AI Pipeline ---
-
-function craftSuperPrompt() {
-    const form = document.getElementById('traits-form');
-    if (!form) {
-        console.error("Could not find the 'traits-form'.");
-        return null;
-    }
-
-    let prompt = "## Persona Profile\n\n";
-
-    const inputs = form.querySelectorAll('.input-field');
+    const inputs = document.querySelectorAll('.main-column .input-field');
     inputs.forEach(input => {
-        const label = document.querySelector(`label[for="${input.id}"]`);
-        if (input.value.trim() !== '') {
-            prompt += `**${label ? label.textContent : input.id}:** ${input.value}\n`;
+        if (input.id && input.value) {
+            const label = document.querySelector(`label[for="${input.id}"]`);
+            promptData.fields[label ? label.textContent : input.id] = input.value;
         }
     });
 
-    const assetItems = document.querySelectorAll('#asset-list .asset-item');
-    if (assetItems.length > 0) {
-        prompt += "\n## Contextual Assets\n\n";
-        assetItems.forEach(item => {
-            if (item.dataset.content) {
-                prompt += `### Asset: ${item.dataset.filename}\n`;
-                prompt += `${item.dataset.content}\n\n`;
-            }
-        });
+    const activeGems = document.querySelectorAll('#guidance-gems-container .gem-option.active');
+    activeGems.forEach(gem => promptData.gems.push(gem.textContent));
+
+    const assetItems = document.querySelectorAll('#asset-list .asset-name');
+    assetItems.forEach(item => promptData.assets.push(item.textContent));
+
+    let formattedPrompt = `You are AIME, an AI creative partner. Your task is to generate a detailed and creative description for a world-building element based on user-provided details.\n\n`;
+    formattedPrompt += `--- GENERATION REQUEST ---\n`;
+    formattedPrompt += `ELEMENT TYPE: ${promptData.elementType}\n\n`;
+    
+    formattedPrompt += `--- CORE DETAILS ---\n`;
+    for (const [key, value] of Object.entries(promptData.fields)) {
+        formattedPrompt += `${key}: ${value}\n`;
+    }
+    
+    if (promptData.gems.length > 0) {
+        formattedPrompt += `\n--- GUIDANCE GEMS (TONE & STYLE) ---\n`;
+        formattedPrompt += `Adhere to these styles: ${promptData.gems.join(', ')}\n`;
     }
 
-    return prompt;
+    if (promptData.assets.length > 0) {
+        formattedPrompt += `\n--- CONTEXTUAL ASSETS (REFERENCE THESE) ---\n`;
+        formattedPrompt += `Use the following as context: ${promptData.assets.join(', ')}\n`;
+    }
+    
+    formattedPrompt += `\n--- TASK ---\nBased on all the information above, write a comprehensive, well-structured, and imaginative description for this element. Use paragraphs, and be descriptive.`;
+
+    return formattedPrompt;
 }
 
-async function runGenerator(prompt) {
-    const apiKey = localStorage.getItem('gemini_api_key');
-    if (!apiKey) {
-        return '<p style="padding: 1rem; color: var(--error-text);">Error: API Key not found. Please set your Google Gemini API key in the settings.</p>';
-    }
+async function generateContent(prompt) {
+    const apiKey = ""; // This will be handled by the environment.
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
-    const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
-
-    const requestBody = {
+    const payload = {
         contents: [{
-            parts: [{ "text": prompt }]
-        }]
+            parts: [{
+                text: prompt
+            }]
+        }],
     };
 
     try {
-        const response = await fetch(`${API_URL}?key=${apiKey}`, {
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify(requestBody)
+            body: JSON.stringify(payload)
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            console.error("API Error:", errorData);
-            return `<p style="padding: 1rem; color: var(--error-text);">API Error: ${errorData.error.message}</p>`;
+            throw new Error(`API request failed with status ${response.status}`);
         }
 
-        const data = await response.json();
-
-        if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0) {
-            // Using a simple regex to format the text for better readability
-            let formattedText = data.candidates[0].content.parts[0].text;
-            formattedText = formattedText.replace(/\n/g, '<br>');
-            return `<div style="padding: 1rem;">${formattedText}</div>`;
+        const result = await response.json();
+        const candidate = result.candidates?.[0];
+        if (candidate && candidate.content?.parts?.[0]?.text) {
+            return candidate.content.parts[0].text;
         } else {
-            console.error("Invalid response structure:", data);
-            return '<p style="padding: 1rem; color: var(--error-text);">Error: Received an invalid response from the AI. Check the console for details.</p>';
+            throw new Error("Invalid response format from API.");
         }
-
     } catch (error) {
-        console.error("Network or other error:", error);
-        return `<p style="padding: 1rem; color: var(--error-text);">Error: Could not connect to the AI service. Check your network connection and console for details.</p>`;
+        console.error("Error generating content:", error);
+        return "An error occurred while generating content. Please check the console for details.";
+    }
+}
+
+
+function initializeGeneration() {
+    const generateButton = document.getElementById('generate-button');
+    const responseContainer = document.getElementById('response-container');
+    if (!generateButton || !responseContainer) return;
+
+    generateButton.addEventListener('click', async () => {
+        const elementType = generateButton.dataset.elementType;
+        const superPrompt = craftSuperPrompt(elementType);
+        
+        console.log("--- Generated Super-Prompt ---");
+        console.log(superPrompt);
+        
+        responseContainer.innerHTML = '<p class="loading-text">AIME is crafting your vision...</p>';
+        generateButton.disabled = true;
+
+        const aiResponse = await generateContent(superPrompt);
+        
+        // Sanitize and format the response for display
+        const formattedResponse = aiResponse
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\n/g, "<br>");
+
+        responseContainer.innerHTML = `
+            <div class="response-content">
+                <h4>Generated ${elementType.charAt(0) + elementType.slice(1).toLowerCase()} Description</h4>
+                <p>${formattedResponse}</p>
+            </div>
+        `;
+        generateButton.disabled = false;
+    });
+}
+
+// --- Utility Functions ---
+function initializeClearFields() {
+    const clearButton = document.getElementById('clear-fields-button');
+    if(clearButton) {
+        clearButton.addEventListener('click', () => {
+            const inputs = document.querySelectorAll('.main-column .input-field');
+            inputs.forEach(input => input.value = '');
+            const responseContainer = document.getElementById('response-container');
+            if (responseContainer) {
+                responseContainer.innerHTML = '';
+            }
+        });
     }
 }
 
 
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
-    initializeResizableColumns();
+    // initializeResizableColumns(); // Disabled for now
     initializeAccordions();
-    initializeAssetImporter();
     initializeGuidanceGems();
-
-    const generateButton = document.getElementById('generate-button');
-    const responseContainer = document.getElementById('response-container');
-    const assetList = document.getElementById('asset-list');
-
-    if (generateButton && responseContainer) {
-        generateButton.addEventListener('click', async () => {
-            responseContainer.innerHTML = '<p style="padding: 1rem;">Generating response...</p>';
-
-            const prompt = craftSuperPrompt();
-            if (prompt) {
-                const result = await runGenerator(prompt);
-                responseContainer.innerHTML = result;
-            } else {
-                responseContainer.innerHTML = '<p style="padding: 1rem; color: var(--error-text);">Could not generate prompt. Please fill out some fields.</p>';
-            }
-        });
-    }
-
-    const clearButton = document.getElementById('clear-fields-button');
-    if(clearButton) {
-        clearButton.addEventListener('click', () => {
-            // Clear all form inputs
-            document.querySelectorAll('.main-column .input-field').forEach(input => input.value = '');
-
-            // Clear the response container
-            if(responseContainer) {
-                responseContainer.innerHTML = '';
-            }
-
-            // Clear the asset hub and revoke any object URLs to prevent memory leaks
-            if (assetList) {
-                assetList.querySelectorAll('.asset-thumbnail').forEach(thumb => {
-                    if (thumb.src.startsWith('blob:')) {
-                        URL.revokeObjectURL(thumb.src);
-                    }
-                });
-                assetList.innerHTML = '';
-            }
-        });
-    }
+    initializeAssetImporter();
+    initializeGeneration();
+    initializeClearFields();
 });
+

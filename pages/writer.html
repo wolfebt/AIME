@@ -32,83 +32,73 @@
             <button class="writer-nav-button" data-tab="treatment">3. Treatment</button>
             <button class="writer-nav-button" data-tab="write">4. Write & Refine</button>
         </div>
-        <div class="workspace-layout" style="margin-top: 1.5rem;">
+        <div class="workspace-layout">
             <div class="main-column">
+                <!-- Brainstorm Tab -->
                 <div id="brainstorm-tab" class="writer-tab active">
-                    <div class="outline-controls">
-                        <p class="outline-subtitle">Generate high-level concepts for your story.</p>
+                    <div class="tab-controls glass-panel">
+                        <h3 class="tab-title">Brainstorm Concepts</h3>
                         <div>
-                            <button class="action-btn" data-action="save-prompt">Save Prompt Info</button>
-                            <button class="action-btn" data-action="save">Save Concepts</button>
+                             <button class="action-btn" id="save-brainstorm-btn">Save Content</button>
+                             <button class="action-btn" id="save-prompt-info-btn">Save Prompt Info</button>
                         </div>
                     </div>
-                    <div id="brainstorm-response-area" class="response-area-cards" style="margin-top: 1.5rem;">
-                        <p class="placeholder-text">Generated story concepts will appear here as cards. You can edit them directly.</p>
+                    <div id="brainstorm-response-area" class="response-area-cards">
+                         <p class="placeholder-text">Enter a core idea in the prompt box and click "Brainstorm Concepts" to generate story ideas.</p>
                     </div>
                 </div>
+
+                <!-- Outline Tab -->
                 <div id="outline-tab" class="writer-tab">
-                     <div class="outline-controls">
-                        <p class="outline-subtitle">Drag & drop to arrange plot points. Click text to edit.</p>
-                        <div>
-                            <button class="action-btn" data-action="save-prompt">Save Prompt Info</button>
-                            <button class="action-btn" data-action="save">Save Outline</button>
-                            <button id="generate-treatment-from-outline" class="import-btn">Generate Treatment</button>
-                            <button id="add-plot-point" class="import-btn">Add Plot Point</button>
-                        </div>
+                    <div class="tab-controls glass-panel">
+                         <h3 class="tab-title">Build Your Outline</h3>
+                         <button id="add-plot-point-btn" class="action-btn">Add Plot Point</button>
                     </div>
-                    <ul id="outline-list" class="outline-list">
-                        <!-- Draggable and editable scene cards will be added here -->
-                    </ul>
+                     <ul id="outline-list" class="outline-list">
+                        <li class="scene-card" draggable="true">
+                            <div class="scene-card-details">
+                                <h4 class="scene-card-title" contenteditable="true">Act I: The Beginning</h4>
+                                <p class="scene-card-subtitle" contenteditable="true">Introduce the protagonist and the inciting incident.</p>
+                            </div>
+                            <div class="scene-card-handle"></div>
+                        </li>
+                     </ul>
                 </div>
+
+                <!-- Treatment Tab -->
                 <div id="treatment-tab" class="writer-tab">
-                    <div class="outline-controls">
-                        <p class="outline-subtitle">Generate and refine a prose summary based on your outline.</p>
-                         <div>
-                            <button class="action-btn" data-action="save-prompt">Save Prompt Info</button>
-                            <button class="action-btn" data-action="save">Save Treatment</button>
-                            <button id="begin-writing-from-treatment" class="import-btn">Begin Writing</button>
-                        </div>
+                     <div class="tab-controls glass-panel">
+                         <h3 class="tab-title">Generate a Treatment</h3>
+                         <button id="generate-treatment-btn-main" class="action-btn">Generate Treatment</button>
                     </div>
-                    <div id="treatment-response-area" contenteditable="true" class="writing-canvas glass-panel" style="margin-top: 1.5rem;">
-                        <p class="placeholder-text">A prose treatment will appear here. You can edit it directly.</p>
-                    </div>
+                    <div id="treatment-canvas" class="writing-canvas glass-panel" contenteditable="true"></div>
                 </div>
+
+                <!-- Write & Refine Tab -->
                 <div id="write-tab" class="writer-tab">
-                     <div class="outline-controls">
-                        <p class="outline-subtitle">Write and refine your final manuscript with AI assistance.</p>
-                        <div>
-                            <button class="action-btn" data-action="save-prompt">Save Prompt Info</button>
-                            <button class="action-btn" data-action="save">Save Manuscript</button>
-                        </div>
+                     <div id="text-toolbar" class="text-toolbar hidden">
+                        <button class="toolbar-btn" data-action="rephrase">Rephrase</button>
+                        <button class="toolbar-btn" data-action="shorten">Shorten</button>
+                        <button class="toolbar-btn" data-action="expand">Expand</button>
                     </div>
-                    <div class="writing-container" style="margin-top: 1.5rem;">
-                        <div id="writing-toolbar" class="writing-toolbar" style="display: none;">
-                            <button class="toolbar-btn-text" id="rephrase-btn">Rephrase</button>
-                            <button class="toolbar-btn-text" id="shorten-btn">Shorten</button>
-                            <button class="toolbar-btn-text" id="expand-btn">Expand</button>
-                        </div>
-                        <div id="writing-canvas" contenteditable="true" class="writing-canvas glass-panel">
-                           <p>Start writing your story here...</p>
-                        </div>
-                    </div>
+                    <div id="writing-canvas-main" class="writing-canvas glass-panel" contenteditable="true"></div>
                 </div>
+
             </div>
-
-            <div class="resize-handle"></div>
-
+             <div class="resize-handle"></div>
             <div class="side-column">
-                 <div class="accordion glass-panel">
+                <div class="accordion glass-panel active">
                     <button class="accordion-header active">
                         <span>Generation Controls</span>
-                        <svg class="accordion-chevron" style="transform: rotate(180deg);" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div class="accordion-content" style="max-height: 500px; padding: 1.5rem;">
-                        <textarea id="prompt-input" class="input-field" rows="5" placeholder="For Brainstorm: A space opera about a lost colony..."></textarea>
-                        <button id="generate-button" class="generate-btn-large" style="margin-top: 1rem;">Brainstorm Concepts</button>
+                    <div class="accordion-content">
+                        <textarea id="main-prompt" class="input-field" placeholder="Enter your core idea, a theme, or a character concept..."></textarea>
+                        <button id="generate-button" class="generate-btn-large">Brainstorm Concepts</button>
                     </div>
                 </div>
-                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
-                    <button class="accordion-header">
+                <div class="accordion glass-panel active" style="margin-top: 1.5rem;">
+                    <button class="accordion-header active">
                         <span>Guidance Gems</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>

@@ -6,212 +6,271 @@
 
 // --- Resizable Columns ---
 function initializeResizableColumns() {
-    const workspace = document.querySelector('.workspace-layout');
-    if (!workspace) return;
-    const mainColumn = workspace.querySelector('.main-column');
-    const sideColumn = workspace.querySelector('.side-column');
-    const resizeHandle = workspace.querySelector('.resize-handle');
-    let isResizing = false;
-    resizeHandle.addEventListener('mousedown', () => { isResizing = true; });
-    document.addEventListener('mouseup', () => { isResizing = false; });
-    document.addEventListener('mousemove', (e) => {
-        if (!isResizing) return;
-        const containerRect = workspace.getBoundingClientRect();
-        let newLeftPercent = ((e.clientX - containerRect.left) / containerRect.width) * 100;
-        newLeftPercent = Math.max(20, Math.min(80, newLeftPercent));
-        mainColumn.style.width = `calc(${newLeftPercent}% - 6px)`;
-        sideColumn.style.width = `calc(${100 - newLeftPercent}% - 6px)`;
-    });
+    // ... (This function can be added back if resizable columns are needed)
 }
 
 // --- Accordion Logic ---
 function initializeAccordions() {
-    document.querySelectorAll('.accordion .accordion-header').forEach(header => {
+    const accordions = document.querySelectorAll('.accordion');
+    accordions.forEach(accordion => {
+        const header = accordion.querySelector('.accordion-header');
+        const content = accordion.querySelector('.accordion-content');
+        const chevron = header.querySelector('.accordion-chevron');
+        if (!header || !content || !chevron) return;
+
         header.addEventListener('click', () => {
-            const content = header.nextElementSibling;
-            header.classList.toggle('active');
-            if (header.classList.contains('active')) {
-                content.style.maxHeight = content.scrollHeight + 'px';
-                if (getComputedStyle(content).paddingTop === '0px') {
-                    content.style.padding = '1.5rem';
-                }
+            const isOpen = header.classList.toggle('active');
+            chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+            if (isOpen) {
+                content.style.padding = '1.5rem';
+                content.style.maxHeight = content.scrollHeight + "px";
             } else {
                 content.style.maxHeight = null;
-                if (getComputedStyle(content).paddingTop !== '0px') {
-                    content.style.padding = '0 1.5rem';
-                }
+                content.style.padding = '0 1.5rem';
             }
         });
+
+        if (header.classList.contains('active')) {
+            content.style.padding = '1.5rem';
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+}
+
+// --- Asset Hub Importer ---
+function initializeAssetImporter() {
+    const importBtn = document.getElementById('import-asset-btn');
+    const fileInput = document.getElementById('asset-upload');
+    const assetList = document.getElementById('asset-list');
+    if (!importBtn || !fileInput || !assetList) return;
+
+    importBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', (event) => {
+        for (const file of event.target.files) {
+            addAssetToList(file, assetList);
+        }
+    });
+}
+
+function addAssetToList(file, assetList) {
+    const assetItem = document.createElement('div');
+    assetItem.className = 'asset-item';
+    const fileURL = URL.createObjectURL(file);
+
+    let assetInfoHtml = '';
+    if (file.type.startsWith('image/')) {
+        assetInfoHtml = `<div class="asset-info"><img src="${fileURL}" class="asset-thumbnail"><span class="asset-name">${file.name}</span></div>`;
+    } else {
+        assetInfoHtml = `<div class="asset-info"><span class="asset-icon-text">TXT</span><span class="asset-name">${file.name}</span></div>`;
+    }
+    assetItem.innerHTML = `${assetInfoHtml}<button class="remove-asset-btn">&times;</button>`;
+    assetList.appendChild(assetItem);
+    assetItem.querySelector('.remove-asset-btn').addEventListener('click', () => {
+        URL.revokeObjectURL(fileURL);
+        assetItem.remove();
     });
 }
 
 
-// --- Audio Lab ---
-let mediaBin = [];
-let nextClipId = 1;
-const pixelsPerSecond = 20;
-let timelineDuration = 60; // 60 seconds
-let playheadInterval;
+// --- Audio Lab Specific Logic ---
+
+// State Management for Audio Clips
+let audioClips = [];
+let nextClipId = 0;
+let activeClip = null;
 
 function initializeAudioLab() {
-    setupAdvancedProperties();
-    setupMediaBinDragAndDrop();
-    setupTimeline();
-    document.getElementById('generate-button')?.addEventListener('click', generateAudioClip);
-    document.getElementById('play-pause-btn')?.addEventListener('click', toggleTimelinePlayback);
-}
-
-function setupAdvancedProperties() {
+    const generateBtn = document.getElementById('generate-audio-btn');
     const audioTypeSelect = document.getElementById('audio-type');
-    if (!audioTypeSelect) return;
 
-    const renderProperties = () => {
-        const container = document.getElementById('advanced-properties-container');
-        const selectedType = audioTypeSelect.value;
-        let html = '<div class="advanced-properties">';
-
-        switch (selectedType) {
-            case 'music':
-                html += `
-                    <label for="instrumentation">Instrumentation:</label><input type="text" id="instrumentation" class="input-field" value="Orchestral">
-                    <label for="tempo">Tempo (BPM):</label><input type="number" id="tempo" class="input-field" value="120">
-                    <label for="key">Musical Key:</label><input type="text" id="key" class="input-field" value="C Major">`;
-                break;
-            case 'sfx':
-                html += `
-                    <label for="material">Primary Material:</label><input type="text" id="material" class="input-field" value="Metal">
-                    <label for="action">Action/Event:</label><input type="text" id="action" class="input-field" value="Impact">
-                    <label for="environment">Environment:</label><input type="text" id="environment" class="input-field" value="Cavern">`;
-                break;
-            case 'dialogue':
-                html += `
-                    <label for="voice">Voice:</label><input type="text" id="voice" class="input-field" value="Deep Male">
-                    <label for="emotion">Emotion:</label><input type="text" id="emotion" class="input-field" value="Serious">
-                    <label for="delivery">Delivery Style:</label><input type="text" id="delivery" class="input-field" value="Narrator">`;
-                break;
-        }
-        html += '</div>';
-        container.innerHTML = html;
-    };
-    
-    audioTypeSelect.addEventListener('change', renderProperties);
-    renderProperties(); // Initial render
+    if (generateBtn) {
+        generateBtn.addEventListener('click', generateNewAudioClip);
+    }
+    if (audioTypeSelect) {
+        audioTypeSelect.addEventListener('change', updateAdvancedProperties);
+        updateAdvancedProperties(); // Initial call
+    }
 }
 
-function generateAudioClip() {
-    const prompt = document.getElementById('prompt-input').value || 'New Audio Clip';
+function updateAdvancedProperties() {
+    const audioType = document.getElementById('audio-type').value;
+    const musicProps = document.getElementById('music-properties');
+    const sfxProps = document.getElementById('sfx-properties');
+    const dialogueProps = document.getElementById('dialogue-properties');
+
+    musicProps.style.display = 'none';
+    sfxProps.style.display = 'none';
+    dialogueProps.style.display = 'none';
+
+    if (audioType === 'music') {
+        musicProps.style.display = 'flex';
+    } else if (audioType === 'sfx') {
+        sfxProps.style.display = 'flex';
+    } else if (audioType === 'dialogue') {
+        dialogueProps.style.display = 'flex';
+    }
+}
+
+function generateNewAudioClip() {
+    const prompt = document.getElementById('audio-prompt').value || 'Untitled';
     const newClip = {
         id: nextClipId++,
-        name: prompt.substring(0, 30),
-        duration: Math.floor(Math.random() * 8) + 3 // 3-10 seconds
+        name: `${prompt.substring(0, 20)}_${nextClipId}`,
+        duration: Math.floor(Math.random() * 15) + 5, // Random duration 5-20s
     };
-    mediaBin.push(newClip);
+    audioClips.push(newClip);
     renderMediaBin();
 }
 
 function renderMediaBin() {
-    const list = document.getElementById('media-bin-list');
-    list.innerHTML = ''; // Clear it
-    if(mediaBin.length === 0) {
-        list.innerHTML = `<p class="placeholder-text">Generated clips will appear here. Drag them to the timeline.</p>`;
-        return;
-    }
-    mediaBin.forEach(clip => {
+    const mediaBinList = document.getElementById('media-bin-list');
+    mediaBinList.innerHTML = '';
+    audioClips.forEach(clip => {
         const item = document.createElement('div');
         item.className = 'media-bin-item';
-        item.textContent = `${clip.name} (${clip.duration}s)`;
-        item.draggable = true;
         item.dataset.clipId = clip.id;
-        list.appendChild(item);
+        item.draggable = true;
+        item.innerHTML = `<span class="clip-name">${clip.name}</span> <span class="clip-duration">${clip.duration}s</span>`;
+        
+        item.addEventListener('click', () => {
+            setActiveClip(clip.id);
+        });
+
+        item.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', clip.id);
+            e.target.style.opacity = '0.5';
+        });
+
+        item.addEventListener('dragend', (e) => {
+            e.target.style.opacity = '1';
+        });
+
+        mediaBinList.appendChild(item);
     });
+    updateActiveClipHighlight();
 }
 
-function setupMediaBinDragAndDrop() {
-    const mediaBinList = document.getElementById('media-bin-list');
-    const timelineTracks = document.querySelectorAll('.timeline-track');
+function setActiveClip(clipId) {
+    activeClip = audioClips.find(c => c.id === clipId);
+    console.log("Active clip:", activeClip);
+    updatePlayer();
+    updateActiveClipHighlight();
+}
 
-    mediaBinList.addEventListener('dragstart', e => {
-        if (e.target.classList.contains('media-bin-item')) {
-            const clipId = e.target.dataset.clipId;
-            e.dataTransfer.setData('text/plain', clipId);
+function updatePlayer() {
+    const playerTitle = document.getElementById('player-title');
+    const toolbar = document.getElementById('player-toolbar');
+    if (activeClip) {
+        playerTitle.textContent = activeClip.name;
+        toolbar.classList.remove('hidden');
+    } else {
+        playerTitle.textContent = "No Clip Loaded";
+        toolbar.classList.add('hidden');
+    }
+}
+
+function updateActiveClipHighlight() {
+    const items = document.querySelectorAll('.media-bin-item');
+    items.forEach(item => {
+        if (activeClip && parseInt(item.dataset.clipId) === activeClip.id) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
         }
     });
+}
 
-    timelineTracks.forEach(track => {
-        track.addEventListener('dragover', e => e.preventDefault());
-        track.addEventListener('drop', e => {
-            e.preventDefault();
-            const clipId = parseInt(e.dataTransfer.getData('text/plain'), 10);
-            const clipData = mediaBin.find(c => c.id === clipId);
-            if (!clipData) return;
-
-            const timelineRect = track.getBoundingClientRect();
-            const dropPositionX = e.clientX - timelineRect.left;
-            const startTime = dropPositionX / pixelsPerSecond;
-
-            addClipToTimeline(clipData, track, startTime);
-        });
+// --- Timeline Logic ---
+function initializeTimeline() {
+    const tracks = document.querySelectorAll('.timeline-track');
+    tracks.forEach(track => {
+        track.addEventListener('dragover', (e) => e.preventDefault());
+        track.addEventListener('drop', handleDropOnTrack);
     });
-}
 
-function addClipToTimeline(clipData, track, startTime) {
-    const clipElement = document.createElement('div');
-    clipElement.className = 'timeline-clip';
-    clipElement.textContent = clipData.name;
-    clipElement.style.left = `${startTime * pixelsPerSecond}px`;
-    clipElement.style.width = `${clipData.duration * pixelsPerSecond}px`;
-    clipElement.dataset.clipId = clipData.id;
-
-    // Add handles for resizing
-    const leftHandle = document.createElement('div');
-    leftHandle.className = 'clip-handle left';
-    const rightHandle = document.createElement('div');
-    rightHandle.className = 'clip-handle right';
-    clipElement.appendChild(leftHandle);
-    clipElement.appendChild(rightHandle);
-    
-    track.appendChild(clipElement);
-    // Add logic for moving and resizing clips on the timeline
-}
-
-
-function setupTimeline() {
+    // Generate ruler marks
     const ruler = document.getElementById('timeline-ruler');
-    ruler.innerHTML = '';
-    const totalWidth = timelineDuration * pixelsPerSecond;
-    ruler.style.width = `${totalWidth}px`;
-
-    for (let i = 0; i <= timelineDuration; i += 5) {
+    for (let i = 0; i <= 60; i += 5) {
         const mark = document.createElement('div');
         mark.className = 'ruler-mark';
+        mark.style.left = `${(i / 60) * 100}%`;
         mark.textContent = `${i}s`;
-        mark.style.left = `${i * pixelsPerSecond}px`;
         ruler.appendChild(mark);
     }
 }
 
-function toggleTimelinePlayback() {
-    const playhead = document.querySelector('.playhead');
-    if (playheadInterval) {
-        clearInterval(playheadInterval);
-        playheadInterval = null;
-    } else {
-        let currentTime = 0;
-        playheadInterval = setInterval(() => {
-            currentTime += 0.1;
-            if (currentTime > timelineDuration) {
-                currentTime = 0;
-            }
-            playhead.style.left = `${currentTime * pixelsPerSecond}px`;
-        }, 100);
+function handleDropOnTrack(e) {
+    e.preventDefault();
+    const clipId = parseInt(e.dataTransfer.getData('text/plain'));
+    const clipData = audioClips.find(c => c.id === clipId);
+    const track = e.target.closest('.timeline-track');
+    const timelineRect = track.getBoundingClientRect();
+    const dropPosition = e.clientX - timelineRect.left;
+
+    if (clipData && track) {
+        createClipOnTrack(clipData, track, dropPosition);
     }
+}
+
+function createClipOnTrack(clipData, track, dropPosition) {
+    const trackWidth = track.clientWidth;
+    const clipDurationSeconds = clipData.duration;
+    const totalTimelineDuration = 60; // seconds
+
+    const clipWidth = (clipDurationSeconds / totalTimelineDuration) * trackWidth;
+    let clipLeft = dropPosition;
+
+    if (clipLeft + clipWidth > trackWidth) {
+        clipLeft = trackWidth - clipWidth;
+    }
+    if(clipLeft < 0) clipLeft = 0;
+
+    const clipElement = document.createElement('div');
+    clipElement.className = 'timeline-clip';
+    clipElement.style.left = `${clipLeft}px`;
+    clipElement.style.width = `${clipWidth}px`;
+    clipElement.textContent = clipData.name;
+    
+    makeClipDraggable(clipElement, track);
+    track.appendChild(clipElement);
+}
+
+function makeClipDraggable(clipElement, track) {
+    clipElement.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        let offsetX = e.clientX - clipElement.getBoundingClientRect().left;
+        
+        function onMouseMove(moveEvent) {
+            const trackRect = track.getBoundingClientRect();
+            let newLeft = moveEvent.clientX - trackRect.left - offsetX;
+
+            if (newLeft < 0) newLeft = 0;
+            if (newLeft + clipElement.offsetWidth > trackRect.width) {
+                newLeft = trackRect.width - clipElement.offsetWidth;
+            }
+
+            clipElement.style.left = `${newLeft}px`;
+        }
+
+        function onMouseUp() {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        }
+        
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    });
 }
 
 
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
-    initializeResizableColumns();
+    // initializeResizableColumns();
     initializeAccordions();
+    initializeAssetImporter();
     initializeAudioLab();
+    initializeTimeline();
+    renderMediaBin(); // Initial render
+    updatePlayer();
 });
 

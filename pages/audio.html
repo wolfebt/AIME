@@ -28,89 +28,85 @@
     <main class="container">
         <div class="workspace-layout">
             <div class="main-column">
-                <div class="element-header" style="text-align: left;">
-                    <h2 class="element-title animated-gradient">Audio Lab</h2>
-                    <p class="element-subtitle">Generate and compose dialogue, soundscapes, and musical scores.</p>
-                </div>
-
-                <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 1.5rem;">
-                    <div id="audio-player" class="audio-player">
-                        <h3 id="player-title" class="player-title">Select a clip to preview</h3>
-                        <div class="player-controls">
-                            <button id="play-pause-btn" class="player-btn">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
-                            </button>
-                            <span id="current-time" class="time-display">0:00</span>
-                            <div id="waveform-container" class="waveform-container">
-                                <!-- Waveform will be drawn here -->
-                            </div>
-                            <span id="total-duration" class="time-display">0:00</span>
-                        </div>
-                        <div id="player-toolbar" class="player-toolbar" style="display: none;">
-                             <button class="toolbar-btn" id="generate-variation-btn" title="Generate Variation">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path><path d="M12 22v-6"></path></svg>
-                            </button>
-                            <button class="toolbar-btn" id="download-clip-btn" title="Download Clip">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                            </button>
-                            <button class="toolbar-btn" id="delete-clip-btn" title="Delete Clip">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                            </button>
-                        </div>
+                <div class="audio-player glass-panel">
+                    <h3 id="player-title" class="player-title">No Clip Loaded</h3>
+                    <div class="waveform-placeholder">
+                        <!-- Simulated waveform graphic could go here -->
+                    </div>
+                    <div class="player-controls">
+                        <button id="play-pause-btn" class="player-btn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                        </button>
+                        <span id="time-display" class="time-display">0:00 / 0:00</span>
+                    </div>
+                     <div id="player-toolbar" class="player-toolbar hidden">
+                        <button class="toolbar-btn" title="Generate Variation"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg></button>
+                        <button class="toolbar-btn" title="Download Clip"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg></button>
+                        <button class="toolbar-btn" title="Delete Clip"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
                     </div>
                 </div>
 
-                <div id="timeline-editor-container" class="glass-panel" style="padding: 1.5rem;">
-                    <h3 class="timeline-title">Timeline</h3>
-                    <div id="timeline-ruler"></div>
+                <div class="timeline-editor-container glass-panel" style="margin-top: 1rem;">
+                    <h3 class="timeline-title">Timeline Editor</h3>
+                    <div id="timeline-ruler" class="timeline-ruler"></div>
                     <div class="timeline-tracks-container">
-                        <div class="playhead"></div>
-                        <div class="timeline-track" data-track-id="1"></div>
-                        <div class="timeline-track" data-track-id="2"></div>
+                        <div id="playhead" class="playhead"></div>
+                        <div class="timeline-track" data-track-type="audio"><span class="track-label">Audio 1</span></div>
+                        <div class="timeline-track" data-track-type="audio"><span class="track-label">Audio 2</span></div>
                     </div>
                 </div>
             </div>
-
             <div class="resize-handle"></div>
-
             <div class="side-column">
-                 <div class="accordion glass-panel">
-                    <button class="accordion-header active">
+                <div class="accordion glass-panel active">
+                     <button class="accordion-header active">
                         <span>Generation Controls</span>
-                        <svg class="accordion-chevron" style="transform: rotate(180deg);" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div class="accordion-content" style="max-height: 500px; padding: 1.5rem;">
-                        <textarea id="prompt-input" class="input-field" rows="4" placeholder="e.g., An epic orchestral score for a battle..."></textarea>
-                        <button id="generate-button" class="generate-btn-large" style="margin-top: 1rem;">Generate Audio</button>
+                    <div class="accordion-content">
+                        <textarea id="audio-prompt" class="input-field" placeholder="Describe the sound, dialogue, or music..."></textarea>
+                        <button id="generate-audio-btn" class="generate-btn-large">Generate Audio</button>
                     </div>
                 </div>
-                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
-                    <button class="accordion-header">
+                <div class="accordion glass-panel active" style="margin-top: 1.5rem;">
+                    <button class="accordion-header active">
                         <span>Audio Properties</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <div class="form-section" style="padding: 1.5rem;">
-                             <label for="audio-type">Audio Type:</label>
-                             <select id="audio-type" class="input-field">
-                                 <option value="music">Music</option>
-                                 <option value="sfx">Sound Effect</option>
-                                 <option value="dialogue">Dialogue</option>
-                             </select>
-                             <div id="advanced-properties-container">
-                                 <!-- Dynamic properties will be inserted here -->
-                             </div>
+                        <div class="form-group">
+                            <label for="audio-type">Audio Type:</label>
+                            <select id="audio-type" class="input-field">
+                                <option value="music">Music</option>
+                                <option value="sfx">Sound Effect</option>
+                                <option value="dialogue">Dialogue</option>
+                            </select>
+                        </div>
+                        <div id="music-properties" class="advanced-properties">
+                             <label>Instrumentation:</label> <input type="text" class="input-field" placeholder="e.g., Orchestra, Piano, Synthesizer">
+                             <label>Tempo (BPM):</label> <input type="number" class="input-field" value="120">
+                             <label>Key:</label> <input type="text" class="input-field" placeholder="e.g., C Major">
+                        </div>
+                         <div id="sfx-properties" class="advanced-properties" style="display: none;">
+                             <label>Primary Material:</label> <input type="text" class="input-field" placeholder="e.g., Metal, Wood, Water">
+                             <label>Action/Event:</label> <input type="text" class="input-field" placeholder="e.g., Impact, Whoosh, Explosion">
+                              <label>Environment:</label> <input type="text" class="input-field" placeholder="e.g., Indoors, Cave, Forest">
+                        </div>
+                         <div id="dialogue-properties" class="advanced-properties" style="display: none;">
+                            <label>Voice:</label> <select class="input-field"><option>Male Adult</option><option>Female Adult</option></select>
+                            <label>Emotion:</label> <select class="input-field"><option>Neutral</option><option>Happy</option><option>Sad</option><option>Angry</option></select>
+                             <label>Delivery:</label> <select class="input-field"><option>Normal</option><option>Whispering</option><option>Shouting</option></select>
                         </div>
                     </div>
                 </div>
-                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
+                 <div class="accordion glass-panel" style="margin-top: 1.5rem;">
                     <button class="accordion-header">
                         <span>Media Bin</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <div id="media-bin-list" class="media-bin-list" style="padding: 1.5rem;">
-                           <p class="placeholder-text">Generated clips will appear here. Drag them to the timeline.</p>
+                        <div id="media-bin-list" class="media-bin-list">
+                             <p class="placeholder-text">Generated audio clips will appear here.</p>
                         </div>
                     </div>
                 </div>
@@ -121,8 +117,10 @@
                     </button>
                     <div class="accordion-content asset-hub-container">
                         <p class="asset-hub-subtitle">Import Persona files for dialogue or Scene files for atmosphere.</p>
-                        <input type="file" id="asset-upload" multiple style="display: none;">
-                        <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
+                        <div class="asset-import-area">
+                            <input type="file" id="asset-upload" multiple style="display: none;">
+                            <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
+                        </div>
                         <div id="asset-list" class="asset-list"></div>
                     </div>
                 </div>

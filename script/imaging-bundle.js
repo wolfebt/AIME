@@ -17,19 +17,14 @@ function initializeResizableColumns() {
 
     resizeHandle.addEventListener('mousedown', (e) => {
         isResizing = true;
-        document.body.style.userSelect = 'none';
-        document.body.style.cursor = 'col-resize';
         document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', stopResizing);
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.removeEventListener('mousemove', handleMouseMove);
+            resizeHandle.classList.remove('resizing');
+        });
+        resizeHandle.classList.add('resizing');
     });
-
-    function stopResizing() {
-        isResizing = false;
-        document.body.style.userSelect = '';
-        document.body.style.cursor = '';
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', stopResizing);
-    }
 
     function handleMouseMove(e) {
         if (!isResizing) return;
@@ -44,32 +39,69 @@ function initializeResizableColumns() {
 
 // --- Accordion Logic ---
 function initializeAccordions() {
-    document.querySelectorAll('.accordion .accordion-header').forEach(header => {
-        header.addEventListener('click', () => {
-            const content = header.nextElementSibling;
-            const chevron = header.querySelector('.accordion-chevron');
-            const isOpen = header.classList.toggle('active');
+    const accordions = document.querySelectorAll('.accordion');
+    accordions.forEach(accordion => {
+        const header = accordion.querySelector('.accordion-header');
+        const content = accordion.querySelector('.accordion-content');
+        const chevron = header.querySelector('.accordion-chevron');
+        if (!header || !content || !chevron) return;
 
-            if (chevron) {
-                chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-            }
+        header.addEventListener('click', () => {
+            const isOpen = header.classList.toggle('active');
+            chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
             if (isOpen) {
-                content.style.maxHeight = content.scrollHeight + 48 + "px";
                 content.style.padding = '1.5rem';
+                content.style.maxHeight = content.scrollHeight + "px";
             } else {
                 content.style.maxHeight = null;
                 content.style.padding = '0 1.5rem';
             }
         });
+
+        if (header.classList.contains('active')) {
+            content.style.padding = '1.5rem';
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
     });
 }
 
-// --- Asset Hub (REWRITTEN & STABLE) ---
+// --- Guidance Gems ---
+function initializeGuidanceGems() {
+    const container = document.getElementById('guidance-gems-container');
+    if (!container) return;
+    const gemsData = {
+        "Primary Art Style": ["Photorealistic", "Illustration", "Concept Art", "Anime", "Pixel Art"],
+        "Pose / Framing": ["Close-up Portrait", "Full Body", "Action Pose", "Landscape", "Cinematic"],
+        "Lighting Style": ["Studio Lighting", "Golden Hour", "Natural Light", "Noir", "Cyberpunk Neon"],
+        "Color Palette": ["Vibrant & Saturated", "Monochromatic", "Pastel", "Muted Tones", "Triadic"],
+        "Artist Influences": "text"
+    };
+
+    let html = '';
+    for (const [title, options] of Object.entries(gemsData)) {
+        html += `<div class="gem-category"><h4 class="gem-title">${title}</h4><div class="gem-options">`;
+        if (Array.isArray(options)) {
+            options.forEach(option => {
+                html += `<button class="gem-option">${option}</button>`;
+            });
+        } else if (options === 'text') {
+            html += `<input type="text" id="artist-influences" class="input-field gem-input" placeholder="e.g., Van Gogh, H.R. Giger">`;
+        }
+        html += `</div></div>`;
+    }
+    container.innerHTML = html;
+    container.addEventListener('click', (e) => {
+        if (e.target.classList.contains('gem-option')) {
+            e.target.classList.toggle('active');
+        }
+    });
+}
+
+// --- Asset Hub Importer ---
 function initializeAssetImporter() {
     const importBtn = document.getElementById('import-asset-btn');
     const fileInput = document.getElementById('asset-upload');
     const assetList = document.getElementById('asset-list');
-
     if (!importBtn || !fileInput || !assetList) return;
 
     importBtn.addEventListener('click', () => fileInput.click());
@@ -77,68 +109,112 @@ function initializeAssetImporter() {
         for (const file of event.target.files) {
             addAssetToList(file, assetList);
         }
-        fileInput.value = ''; // Reset input
     });
 }
 
 function addAssetToList(file, assetList) {
     const assetItem = document.createElement('div');
     assetItem.className = 'asset-item';
+    const fileURL = URL.createObjectURL(file);
 
-    const assetInfo = document.createElement('div');
-    assetInfo.className = 'asset-info';
-
+    let assetInfoHtml = '';
     if (file.type.startsWith('image/')) {
-        const thumbnail = document.createElement('img');
-        const imageURL = URL.createObjectURL(file); // Correct Method
-        thumbnail.src = imageURL;
-        thumbnail.className = 'asset-thumbnail';
-        thumbnail.onload = () => URL.revokeObjectURL(imageURL); // Clean up memory
-        assetInfo.prepend(thumbnail);
+        assetInfoHtml = `
+            <div class="asset-info">
+                <img src="${fileURL}" alt="${file.name}" class="asset-thumbnail">
+                <span class="asset-name">${file.name}</span>
+            </div>`;
     } else {
-        const textIcon = document.createElement('div');
-        textIcon.className = 'asset-icon-text';
-        textIcon.textContent = 'TXT';
-        assetInfo.prepend(textIcon);
+        assetInfoHtml = `
+             <div class="asset-info">
+                <span class="asset-icon-text">TXT</span>
+                <span class="asset-name">${file.name}</span>
+            </div>`;
     }
 
-    const assetName = document.createElement('span');
-    assetName.className = 'asset-name';
-    assetName.textContent = file.name;
-    assetInfo.appendChild(assetName);
-
-    const removeBtn = document.createElement('button');
-    removeBtn.className = 'remove-asset-btn';
-    removeBtn.innerHTML = '&times;';
-    removeBtn.onclick = () => assetItem.remove();
-
-    assetItem.appendChild(assetInfo);
-    assetItem.appendChild(removeBtn);
+    assetItem.innerHTML = `${assetInfoHtml}<button class="remove-asset-btn">&times;</button>`;
     assetList.appendChild(assetItem);
+    assetItem.querySelector('.remove-asset-btn').addEventListener('click', () => {
+        URL.revokeObjectURL(fileURL);
+        assetItem.remove();
+    });
 }
 
-// --- Imaging Studio Specific Logic ---
-function initializeGuidanceGems() {
-    const container = document.getElementById('guidance-gems-container');
-    if (!container) return;
-    const gemsData = {
-        "Primary Art Style": ["Photorealistic", "Illustration", "Anime", "Concept Art"],
-        "Pose / Framing": ["Close-up", "Full Body", "Action Pose", "Concept Sheet"],
-        "Lighting Style": ["Cinematic", "Studio", "Natural Light", "Noir"],
-        "Color Palette": ["Vibrant", "Monochromatic", "Pastel", "Muted"]
-    };
-    let gemsHTML = '';
-    for (const category in gemsData) {
-        gemsHTML += `<div class="gem-category"><h4 class="gem-title">${category}</h4><div class="gem-options">`;
-        gemsData[category].forEach(option => {
-            gemsHTML += `<button class="gem-option">${option}</button>`;
-        });
-        gemsHTML += `</div></div>`;
-    }
-    container.innerHTML = gemsHTML;
-    container.querySelectorAll('.gem-option').forEach(button => {
-        button.addEventListener('click', () => button.classList.toggle('active'));
+// --- Toolbar Logic ---
+function initializeToolbar() {
+    const toolbar = document.getElementById('image-toolbar');
+    if (!toolbar) return;
+    toolbar.addEventListener('click', (e) => {
+        const button = e.target.closest('.toolbar-btn');
+        if (!button) return;
+        const action = button.dataset.action;
+        console.log(`Toolbar action: ${action}`);
+        if (action === 'new') {
+            const imageContainer = document.getElementById('image-container');
+            imageContainer.innerHTML = '<p class="placeholder-text">Your generated image will appear here.</p>';
+            toolbar.classList.add('hidden');
+        }
+        // Add logic for other actions like variations, upscale, save
     });
+}
+
+// --- AI Image Generation Logic ---
+
+function craftImageSuperPrompt() {
+    const mainPrompt = document.getElementById('main-prompt').value || "A masterpiece";
+    const activeGems = document.querySelectorAll('#guidance-gems-container .gem-option.active');
+    const artistInfluences = document.getElementById('artist-influences').value;
+    const assetItems = document.querySelectorAll('#asset-list .asset-name');
+
+    let promptParts = [mainPrompt];
+    
+    activeGems.forEach(gem => {
+        promptParts.push(gem.textContent);
+    });
+
+    if (artistInfluences) {
+        promptParts.push(`in the style of ${artistInfluences}`);
+    }
+
+    if (assetItems.length > 0) {
+        let assetNames = [];
+        assetItems.forEach(item => assetNames.push(item.textContent));
+        promptParts.push(`featuring elements from: ${assetNames.join(', ')}`);
+    }
+
+    return promptParts.join(', ');
+}
+
+async function generateImage(prompt) {
+    const apiKey = ""; // This will be handled by the environment
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+    
+    const payload = {
+        instances: [{ prompt: prompt }],
+        parameters: { "sampleCount": 1 }
+    };
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        }
+
+        const result = await response.json();
+        if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+            return `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+        } else {
+            throw new Error('Invalid response structure from API.');
+        }
+    } catch (error) {
+        console.error("Image generation failed:", error);
+        return null;
+    }
 }
 
 function initializeImageGeneration() {
@@ -147,30 +223,41 @@ function initializeImageGeneration() {
     const toolbar = document.getElementById('image-toolbar');
     if (!generateBtn || !imageContainer || !toolbar) return;
 
-    generateBtn.addEventListener('click', () => {
-        imageContainer.innerHTML = `<div class="loading-indicator"><div class="loading-spinner"></div><p class="loading-text">AIME is crafting your vision...</p></div>`;
-        toolbar.style.display = 'none';
-        setTimeout(() => {
-            imageContainer.innerHTML = `<img src="https://placehold.co/1024x1024/0d1117/e6edf3?text=Generated+Image" alt="Generated AI art" style="width: 100%; height: 100%; object-fit: cover;">`;
-            toolbar.style.display = 'flex';
-        }, 2000);
-    });
+    generateBtn.addEventListener('click', async () => {
+        toolbar.classList.add('hidden');
+        imageContainer.innerHTML = `
+            <div class="loading-indicator">
+                <div class="loading-spinner"></div>
+                <p class="loading-text">AIME is crafting your vision...</p>
+            </div>
+        `;
+        generateBtn.disabled = true;
 
-    const newBtn = document.getElementById('new-btn');
-    if (newBtn) {
-        newBtn.addEventListener('click', () => {
-            imageContainer.innerHTML = `<span class="placeholder-text">Generated image will appear here.</span>`;
-            toolbar.style.display = 'none';
-        });
-    }
+        const prompt = craftImageSuperPrompt();
+        console.log("--- Image Super-Prompt ---");
+        console.log(prompt);
+
+        const imageUrl = await generateImage(prompt);
+
+        if (imageUrl) {
+            imageContainer.innerHTML = `<img src="${imageUrl}" alt="AI Generated Image" class="generated-image">`;
+            toolbar.classList.remove('hidden');
+        } else {
+            imageContainer.innerHTML = '<p class="error-text">Failed to generate image. Please try a different prompt or check the console for errors.</p>';
+        }
+        
+        generateBtn.disabled = false;
+    });
 }
+
 
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
-    initializeResizableColumns();
+    // initializeResizableColumns(); // Disabled for now to use fixed layout
     initializeAccordions();
-    initializeAssetImporter();
     initializeGuidanceGems();
+    initializeAssetImporter();
+    initializeToolbar();
     initializeImageGeneration();
 });
 

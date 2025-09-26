@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIME - Imaging Studio</title>
     <link rel="stylesheet" href="../style/style.css">
-    <script src="../script/imaging-bundle.js" defer></script>
+    <script src="../script/imaging-bundle.js"></script>
 </head>
 <body>
     <header class="main-header">
@@ -28,42 +28,43 @@
     <main class="container">
         <div class="workspace-layout">
             <div class="main-column">
-                 <div class="element-header" style="text-align: left;">
-                    <h2 class="element-title animated-gradient">Imaging Studio</h2>
-                    <p class="element-subtitle">Generate concept art, character portraits, and landscapes.</p>
-                </div>
-                <div id="image-container" class="image-container glass-panel">
-                    <span class="placeholder-text">Generated image will appear here.</span>
-                    <div id="image-toolbar" class="image-toolbar" style="display: none;">
-                        <button id="new-btn" class="toolbar-btn" title="New Image"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg></button>
-                        <button id="variations-btn" class="toolbar-btn" title="Generate Variations"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16.76V12c0-2.2.8-4.2 2.2-5.8A6.32 6.32 0 0 1 12 4c2.2 0 4.2.8 5.8 2.2A6.32 6.32 0 0 1 20 12v4.76"/><path d="M6 12h12"/></svg></button>
-                        <button id="upscale-btn" class="toolbar-btn" title="Upscale"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 16 4-4 4 4 4-4"/><path d="m5 8 4 4 4-4 4 4"/></svg></button>
-                        <button id="save-btn" class="toolbar-btn" title="Save Image"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg></button>
+                 <div id="image-container" class="glass-panel">
+                    <p class="placeholder-text">Your generated image will appear here.</p>
+                    <div id="image-toolbar" class="image-toolbar hidden">
+                        <button class="toolbar-btn" data-action="new" title="New Image">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        </button>
+                        <button class="toolbar-btn" data-action="variations" title="Generate Variations">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                        </button>
+                        <button class="toolbar-btn" data-action="upscale" title="Upscale">
+                           <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 11l7-7 7 7M5 19l7-7 7 7"></path></svg>
+                        </button>
+                        <button class="toolbar-btn" data-action="save" title="Save Image">
+                            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        </button>
                     </div>
                 </div>
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
-                <div class="accordion glass-panel">
+                 <div class="accordion glass-panel active">
                     <button class="accordion-header active">
                         <span>Generation Controls</span>
-                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="transform: rotate(180deg);"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
-                    <div class="accordion-content" style="max-height: 500px; padding: 1.5rem;">
-                        <div class="form-section">
-                            <label for="main-prompt">Primary Prompt</label>
-                            <textarea id="main-prompt" class="input-field" rows="4" placeholder="e.g., A cyberpunk street market at night, rain-slicked pavement, neon signs..."></textarea>
-                            <button id="generate-button" class="generate-btn-large">Generate Image</button>
-                        </div>
+                    <div class="accordion-content">
+                         <textarea id="main-prompt" class="input-field" placeholder="Describe the image you want to create..."></textarea>
+                         <button id="generate-button" class="generate-btn-large">Generate Image</button>
                     </div>
                 </div>
-                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
-                    <button class="accordion-header">
+                <div class="accordion glass-panel active" style="margin-top: 1.5rem;">
+                    <button class="accordion-header active">
                         <span>Guidance Gems</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                         <div id="guidance-gems-container" class="guidance-gems-container"></div>
+                        <div id="guidance-gems-container"></div>
                     </div>
                 </div>
                 <div class="accordion glass-panel" style="margin-top: 1.5rem;">
@@ -72,7 +73,7 @@
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content asset-hub-container">
-                        <p class="asset-hub-subtitle">Import reference images, style guides, or character sheets.</p>
+                        <p class="asset-hub-subtitle">Import Element files to guide the visual generation.</p>
                         <div class="asset-import-area">
                             <input type="file" id="asset-upload" multiple style="display: none;">
                             <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>

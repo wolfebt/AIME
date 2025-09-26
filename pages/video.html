@@ -27,54 +27,48 @@
     <main class="container">
         <div class="workspace-layout">
             <div class="main-column">
-                <div class="element-header" style="text-align: left;">
-                    <h2 class="element-title animated-gradient">Director's Suite</h2>
-                    <p class="element-subtitle">Combine your characters, settings, and scenes into dynamic video sequences.</p>
-                </div>
                 <div class="video-player-container glass-panel">
-                    <div id="video-placeholder" class="video-placeholder">
-                        <p>Video Preview</p>
+                    <h3 class="player-title">Sequence Preview</h3>
+                    <div class="video-placeholder" style="background: #000; height: 300px; display:flex; align-items:center; justify-content:center; border-radius: 8px;">
+                        <p class="placeholder-text">Video preview will appear here.</p>
+                    </div>
+                     <div class="player-controls">
+                        <button class="player-btn">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
+                        </button>
+                        <span class="time-display">0:00 / 0:00</span>
                     </div>
                 </div>
-                <div id="timeline-container" class="timeline-container glass-panel">
-                    <div id="timeline-ruler"></div>
+                 <div class="timeline-editor-container glass-panel" style="margin-top: 1rem;">
+                    <h3 class="timeline-title">Timeline Editor</h3>
+                    <div id="timeline-ruler" class="timeline-ruler"></div>
                     <div class="timeline-tracks-container">
-                        <div class="playhead"></div>
-                        <div class="timeline-track" data-track-type="video">
-                            <span class="track-label">Video</span>
-                        </div>
-                        <div class="timeline-track" data-track-type="audio">
-                             <span class="track-label">Audio 1</span>
-                        </div>
-                         <div class="timeline-track" data-track-type="audio">
-                             <span class="track-label">Audio 2</span>
-                        </div>
+                        <div id="playhead" class="playhead"></div>
+                        <div class="timeline-track" data-track-type="video"><span class="track-label">Video</span></div>
+                        <div class="timeline-track" data-track-type="audio"><span class="track-label">Audio 1</span></div>
+                        <div class="timeline-track" data-track-type="audio"><span class="track-label">Audio 2</span></div>
                     </div>
                 </div>
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
-                <div class="accordion glass-panel">
-                    <button class="accordion-header">
+                <div class="accordion glass-panel active">
+                    <button class="accordion-header active">
                         <span>Generation Controls</span>
-                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <div class="form-section">
-                            <label for="video-prompt">Prompt</label>
-                            <textarea id="video-prompt" class="input-field" rows="4" placeholder="e.g., A wide shot of the hero entering the tavern..."></textarea>
-                        </div>
-                        <button id="generate-shot-button" class="generate-btn-large">Generate Shot</button>
+                        <textarea id="shot-prompt" class="input-field" placeholder="Describe the shot or sequence..."></textarea>
+                        <button id="generate-shot-btn" class="generate-btn-large">Generate Shot</button>
                     </div>
                 </div>
-                <div class="accordion glass-panel" style="margin-top: 1.5rem;">
-                    <button class="accordion-header">
+                 <div class="accordion glass-panel active" style="margin-top: 1.5rem;">
+                    <button class="accordion-header active">
                         <span>Shot Properties</span>
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <!-- Restored to the standard, working ID -->
-                        <div id="guidance-gems-container" class="gem-container"></div>
+                       <div id="guidance-gems-container"></div>
                     </div>
                 </div>
                 <div class="accordion glass-panel" style="margin-top: 1.5rem;">
@@ -84,7 +78,7 @@
                     </button>
                     <div class="accordion-content">
                         <div id="media-bin-list" class="media-bin-list">
-                            <p class="placeholder-text">Generated video and audio clips will appear here.</p>
+                            <p class="placeholder-text">Generated video, image, and audio clips will appear here.</p>
                         </div>
                     </div>
                 </div>
