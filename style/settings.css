@@ -6,19 +6,17 @@
 
 /* --- Settings Button (Gear Icon) --- */
 .settings-btn {
-    position: absolute;
-    top: 50%;
-    right: 1.5rem;
-    transform: translateY(-50%);
     background: none;
-    border: none;
+    border: 1px solid transparent; /* Reserve space for border */
+    border-radius: 50%;
     cursor: pointer;
     color: var(--light-text);
-    padding: 0.5rem;
+    padding: 0.4rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.3s ease, transform 0.3s ease;
+    transition: all 0.3s ease;
+    margin-left: 1rem;
 }
 
 .settings-btn svg {
@@ -28,8 +26,18 @@
 
 .settings-btn:hover {
     color: var(--accent-color);
-    transform: translateY(-50%) rotate(45deg);
+    transform: rotate(45deg);
 }
+
+/* Style for when the API key is not set */
+.settings-btn.no-key {
+    border-color: var(--error-text);
+}
+
+.settings-btn.no-key:hover {
+    border-color: var(--accent-color);
+}
+
 
 /* --- Settings Modal --- */
 .settings-modal-overlay {

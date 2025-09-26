@@ -64,7 +64,7 @@ function initializeAccordions() {
     });
 }
 
-// --- Asset Hub (REWRITTEN & STABLE) ---
+// --- Asset Hub ---
 function initializeAssetImporter() {
     const importBtn = document.getElementById('import-asset-btn');
     const fileInput = document.getElementById('asset-upload');
@@ -84,7 +84,7 @@ function initializeAssetImporter() {
 function addAssetToList(file, assetList) {
     const assetItem = document.createElement('div');
     assetItem.className = 'asset-item';
-    assetItem.dataset.filename = file.name; // Store filename
+    assetItem.dataset.filename = file.name;
 
     const assetInfo = document.createElement('div');
     assetInfo.className = 'asset-info';
@@ -94,8 +94,6 @@ function addAssetToList(file, assetList) {
         const imageURL = URL.createObjectURL(file);
         thumbnail.src = imageURL;
         thumbnail.className = 'asset-thumbnail';
-        // Revoke the URL after the image is loaded to free up memory,
-        // but the browser will still display the cached image.
         thumbnail.onload = () => URL.revokeObjectURL(imageURL);
         assetInfo.prepend(thumbnail);
     } else {
@@ -108,9 +106,7 @@ function addAssetToList(file, assetList) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 assetItem.dataset.content = e.target.result;
-                console.log(`Content of ${file.name} stored.`);
             };
-            reader.onerror = () => console.error(`Error reading ${file.name}`);
             reader.readAsText(file);
         }
     }
@@ -124,7 +120,6 @@ function addAssetToList(file, assetList) {
     removeBtn.className = 'remove-asset-btn';
     removeBtn.innerHTML = '&times;';
     removeBtn.onclick = () => {
-        // Before removing, check for and revoke any object URLs to prevent memory leaks
         const thumbnail = assetItem.querySelector('.asset-thumbnail');
         if (thumbnail && thumbnail.src.startsWith('blob:')) {
             URL.revokeObjectURL(thumbnail.src);
@@ -147,13 +142,9 @@ function initializeGuidanceGems() {
 }
 
 // --- AI Pipeline ---
-
 function craftSuperPrompt() {
     const form = document.getElementById('traits-form');
-    if (!form) {
-        console.error("Could not find the 'traits-form'.");
-        return null;
-    }
+    if (!form) return null;
 
     let prompt = "## Persona Profile\n\n";
 
@@ -161,7 +152,7 @@ function craftSuperPrompt() {
     inputs.forEach(input => {
         const label = document.querySelector(`label[for="${input.id}"]`);
         if (input.value.trim() !== '') {
-            prompt += `**${label ? label.textContent : input.id}:** ${input.value}\n`;
+            prompt += `**${label ? label.textContent : input.id}** ${input.value}\n`;
         }
     });
 
@@ -175,57 +166,40 @@ function craftSuperPrompt() {
             }
         });
     }
-
     return prompt;
 }
 
 async function runGenerator(prompt) {
     const apiKey = localStorage.getItem('gemini_api_key');
     if (!apiKey) {
-        return '<p style="padding: 1rem; color: var(--error-text);">Error: API Key not found. Please set your Google Gemini API key in the settings.</p>';
+        return '<p style="padding: 1rem; color: var(--error-text);">Error: API Key not found. Please set your API key in the settings on the main hub page.</p>';
     }
 
     const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
-
-    const requestBody = {
-        contents: [{
-            parts: [{ "text": prompt }]
-        }]
-    };
+    const requestBody = { contents: [{ parts: [{ "text": prompt }] }] };
 
     try {
         const response = await fetch(`${API_URL}?key=${apiKey}`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(requestBody)
         });
 
         if (!response.ok) {
             const errorData = await response.json();
-            console.error("API Error:", errorData);
             return `<p style="padding: 1rem; color: var(--error-text);">API Error: ${errorData.error.message}</p>`;
         }
 
         const data = await response.json();
-
-        if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0) {
-            // Using a simple regex to format the text for better readability
-            let formattedText = data.candidates[0].content.parts[0].text;
-            formattedText = formattedText.replace(/\n/g, '<br>');
-            return `<div style="padding: 1rem;">${formattedText}</div>`;
+        if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+            return `<div style="padding: 1rem;">${data.candidates[0].content.parts[0].text.replace(/\n/g, '<br>')}</div>`;
         } else {
-            console.error("Invalid response structure:", data);
-            return '<p style="padding: 1rem; color: var(--error-text);">Error: Received an invalid response from the AI. Check the console for details.</p>';
+            return '<p style="padding: 1rem; color: var(--error-text);">Error: Received an invalid response from the AI.</p>';
         }
-
     } catch (error) {
-        console.error("Network or other error:", error);
-        return `<p style="padding: 1rem; color: var(--error-text);">Error: Could not connect to the AI service. Check your network connection and console for details.</p>`;
+        return `<p style="padding: 1rem; color: var(--error-text);">Error: Could not connect to the AI service.</p>`;
     }
 }
-
 
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -241,37 +215,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (generateButton && responseContainer) {
         generateButton.addEventListener('click', async () => {
             responseContainer.innerHTML = '<p style="padding: 1rem;">Generating response...</p>';
-
             const prompt = craftSuperPrompt();
             if (prompt) {
                 const result = await runGenerator(prompt);
                 responseContainer.innerHTML = result;
             } else {
-                responseContainer.innerHTML = '<p style="padding: 1rem; color: var(--error-text);">Could not generate prompt. Please fill out some fields.</p>';
+                responseContainer.innerHTML = '<p style="padding: 1rem; color: var(--error-text);">Could not generate prompt.</p>';
             }
         });
     }
 
     const clearButton = document.getElementById('clear-fields-button');
-    if(clearButton) {
+    if (clearButton && assetList) {
         clearButton.addEventListener('click', () => {
-            // Clear all form inputs
             document.querySelectorAll('.main-column .input-field').forEach(input => input.value = '');
-
-            // Clear the response container
-            if(responseContainer) {
-                responseContainer.innerHTML = '';
-            }
-
-            // Clear the asset hub and revoke any object URLs to prevent memory leaks
-            if (assetList) {
-                assetList.querySelectorAll('.asset-thumbnail').forEach(thumb => {
-                    if (thumb.src.startsWith('blob:')) {
-                        URL.revokeObjectURL(thumb.src);
-                    }
-                });
-                assetList.innerHTML = '';
-            }
+            if (responseContainer) responseContainer.innerHTML = '';
+            assetList.querySelectorAll('.asset-thumbnail').forEach(thumb => {
+                if (thumb.src.startsWith('blob:')) URL.revokeObjectURL(thumb.src);
+            });
+            assetList.innerHTML = '';
         });
     }
 });
