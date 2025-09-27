@@ -6,6 +6,8 @@
 
 // --- Resizable Columns ---
 function initializeResizableColumns() {
+    // This functionality is currently disabled in the initializer at the bottom
+    // to ensure stability, but the code is here for future implementation.
     const workspace = document.querySelector('.workspace-layout');
     if (!workspace) return;
 
@@ -14,6 +16,8 @@ function initializeResizableColumns() {
     const resizeHandle = workspace.querySelector('.resize-handle');
 
     let isResizing = false;
+
+    if (!resizeHandle) return;
 
     resizeHandle.addEventListener('mousedown', (e) => {
         isResizing = true;
@@ -37,6 +41,7 @@ function initializeResizableColumns() {
     }
 }
 
+
 // --- Accordion Logic ---
 function initializeAccordions() {
     const accordions = document.querySelectorAll('.accordion');
@@ -57,7 +62,6 @@ function initializeAccordions() {
                 content.style.padding = '0 1.5rem';
             }
         });
-         // Set initial state for active accordions
         if (header.classList.contains('active')) {
             content.style.padding = '1.5rem';
             content.style.maxHeight = content.scrollHeight + "px";
@@ -65,16 +69,70 @@ function initializeAccordions() {
     });
 }
 
+// --- Asset Hub Importer ---
+function initializeAssetImporter() {
+    const importBtn = document.getElementById('import-asset-btn');
+    const fileInput = document.getElementById('asset-upload');
+    const assetList = document.getElementById('asset-list');
+
+    if (importBtn && fileInput && assetList) {
+        importBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (event) => {
+            for (const file of event.target.files) {
+                 if (file.type.startsWith('image/')) {
+                    addImageAssetToList(file, assetList);
+                } else {
+                    addTextAssetToList(file, assetList);
+                }
+            }
+        });
+    }
+}
+
+function addTextAssetToList(file, assetList) {
+    const assetItem = document.createElement('div');
+    assetItem.className = 'asset-item';
+    assetItem.innerHTML = `
+        <div class="asset-info">
+            <span class="asset-icon-text">TXT</span>
+            <span class="asset-name">${file.name}</span>
+        </div>
+        <button class="remove-asset-btn">&times;</button>
+    `;
+    assetList.appendChild(assetItem);
+    assetItem.querySelector('.remove-asset-btn').addEventListener('click', () => assetItem.remove());
+}
+
+function addImageAssetToList(file, assetList) {
+    const assetItem = document.createElement('div');
+    assetItem.className = 'asset-item';
+    const imageURL = URL.createObjectURL(file);
+
+    assetItem.innerHTML = `
+        <div class="asset-info">
+            <img src="${imageURL}" class="asset-thumbnail" alt="${file.name}">
+            <span class="asset-name">${file.name}</span>
+        </div>
+        <button class="remove-asset-btn">&times;</button>
+    `;
+    assetList.appendChild(assetItem);
+    assetItem.querySelector('.remove-asset-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        assetItem.remove();
+        URL.revokeObjectURL(imageURL);
+    });
+}
+
+
 // --- Guidance Gems ---
 function initializeGuidanceGems() {
     const container = document.getElementById('guidance-gems-container');
     if (!container) return;
 
     const gemsData = {
-        "Tone": ["Serious", "Humorous", "Dark", "Optimistic", "Gritty"],
-        "Pacing": ["Fast-paced", "Slow-burn", "Methodical"],
-        "Complexity": ["Simple & Direct", "Nuanced & Layered", "Intricate & Detailed"],
-        "Style": ["Cinematic", "Literary", "Scientific", "Mythological"]
+        "Tone": ["Epic", "Gritty", "Mystical", "Hopeful", "Dystopian"],
+        "Scope": ["Personal", "Planetary", "Galactic", "Cosmic"],
+        "Core Theme": ["Conflict", "Exploration", "Mystery", "Survival", "Intrigue"]
     };
 
     let html = '';
@@ -86,7 +144,6 @@ function initializeGuidanceGems() {
         html += `</div></div>`;
     }
     container.innerHTML = html;
-
     container.addEventListener('click', (e) => {
         if (e.target.classList.contains('gem-option')) {
             e.target.classList.toggle('active');
@@ -94,193 +151,111 @@ function initializeGuidanceGems() {
     });
 }
 
-// --- Asset Hub Importer ---
-function initializeAssetImporter() {
-    const importBtn = document.getElementById('import-asset-btn');
-    const fileInput = document.getElementById('asset-upload');
-    const assetList = document.getElementById('asset-list');
-    if (!importBtn || !fileInput || !assetList) return;
-
-    importBtn.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', (event) => {
-        for (const file of event.target.files) {
-            addAssetToList(file, assetList);
-        }
-    });
-}
-
-function addAssetToList(file, assetList) {
-    const assetItem = document.createElement('div');
-    assetItem.className = 'asset-item';
-    const fileURL = URL.createObjectURL(file);
-
-    let assetInfoHtml = '';
-    if (file.type.startsWith('image/')) {
-        assetInfoHtml = `
-            <div class="asset-info">
-                <img src="${fileURL}" alt="${file.name}" class="asset-thumbnail">
-                <span class="asset-name">${file.name}</span>
-            </div>`;
-    } else {
-        assetInfoHtml = `
-             <div class="asset-info">
-                <span class="asset-icon-text">TXT</span>
-                <span class="asset-name">${file.name}</span>
-            </div>`;
+// --- Element Generation Logic ---
+async function generateElementContent(button) {
+    const elementType = button.dataset.elementType;
+    const responseContainer = document.getElementById('response-container');
+    
+    const apiKey = localStorage.getItem('AIME_API_KEY');
+    if (!apiKey) {
+        alert('API Key not found. Please set it in the settings.');
+        return;
     }
 
-    assetItem.innerHTML = `${assetInfoHtml}<button class="remove-asset-btn">&times;</button>`;
-    assetList.appendChild(assetItem);
-    assetItem.querySelector('.remove-asset-btn').addEventListener('click', () => {
-        URL.revokeObjectURL(fileURL);
-        assetItem.remove();
-    });
+    button.disabled = true;
+    button.textContent = 'Generating...';
+    responseContainer.innerHTML = `
+        <div class="loading-indicator">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">AIME is forging your Element...</p>
+        </div>`;
+
+    const superPrompt = craftSuperPrompt(elementType);
+    
+    try {
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+        const payload = { contents: [{ parts: [{ text: superPrompt }] }] };
+
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+        const result = await response.json();
+        const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (text) {
+            responseContainer.innerHTML = `<div class="response-content">${text.replace(/\n/g, '<br>')}</div>`;
+        } else {
+            responseContainer.innerHTML = `<p class="error-text">Received an empty response from the AI.</p>`;
+        }
+    } catch (error) {
+        console.error('Error generating content:', error);
+        responseContainer.innerHTML = `<p class="error-text">An error occurred. Check the console for details.</p>`;
+    } finally {
+        button.disabled = false;
+        button.textContent = 'Generate';
+    }
 }
 
-
-// --- AI Generation Logic ---
-
 function craftSuperPrompt(elementType) {
-    let promptData = {
-        elementType: elementType,
-        fields: {},
-        gems: [],
-        assets: []
-    };
-
-    const inputs = document.querySelectorAll('.main-column .input-field');
+    let prompt = `You are AIME, an AI world-building assistant. The user wants to generate details for a "${elementType}" Element. Use the provided information to create a rich, detailed, and creative description.\n\n--- ELEMENT DETAILS ---\n`;
+    
+    const inputs = document.querySelectorAll('.form-section .input-field');
     inputs.forEach(input => {
-        if (input.id && input.value) {
-            const label = document.querySelector(`label[for="${input.id}"]`);
-            promptData.fields[label ? label.textContent : input.id] = input.value;
+        const label = input.previousElementSibling ? input.previousElementSibling.textContent : input.id;
+        if (input.value.trim()) {
+            prompt += `${label}: ${input.value.trim()}\n`;
         }
     });
 
     const activeGems = document.querySelectorAll('#guidance-gems-container .gem-option.active');
-    activeGems.forEach(gem => promptData.gems.push(gem.textContent));
+    if (activeGems.length > 0) {
+        prompt += "\n--- GUIDANCE GEMS ---\n";
+        activeGems.forEach(gem => prompt += `- ${gem.textContent.trim()}\n`);
+    }
 
     const assetItems = document.querySelectorAll('#asset-list .asset-name');
-    assetItems.forEach(item => promptData.assets.push(item.textContent));
-
-    let formattedPrompt = `You are AIME, an AI creative partner. Your task is to generate a detailed and creative description for a world-building element based on user-provided details.\n\n`;
-    formattedPrompt += `--- GENERATION REQUEST ---\n`;
-    formattedPrompt += `ELEMENT TYPE: ${promptData.elementType}\n\n`;
-    
-    formattedPrompt += `--- CORE DETAILS ---\n`;
-    for (const [key, value] of Object.entries(promptData.fields)) {
-        formattedPrompt += `${key}: ${value}\n`;
-    }
-    
-    if (promptData.gems.length > 0) {
-        formattedPrompt += `\n--- GUIDANCE GEMS (TONE & STYLE) ---\n`;
-        formattedPrompt += `Adhere to these styles: ${promptData.gems.join(', ')}\n`;
+    if (assetItems.length > 0) {
+        prompt += "\n--- CONTEXTUAL ASSETS ---\n";
+        assetItems.forEach(item => prompt += `- ${item.textContent.trim()}\n`);
     }
 
-    if (promptData.assets.length > 0) {
-        formattedPrompt += `\n--- CONTEXTUAL ASSETS (REFERENCE THESE) ---\n`;
-        formattedPrompt += `Use the following as context: ${promptData.assets.join(', ')}\n`;
-    }
+    prompt += `\n--- TASK ---\nGenerate the content for the "${elementType}" Element based on the data above. Be descriptive and imaginative. Format the output clearly with headings.`;
     
-    formattedPrompt += `\n--- TASK ---\nBased on all the information above, write a comprehensive, well-structured, and imaginative description for this element. Use paragraphs, and be descriptive.`;
-
-    return formattedPrompt;
+    console.log("Super Prompt:", prompt);
+    return prompt;
 }
-
-async function generateContent(prompt) {
-    const apiKey = ""; // This will be handled by the environment.
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-    const payload = {
-        contents: [{
-            parts: [{
-                text: prompt
-            }]
-        }],
-    };
-
-    try {
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-            throw new Error(`API request failed with status ${response.status}`);
-        }
-
-        const result = await response.json();
-        const candidate = result.candidates?.[0];
-        if (candidate && candidate.content?.parts?.[0]?.text) {
-            return candidate.content.parts[0].text;
-        } else {
-            throw new Error("Invalid response format from API.");
-        }
-    } catch (error) {
-        console.error("Error generating content:", error);
-        return "An error occurred while generating content. Please check the console for details.";
-    }
-}
-
 
 function initializeGeneration() {
     const generateButton = document.getElementById('generate-button');
-    const responseContainer = document.getElementById('response-container');
-    if (!generateButton || !responseContainer) return;
-
-    generateButton.addEventListener('click', async () => {
-        const elementType = generateButton.dataset.elementType;
-        const superPrompt = craftSuperPrompt(elementType);
-        
-        console.log("--- Generated Super-Prompt ---");
-        console.log(superPrompt);
-        
-        responseContainer.innerHTML = '<p class="loading-text">AIME is crafting your vision...</p>';
-        generateButton.disabled = true;
-
-        const aiResponse = await generateContent(superPrompt);
-        
-        // Sanitize and format the response for display
-        const formattedResponse = aiResponse
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/\n/g, "<br>");
-
-        responseContainer.innerHTML = `
-            <div class="response-content">
-                <h4>Generated ${elementType.charAt(0) + elementType.slice(1).toLowerCase()} Description</h4>
-                <p>${formattedResponse}</p>
-            </div>
-        `;
-        generateButton.disabled = false;
-    });
+    if (generateButton) {
+        generateButton.addEventListener('click', () => generateElementContent(generateButton));
+    }
 }
 
-// --- Utility Functions ---
-function initializeClearFields() {
+function initializeClearButton() {
     const clearButton = document.getElementById('clear-fields-button');
-    if(clearButton) {
+    if (clearButton) {
         clearButton.addEventListener('click', () => {
-            const inputs = document.querySelectorAll('.main-column .input-field');
+            const inputs = document.querySelectorAll('.form-section .input-field');
             inputs.forEach(input => input.value = '');
             const responseContainer = document.getElementById('response-container');
-            if (responseContainer) {
-                responseContainer.innerHTML = '';
-            }
+            if (responseContainer) responseContainer.innerHTML = '';
         });
     }
 }
 
-
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
-    // initializeResizableColumns(); // Disabled for now
+    // initializeResizableColumns(); // Intentionally disabled for stability
     initializeAccordions();
     initializeGuidanceGems();
     initializeAssetImporter();
     initializeGeneration();
-    initializeClearFields();
+    initializeClearButton();
 });
 

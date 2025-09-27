@@ -10,11 +10,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIME - Story Weaver</title>
     <link rel="stylesheet" href="../style/style.css">
+    <script src="../script/global-ui.js"></script>
     <script src="../script/writer-bundle.js"></script>
 </head>
 <body>
     <header class="main-header">
-        <a href="../index.html" class="logo-title animated-gradient">AIME</a>
+        <div class="header-left">
+            <a href="../index.html" class="logo-title animated-gradient">AIME</a>
+            <button id="settings-btn" class="settings-btn" title="API Key Settings">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
         <nav class="main-nav">
             <a href="writer.html" class="active">Writer</a>
             <a href="elements.html">Elements</a>
@@ -34,58 +40,47 @@
         </div>
         <div class="workspace-layout">
             <div class="main-column">
-                <!-- Brainstorm Tab -->
                 <div id="brainstorm-tab" class="writer-tab active">
                     <div class="tab-controls glass-panel">
                         <h3 class="tab-title">Brainstorm Concepts</h3>
-                        <div>
-                             <button class="action-btn" id="save-brainstorm-btn">Save Content</button>
+                         <div class="header-actions">
                              <button class="action-btn" id="save-prompt-info-btn">Save Prompt Info</button>
+                             <button class="action-btn" id="save-brainstorm-btn">Save Content</button>
                         </div>
                     </div>
                     <div id="brainstorm-response-area" class="response-area-cards">
-                         <p class="placeholder-text">Enter a core idea in the prompt box and click "Brainstorm Concepts" to generate story ideas.</p>
+                        <p class="placeholder-text">Enter a core idea in the prompt box and click "Brainstorm Concepts" to generate story ideas.</p>
                     </div>
                 </div>
-
-                <!-- Outline Tab -->
                 <div id="outline-tab" class="writer-tab">
                     <div class="tab-controls glass-panel">
-                         <h3 class="tab-title">Build Your Outline</h3>
-                         <button id="add-plot-point-btn" class="action-btn">Add Plot Point</button>
+                        <h3 class="tab-title">Build Your Outline</h3>
+                        <button id="add-plot-point-btn" class="action-btn">Add Plot Point</button>
                     </div>
-                     <ul id="outline-list" class="outline-list">
-                        <li class="scene-card" draggable="true">
-                            <div class="scene-card-details">
-                                <h4 class="scene-card-title" contenteditable="true">Act I: The Beginning</h4>
-                                <p class="scene-card-subtitle" contenteditable="true">Introduce the protagonist and the inciting incident.</p>
-                            </div>
-                            <div class="scene-card-handle"></div>
-                        </li>
-                     </ul>
+                    <ul id="outline-list" class="outline-list">
+                        <!-- Plot points will be dynamically added here -->
+                    </ul>
                 </div>
-
-                <!-- Treatment Tab -->
                 <div id="treatment-tab" class="writer-tab">
-                     <div class="tab-controls glass-panel">
-                         <h3 class="tab-title">Generate a Treatment</h3>
-                         <button id="generate-treatment-btn-main" class="action-btn">Generate Treatment</button>
+                    <div class="tab-controls glass-panel">
+                        <h3 class="tab-title">Generate a Treatment</h3>
+                        <button id="generate-treatment-btn-main" class="action-btn">Generate Treatment</button>
                     </div>
-                    <div id="treatment-canvas" class="writing-canvas glass-panel" contenteditable="true"></div>
+                    <div id="treatment-canvas" class="writing-canvas glass-panel" contenteditable="true">
+                         <p class="placeholder-text">Use the "Develop Outline" buttons in the Brainstorm tab, or the "Generate Treatment" button above to create a story treatment here.</p>
+                    </div>
                 </div>
-
-                <!-- Write & Refine Tab -->
                 <div id="write-tab" class="writer-tab">
-                     <div id="text-toolbar" class="text-toolbar hidden">
+                    <div id="text-toolbar" class="text-toolbar hidden">
                         <button class="toolbar-btn" data-action="rephrase">Rephrase</button>
                         <button class="toolbar-btn" data-action="shorten">Shorten</button>
                         <button class="toolbar-btn" data-action="expand">Expand</button>
                     </div>
-                    <div id="writing-canvas-main" class="writing-canvas glass-panel" contenteditable="true"></div>
+                    <div id="writing-canvas-main" class="writing-canvas glass-panel" contenteditable="true">
+                        <p class="placeholder-text">Begin writing your manuscript here, or send content from the Treatment tab.</p>
+                    </div>
                 </div>
-
             </div>
-             <div class="resize-handle"></div>
             <div class="side-column">
                 <div class="accordion glass-panel active">
                     <button class="accordion-header active">
@@ -123,6 +118,29 @@
             </div>
         </div>
     </main>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>API Key Settings</h3>
+                <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Please enter your Gemini API key below. This key will be stored securely in your browser's local storage.</p>
+                <div class="form-group">
+                    <label for="api-key-input">Gemini API Key</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="api-key-input" class="input-field" placeholder="Enter your API key">
+                        <button id="view-api-key" class="view-api-key-btn" title="Show/Hide Key">👁</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-save-btn" class="generate-btn-large">Save Key</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 

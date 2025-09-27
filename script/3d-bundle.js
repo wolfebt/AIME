@@ -2,10 +2,6 @@
     File: 3d-bundle.js
     Reference: 3D Workshop Logic
     Creator: Wolfe.BT, TangentLLC
-*//*
-    File: 3d-bundle.js
-    Reference: 3D Workshop Logic
-    Creator: Wolfe.BT, TangentLLC
 */
 
 // Using three.js library which is assumed to be imported in the HTML file
