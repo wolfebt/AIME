@@ -1,0 +1,51 @@
+/
+├── public/
+│   └── index.html
+│       * The single HTML page that serves as the entry point for the entire React application.
+│
+├── src/
+│   ├── api/
+│   │   └── geminiAPI.js
+│   │       * A utility module for making calls to the Google Gemini API, including error handling and retries.
+│   │
+│   ├── components/
+│   │   ├── layout/
+│   │   │   └── MainLayout.jsx
+│   │   │       * The main layout component that provides the consistent header, footer, and tab navigation for the app.
+│   │   │
+│   │   ├── PathGemModal.jsx
+│   │   │   * A reusable modal for presenting a user with a structured choice of options (e.g., genre, tone).
+│   │   │
+│   │   ├── ProjectModal.jsx
+│   │   │   * The modal for handling project-level actions like New, Load, and Export.
+│   │   │
+│   │   └── ResizableColumns.jsx
+│   │       * A component that creates a two-column layout with a draggable divider in the middle.
+│   │
+│   ├── contexts/
+│   │   └── AppContext.jsx
+│   │       * Provides global state and functions (like API key management and modal controls) to the entire application.
+│   │
+│   ├── styles/
+│   │   └── index.css
+│   │       * The global stylesheet for the application, including animations, base styles, and Tailwind CSS imports.
+│   │
+│   ├── views/
+│   │   ├── ArtistView.jsx
+│   │   │   * The main view for the "Visuals" tab, which will contain the AI artist tools.
+│   │   │
+│   │   ├── ElementView.jsx
+│   │   │   * The main view for the "Elements" tab, intended for building story components like characters and scenes.
+│   │   │
+│   │   └── WriterView.jsx
+│   │       * The main view for the "Story" tab, which will house the core writing and editing tools.
+│   │
+│   ├── App.jsx
+│   │   * The root component of the application. It manages the active tab and renders the main layout and all views/modals.
+│   │
+│   └── index.js
+│       * The top-level script that renders the React application into the `index.html` file.
+│
+└── package.json
+    * (Assumed) The project's manifest file, defining dependencies (like React) and project scripts.
+

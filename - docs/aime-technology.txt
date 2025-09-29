@@ -1,0 +1,14 @@
+Technology Forge 
+This tool is for defining specific technologies within the world.
+Technology Name: This should be a clear, concise, and memorable designation for the technology. It can be a simple, descriptive name or something more evocative, depending on the desired tone and context.
+Tech Level: Categorizing the technology's sophistication is crucial for understanding its place within a broader technological landscape.
+Near-Future: Technology that is plausible with current scientific understanding, perhaps requiring breakthroughs in specific fields but not defying known laws of physics.
+Magitech: Technology that overtly incorporates magical principles or draws power from supernatural sources, often blending the lines between science and sorcery.
+Ancient: Technology that predates current understanding, often discovered remnants of a forgotten civilization, and whose workings may be mysterious or misunderstood. Other levels could include "Experimental," "Theoretical," "Advanced Contemporary," or "Interstellar."
+Function & Purpose: This section explains what the technology does and, more importantly, why it exists. What problem does it solve? What new capabilities does it offer? Is it designed for utility, warfare, communication, entertainment, or something else entirely? Provide specific examples of its applications.
+Mechanism & Power Source: Delve into the nuts and bolts of how the technology operates.
+Mechanism: How does it achieve its stated function? Is it mechanical, electrical, biological, quantum-based, or something entirely novel? Describe the core principles or processes involved.
+Power Source: What fuels it? Is it conventional electricity, exotic energy crystals, a living organism, a dimension-spanning conduit, or something else entirely? Detail the energy generation, storage, and consumption.
+Social & Economic Impact: This is where you explore the broader ramifications of the technology. How has its introduction altered society?
+Social Impact: Has it changed daily life, cultural norms, interpersonal relationships, or demographics? Has it led to new social classes, conflicts, or collaborations? Consider its effects on education, healthcare, leisure, and crime.
+Economic Impact: Has it created new industries or made old ones obsolete? How has it affected employment, wealth distribution, and global trade? Are there new markets, monopolies, or economic disparities as a result of its existence? What are the financial costs of production, maintenance, and access?
