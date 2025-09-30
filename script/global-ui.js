@@ -4,6 +4,23 @@
     Creator: Wolfe.BT, TangentLLC
 */
 
+// --- Toast Notification Function ---
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.remove();
+    }, 3000); // Toast disappears after 3 seconds
+}
+
+
 // This function checks for the API key and updates the settings button's class for styling.
 function checkApiKeyStatus() {
     const settingsBtn = document.getElementById('settings-btn');
@@ -54,10 +71,10 @@ function initializeSettingsModal() {
         const key = apiKeyInput.value.trim();
         if (key) {
             localStorage.setItem('AIME_API_KEY', key);
-            alert('API Key saved successfully!');
+            showToast('API Key saved successfully!');
         } else {
             localStorage.removeItem('AIME_API_KEY');
-            alert('API Key cleared.');
+            showToast('API Key cleared.', 'error');
         }
         checkApiKeyStatus();
         modalOverlay.classList.add('hidden');

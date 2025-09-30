@@ -44,13 +44,27 @@
             <div class="main-column">
                 <div class="form-section glass-panel" style="padding: 1.5rem;">
                     <h4 id="SPECIES">Species Traits</h4>
+                    <h5 class="form-subheader">Core Identity</h5>
                     <div class="form-group"><label for="species-name">Species Name</label><input type="text" id="species-name" class="input-field" data-field-id="name" placeholder="The formal or common name of the species."></div>
-                    <div class="form-group"><label for="species-classification">Classification</label><input type="text" id="species-classification" class="input-field" data-field-id="classification" placeholder="The species' biological or ecological category (e.g., 'Sentient Mammal')."></div>
-                    <div class="form-group"><label for="species-description">Physical Description</label><textarea id="species-description" class="input-field" data-field-id="description" placeholder="Details on appearance, biology, and life cycle."></textarea></div>
+                    <div class="form-group"><label for="species-classification">Classification</label><input type="text" id="species-classification" class="input-field" data-field-id="classification" placeholder="e.g., 'Sentient Mammal,' 'Silicon-based Flora,' 'Avian Predator.'"></div>
+
+                    <h5 class="form-subheader">Biology & Physiology</h5>
+                    <div class="form-group"><label for="species-anatomy">Physical Anatomy & Appearance</label><textarea id="species-anatomy" class="input-field" data-field-id="anatomy" placeholder="Size, shape, coloration, key features, and general appearance."></textarea></div>
+                    <div class="form-group"><label for="species-biology">Biological Systems & Life Cycle</label><textarea id="species-biology" class="input-field" data-field-id="biology" placeholder="Internal systems, metabolism, reproduction, and lifespan."></textarea></div>
+                    <div class="form-group"><label for="species-senses">Sensory Capabilities</label><textarea id="species-senses" class="input-field" data-field-id="senses" placeholder="Unique senses like echolocation, thermal vision, or psionic awareness."></textarea></div>
                     <div class="form-group"><label for="species-abilities">Abilities & Powers</label><textarea id="species-abilities" class="input-field" data-field-id="abilities" placeholder="Special traits, unique skills, or natural defenses."></textarea></div>
-                    <div class="form-group"><label for="species-behavior">Behavior & Diet</label><textarea id="species-behavior" class="input-field" data-field-id="behavior" placeholder="Social structure, temperament, and food sources."></textarea></div>
-                    <div class="form-group"><label for="species-habitat">Habitat & Origin</label><textarea id="species-habitat" class="input-field" data-field-id="habitat" placeholder="Native environment and evolutionary history."></textarea></div>
-                    <div class="form-group"><label for="species-role">Role in the World</label><textarea id="species-role" class="input-field" data-field-id="role" placeholder="The species' ecological impact or societal role."></textarea></div>
+                    <div class="form-group"><label for="species-communication">Communication Methods</label><textarea id="species-communication" class="input-field" data-field-id="communication" placeholder="How they communicate: spoken language, telepathy, pheromones, etc."></textarea></div>
+
+                    <h5 class="form-subheader">Behavior & Ecology</h5>
+                    <div class="form-group"><label for="species-behavior">Behavior & Social Structure</label><textarea id="species-behavior" class="input-field" data-field-id="behavior" placeholder="Social hierarchies, temperament, and communal habits."></textarea></div>
+                    <div class="form-group"><label for="species-diet">Diet & Trophic Level</label><textarea id="species-diet" class="input-field" data-field-id="diet" placeholder="What they eat and their position in the food chain."></textarea></div>
+                    <div class="form-group"><label for="species-habitat">Habitat & Planetary Origin</label><textarea id="species-habitat" class="input-field" data-field-id="habitat" placeholder="Native environment and home world."></textarea></div>
+                    <div class="form-group"><label for="species-evolution">Evolutionary History</label><textarea id="species-evolution" class="input-field" data-field-id="evolution" placeholder="Ancestral forms and key evolutionary milestones."></textarea></div>
+
+                    <h5 class="form-subheader">Culture & Relations</h5>
+                    <div class="form-group"><label for="species-culture">Cultural Traits & Technology Level</label><textarea id="species-culture" class="input-field" data-field-id="culture" placeholder="Art, rituals, societal norms, and technological sophistication."></textarea></div>
+                    <div class="form-group"><label for="species-role">Ecological Role</label><textarea id="species-role" class="input-field" data-field-id="role" placeholder="Their impact on the ecosystem (e.g., keystone species, apex predator)."></textarea></div>
+                    <div class="form-group"><label for="species-relations">Inter-species Relations</label><textarea id="species-relations" class="input-field" data-field-id="relations" placeholder="How they interact with other species (e.g., symbiotic, parasitic, hostile)."></textarea></div>
                 </div>
                 <div id="response-container" class="response-container glass-panel"></div>
             </div>
@@ -61,6 +75,10 @@
             </div>
         </div>
     </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
     <!-- Settings Modal -->
     <div id="settings-modal-overlay" class="modal-overlay hidden">
         <div class="modal-content glass-panel">
@@ -85,3 +103,5 @@
     </div>
 </body>
 </html>
+
+

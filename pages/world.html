@@ -44,11 +44,25 @@
             <div class="main-column">
                 <div class="form-section glass-panel" style="padding: 1.5rem;">
                     <h4 id="WORLD">World Traits</h4>
+                    <h5 class="form-subheader">Core Concept</h5>
                     <div class="form-group"><label for="world-name">World Name</label><input type="text" id="world-name" class="input-field" data-field-id="name" placeholder="The foundational identifier for your creation."></div>
-                    <div class="form-group"><label for="world-premise">Core Premise / High Concept</label><textarea id="world-premise" class="input-field" data-field-id="premise" placeholder="A one-sentence summary that encapsulates the world's central idea or hook."></textarea></div>
-                    <div class="form-group"><label for="world-factions">Major Factions & Powers</label><textarea id="world-factions" class="input-field" data-field-id="factions" placeholder="The significant organized groups (guilds, kingdoms, corporations, etc.) that shape the world."></textarea></div>
+                    <div class="form-group"><label for="world-premise">Core Premise / High Concept</label><textarea id="world-premise" class="input-field" data-field-id="premise" placeholder="A one-sentence summary that encapsulates the world's central idea."></textarea></div>
+                    <div class="form-group"><label for="world-mood">Overall Tone & Mood</label><input type="text" id="world-mood" class="input-field" data-field-id="mood" placeholder="e.g., 'Grimdark Fantasy,' 'Hopeful Sci-Fi,' 'Satirical Noir.'"></div>
+
+                    <h5 class="form-subheader">Physical & Metaphysical Rules</h5>
+                    <div class="form-group"><label for="world-physics">Cosmology & Unique Physics</label><textarea id="world-physics" class="input-field" data-field-id="physics" placeholder="The fundamental rules of your world and its place in the cosmos."></textarea></div>
+                    <div class="form-group"><label for="world-magic">Magic & Power Systems</label><textarea id="world-magic" class="input-field" data-field-id="magic" placeholder="The sources, limitations, and applications of any supernatural forces."></textarea></div>
+                    <div class="form-group"><label for="world-tech-level">Technological Level</label><input type="text" id="world-tech-level" class="input-field" data-field-id="tech_level" placeholder="e.g., 'Bronze Age,' 'Industrial Revolution,' 'Interstellar.'"></div>
+
+                    <h5 class="form-subheader">Environment & Inhabitants</h5>
+                    <div class="form-group"><label for="world-characteristics">Physical Characteristics</label><textarea id="world-characteristics" class="input-field" data-field-id="characteristics" placeholder="Planet size, gravity, day/night cycle, number of moons, etc."></textarea></div>
+                    <div class="form-group"><label for="world-geography">Geography & Climate Zones</label><textarea id="world-geography" class="input-field" data-field-id="geography" placeholder="Major continents, oceans, and distinct climate areas."></textarea></div>
+                    <div class="form-group"><label for="world-species">Dominant Species & Cultures</label><textarea id="world-species" class="input-field" data-field-id="species" placeholder="The main intelligent species and their primary cultural groups."></textarea></div>
+
+                    <h5 class="form-subheader">Society & History</h5>
+                    <div class="form-group"><label for="world-factions">Major Factions & Powers</label><textarea id="world-factions" class="input-field" data-field-id="factions" placeholder="The significant guilds, kingdoms, corporations, etc. that shape the world."></textarea></div>
                     <div class="form-group"><label for="world-lore">History & Lore Timeline</label><textarea id="world-lore" class="input-field" data-field-id="lore" placeholder="The chronological sequence of significant events that have shaped your world."></textarea></div>
-                    <div class="form-group"><label for="world-physics">Cosmology & Unique Physics</label><textarea id="world-physics" class="input-field" data-field-id="physics" placeholder="The fundamental rules of your world, including magic systems and laws of nature."></textarea></div>
+                    <div class="form-group"><label for="world-conflicts">Major Historical Conflicts</label><textarea id="world-conflicts" class="input-field" data-field-id="conflicts" placeholder="Pivotal wars, revolutions, or disasters that define the world's history."></textarea></div>
                 </div>
                 <div id="response-container" class="response-container glass-panel"></div>
             </div>
@@ -59,6 +73,10 @@
             </div>
         </div>
     </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
     <!-- Settings Modal -->
     <div id="settings-modal-overlay" class="modal-overlay hidden">
         <div class="modal-content glass-panel">
@@ -83,3 +101,5 @@
     </div>
 </body>
 </html>
+
+

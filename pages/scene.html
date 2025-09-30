@@ -44,10 +44,22 @@
             <div class="main-column">
                 <div class="form-section glass-panel" style="padding: 1.5rem;">
                     <h4 id="SCENE">Scene Traits</h4>
-                    <div class="form-group"><label for="scene-name">Scene Name / Slugline</label><input type="text" id="scene-name" class="input-field" data-field-id="name" placeholder="A formal identifier for the scene (e.g., 'INT. COFFEE SHOP - DAY')."></div>
-                    <div class="form-group"><label for="scene-location">Location</label><textarea id="scene-location" class="input-field" data-field-id="location" placeholder="A precise description of where the scene unfolds."></textarea></div>
-                    <div class="form-group"><label for="scene-mood">Mood & Atmosphere</label><textarea id="scene-mood" class="input-field" data-field-id="mood" placeholder="The overall emotional and psychological tone."></textarea></div>
-                    <div class="form-group"><label for="scene-sensory">Sensory Details</label><textarea id="scene-sensory" class="input-field" data-field-id="sensory" placeholder="Notes on sight, sound, smell, and touch to bring the scene to life."></textarea></div>
+                    <h5 class="form-subheader">Core Details</h5>
+                    <div class="form-group"><label for="scene-name">Scene Name / Slugline</label><input type="text" id="scene-name" class="input-field" data-field-id="name" placeholder="e.g., 'INT. COFFEE SHOP - DAY'"></div>
+                    <div class="form-group"><label for="scene-location">Location Description</label><textarea id="scene-location" class="input-field" data-field-id="location" placeholder="A precise description of where the scene unfolds."></textarea></div>
+                    <div class="form-group"><label for="scene-time">Time of Day & Duration</label><input type="text" id="scene-time" class="input-field" data-field-id="time" placeholder="e.g., 'Dusk, lasting a few minutes.'"></div>
+                    <div class="form-group"><label for="scene-mood">Mood & Atmosphere</label><textarea id="scene-mood" class="input-field" data-field-id="mood" placeholder="The overall emotional and psychological tone (e.g., tense, humorous, melancholic)."></textarea></div>
+
+                    <h5 class="form-subheader">Sensory Details</h5>
+                    <div class="form-group"><label for="scene-sight">Visual Details (Sight)</label><textarea id="scene-sight" class="input-field" data-field-id="sight" placeholder="Lighting, colors, key objects, and character appearances."></textarea></div>
+                    <div class="form-group"><label for="scene-sound">Auditory Details (Sound)</label><textarea id="scene-sound" class="input-field" data-field-id="sound" placeholder="Dialogue, background noise, sound effects, music, or silence."></textarea></div>
+                    <div class="form-group"><label for="scene-smell">Olfactory & Other Senses</label><textarea id="scene-smell" class="input-field" data-field-id="smell" placeholder="Prominent smells, temperatures, and tactile sensations."></textarea></div>
+
+                    <h5 class="form-subheader">Narrative Elements</h5>
+                    <div class="form-group"><label for="scene-characters">Key Characters Present</label><textarea id="scene-characters" class="input-field" data-field-id="characters" placeholder="List the characters involved in the scene and their initial state."></textarea></div>
+                    <div class="form-group"><label for="scene-objective">Scene Objective / Goal</label><textarea id="scene-objective" class="input-field" data-field-id="objective" placeholder="What the protagonist or main characters want to achieve in this scene."></textarea></div>
+                    <div class="form-group"><label for="scene-conflict">Core Conflict / Tension</label><textarea id="scene-conflict" class="input-field" data-field-id="conflict" placeholder="The primary obstacle or source of tension preventing the goal."></textarea></div>
+                    <div class="form-group"><label for="scene-beats">Narrative Beats / Pacing</label><textarea id="scene-beats" class="input-field" data-field-id="beats" placeholder="The key moments or sequence of events that happen in the scene."></textarea></div>
                     <div class="form-group"><label for="scene-objects">Key Objects & Interactivity</label><textarea id="scene-objects" class="input-field" data-field-id="objects" placeholder="Important props or elements that characters can interact with."></textarea></div>
                 </div>
                 <div id="response-container" class="response-container glass-panel"></div>
@@ -59,6 +71,10 @@
             </div>
         </div>
     </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
     <!-- Settings Modal -->
     <div id="settings-modal-overlay" class="modal-overlay hidden">
         <div class="modal-content glass-panel">
@@ -83,3 +99,6 @@
     </div>
 </body>
 </html>
+
+
+

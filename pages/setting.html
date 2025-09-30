@@ -44,11 +44,24 @@
             <div class="main-column">
                 <div class="form-section glass-panel" style="padding: 1.5rem;">
                     <h4 id="SETTING">Setting Traits</h4>
+                    <h5 class="form-subheader">Core Identity</h5>
                     <div class="form-group"><label for="setting-name">Setting Name</label><input type="text" id="setting-name" class="input-field" data-field-id="name" placeholder="The specific identifier for the location (e.g., 'Aethelgard')."></div>
-                    <div class="form-group"><label for="parent-world">Parent World</label><input type="text" id="parent-world" class="input-field" data-field-id="parent_world" placeholder="The larger world this setting exists within."></div>
-                    <div class="form-group"><label for="setting-purpose">Function & Purpose</label><textarea id="setting-purpose" class="input-field" data-field-id="purpose" placeholder="The setting's primary role (e.g., 'Capital City,' 'Trading Hub')."></textarea></div>
-                    <div class="form-group"><label for="setting-geography">Geography & Architecture</label><textarea id="setting-geography" class="input-field" data-field-id="geography" placeholder="The natural landscape, climate, and building styles."></textarea></div>
-                    <div class="form-group"><label for="setting-population">Population & Demographics</label><textarea id="setting-population" class="input-field" data-field-id="population" placeholder="The number of inhabitants and their characteristics."></textarea></div>
+                    <div class="form-group"><label for="parent-world">Parent World</label><input type="text" id="parent-world" class="input-field" data-field-id="parent_world" placeholder="The larger world or realm this setting exists within."></div>
+                    <div class="form-group"><label for="setting-purpose">Function & Purpose</label><textarea id="setting-purpose" class="input-field" data-field-id="purpose" placeholder="The setting's primary role (e.g., 'Capital City,' 'Trading Hub,' 'Sacred Sanctuary')."></textarea></div>
+
+                    <h5 class="form-subheader">Environment & Inhabitants</h5>
+                    <div class="form-group"><label for="setting-geography">Geographical Features & Climate</label><textarea id="setting-geography" class="input-field" data-field-id="geography" placeholder="The natural landscape, terrain, and weather patterns."></textarea></div>
+                    <div class="form-group"><label for="setting-landmarks">Key Landmarks</label><textarea id="setting-landmarks" class="input-field" data-field-id="landmarks" placeholder="Notable natural or artificial structures."></textarea></div>
+                    <div class="form-group"><label for="setting-architecture">Architectural Style & Materials</label><textarea id="setting-architecture" class="input-field" data-field-id="architecture" placeholder="The predominant building styles and construction materials."></textarea></div>
+                    <div class="form-group"><label for="setting-flora-fauna">Flora & Fauna</label><textarea id="setting-flora-fauna" class="input-field" data-field-id="flora_fauna" placeholder="Unique plants and animals found in the area."></textarea></div>
+                    <div class="form-group"><label for="setting-population">Population & Demographics</label><textarea id="setting-population" class="input-field" data-field-id="population" placeholder="The number of inhabitants, their species, and characteristics."></textarea></div>
+
+                    <h5 class="form-subheader">Culture & Society</h5>
+                    <div class="form-group"><label for="setting-culture">Culture & Social Norms</label><textarea id="setting-culture" class="input-field" data-field-id="culture" placeholder="The customs, traditions, and values of the inhabitants."></textarea></div>
+                    <div class="form-group"><label for="setting-government">Government & Leadership</label><textarea id="setting-government" class="input-field" data-field-id="government" placeholder="How the setting is ruled and who is in power."></textarea></div>
+                    <div class="form-group"><label for="setting-economy">Economy & Trade</label><textarea id="setting-economy" class="input-field" data-field-id="economy" placeholder="Primary industries, resources, and trade activities."></textarea></div>
+                    <div class="form-group"><label for="setting-history">History & Lore</label><textarea id="setting-history" class="input-field" data-field-id="history" placeholder="Key historical events and significant lore associated with the location."></textarea></div>
+                    <div class="form-group"><label for="setting-atmosphere">Sensory Atmosphere</label><textarea id="setting-atmosphere" class="input-field" data-field-id="atmosphere" placeholder="The overall look, sound, smell, and feel of the place."></textarea></div>
                 </div>
                 <div id="response-container" class="response-container glass-panel"></div>
             </div>
@@ -59,6 +72,10 @@
             </div>
         </div>
     </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
     <!-- Settings Modal -->
     <div id="settings-modal-overlay" class="modal-overlay hidden">
         <div class="modal-content glass-panel">
@@ -83,3 +100,6 @@
     </div>
 </body>
 </html>
+
+
+
