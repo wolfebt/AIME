@@ -49,6 +49,8 @@ function initializeResizableColumns() {
 // --- Accordion Logic ---
 function initializeAccordions() {
     const accordions = document.querySelectorAll('.accordion');
+    let alreadyOpenOnLoad = false; // Flag to ensure only one accordion opens on load
+
     accordions.forEach(accordion => {
         const header = accordion.querySelector('.accordion-header');
         const content = accordion.querySelector('.accordion-content');
@@ -56,22 +58,41 @@ function initializeAccordions() {
         if (!header || !content || !chevron) return;
 
         header.addEventListener('click', () => {
-            const isOpen = header.classList.toggle('active');
-            chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-            if (isOpen) {
+            const wasActive = header.classList.contains('active');
+
+            // Close all accordions
+            accordions.forEach(acc => {
+                const h = acc.querySelector('.accordion-header');
+                const c = acc.querySelector('.accordion-content');
+                const v = h.querySelector('.accordion-chevron');
+                if (h.classList.contains('active')) {
+                    h.classList.remove('active');
+                    v.style.transform = 'rotate(0deg)';
+                    c.style.maxHeight = null;
+                    c.style.padding = '0 1.5rem';
+                }
+            });
+
+            // If the clicked accordion wasn't already open, open it
+            if (!wasActive) {
+                header.classList.add('active');
+                chevron.style.transform = 'rotate(180deg)';
                 content.style.padding = '1.5rem';
                 content.style.maxHeight = content.scrollHeight + "px";
-            } else {
-                content.style.maxHeight = null;
-                content.style.padding = '0 1.5rem';
             }
         });
 
-        // Ensure initially active accordions are open
+        // Handle initially active accordions, ensuring only one is open
         if (header.classList.contains('active')) {
-            content.style.padding = '1.5rem';
-            content.style.maxHeight = content.scrollHeight + "px";
-            chevron.style.transform = 'rotate(180deg)';
+            if (!alreadyOpenOnLoad) {
+                content.style.padding = '1.5rem';
+                content.style.maxHeight = content.scrollHeight + "px";
+                chevron.style.transform = 'rotate(180deg)';
+                alreadyOpenOnLoad = true;
+            } else {
+                // If one is already open, force subsequent 'active' ones to be closed.
+                header.classList.remove('active');
+            }
         }
     });
 }
