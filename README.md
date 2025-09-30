@@ -1,4 +1,4 @@
-# AIME - The Artificial Intelligent Meta-Creative Environment
+# AIME - The Artificial Intelligent Meta-creative Environment
 
 AIME is a powerful, web-based creative assistant designed to augment and amplify human ingenuity through a suite of AI-powered tools. It serves as a central hub for creators, providing a seamless workflow for various artistic endeavors, from writing and world-building to generating images, 3D models, audio, and video.
 
@@ -25,3 +25,4 @@ AIME is built on the philosophy of "AI Craft," a collaborative and intentional a
 4.  **You are the Curator (Ethical Creation):** The AI has no taste or ethics. You are the final filter. It is your responsibility to ensure the story is coherent, the themes are meaningful, and the content aligns with your creative and moral standards.
 
 By embracing the principles of AI Craft, you elevate your role from a mere user of a tool to a true artisan of a new creative medium, ensuring that your stories remain uniquely and powerfully human.
+
