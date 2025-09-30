@@ -451,9 +451,10 @@ function parseBrainstormResponse(responseText) {
     const rawConcepts = responseText.split('---').filter(c => c.trim().length > 10);
 
     rawConcepts.forEach(rawConcept => {
-        const titleMatch = rawConcept.match(/Title:\s*(.*)/);
-        const loglineMatch = rawConcept.match(/Logline:\s*(.*)/);
-        const conceptMatch = rawConcept.match(/Concept:\s*([\s\S]*)/);
+        const trimmedConcept = rawConcept.trim(); // Trim whitespace from the chunk
+        const titleMatch = trimmedConcept.match(/Title:\s*(.*)/);
+        const loglineMatch = trimmedConcept.match(/Logline:\s*(.*)/);
+        const conceptMatch = trimmedConcept.match(/Concept:\s*([\s\S]*)/);
 
         if (titleMatch && loglineMatch && conceptMatch) {
             concepts.push({
