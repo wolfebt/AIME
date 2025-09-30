@@ -4,6 +4,8 @@
     Creator: Wolfe.BT, TangentLLC
 */
 
+let loadedAssets = []; // NEW: Data store for asset content
+
 // --- Resizable Columns ---
 function initializeResizableColumns() {
     const workspace = document.querySelector('.workspace-layout');
@@ -103,47 +105,102 @@ function initializeGuidanceGems() {
 
 
 // --- Asset Hub Importer ---
+// MODIFIED: This section has been completely rewritten to correctly read files.
 function initializeAssetImporter() {
     const importBtn = document.getElementById('import-asset-btn');
     const fileInput = document.getElementById('asset-upload');
-    const assetList = document.getElementById('asset-list');
-    if (!importBtn || !fileInput || !assetList) return;
+    
+    if (!importBtn || !fileInput) return;
 
     importBtn.addEventListener('click', () => fileInput.click());
+
     fileInput.addEventListener('change', (event) => {
-        for (const file of event.target.files) {
-            addAssetToList(file, assetList);
+        const files = event.target.files;
+        if (!files.length) return;
+
+        for (const file of files) {
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                const assetData = {
+                    id: `asset-${Date.now()}-${Math.random()}`,
+                    fileName: file.name,
+                    content: e.target.result
+                };
+
+                if (file.type.startsWith('image/')) {
+                    assetData.type = 'image';
+                } else if (file.name.endsWith('.json')) {
+                    assetData.type = 'json';
+                    try {
+                        // Pre-parse JSON to ensure it's valid
+                        assetData.content = JSON.parse(e.target.result);
+                    } catch (err) {
+                        alert(`Error parsing JSON file ${file.name}. It will be treated as plain text.`);
+                        assetData.type = 'text';
+                        assetData.content = e.target.result; // Revert to text if parsing fails
+                    }
+                } else {
+                    assetData.type = 'text';
+                }
+
+                loadedAssets.push(assetData);
+                renderAssetList();
+            };
+
+            if (file.type.startsWith('image/')) {
+                reader.readAsDataURL(file);
+            } else {
+                reader.readAsText(file);
+            }
         }
+        // Reset file input to allow re-uploading the same file
+        event.target.value = null;
     });
 }
 
-function addAssetToList(file, assetList) {
-    const assetItem = document.createElement('div');
-    assetItem.className = 'asset-item';
-    const fileURL = URL.createObjectURL(file);
+// NEW: Renders the asset list UI based on the loadedAssets data store.
+function renderAssetList() {
+    const assetList = document.getElementById('asset-list');
+    if (!assetList) return;
+    
+    assetList.innerHTML = ''; // Clear the list
 
-    let assetInfoHtml = '';
-    if (file.type.startsWith('image/')) {
-        assetInfoHtml = `
-            <div class="asset-info">
-                <img src="${fileURL}" alt="${file.name}" class="asset-thumbnail">
-                <span class="asset-name">${file.name}</span>
-            </div>`;
-    } else {
-        assetInfoHtml = `
-             <div class="asset-info">
-                <span class="asset-icon-text">TXT</span>
-                <span class="asset-name">${file.name}</span>
-            </div>`;
+    loadedAssets.forEach(asset => {
+        const assetItem = document.createElement('div');
+        assetItem.className = 'asset-item';
+        
+        let assetInfoHtml = '';
+        if (asset.type === 'image') {
+            assetInfoHtml = `
+                <div class="asset-info">
+                    <img src="${asset.content}" alt="${asset.fileName}" class="asset-thumbnail">
+                    <span class="asset-name">${asset.fileName}</span>
+                </div>`;
+        } else {
+            const icon = asset.type === 'json' ? 'JSON' : 'TXT';
+            assetInfoHtml = `
+                 <div class="asset-info">
+                    <span class="asset-icon-text">${icon}</span>
+                    <span class="asset-name">${asset.fileName}</span>
+                </div>`;
+        }
+
+        assetItem.innerHTML = `${assetInfoHtml}<button class="remove-asset-btn" data-asset-id="${asset.id}">&times;</button>`;
+        assetList.appendChild(assetItem);
+    });
+}
+
+// NEW: Global event listener to handle removing assets from the data store and UI.
+document.addEventListener('click', (e) => {
+    if (e.target.matches('.remove-asset-btn')) {
+        const assetId = e.target.dataset.assetId;
+        loadedAssets = loadedAssets.filter(asset => asset.id !== assetId);
+        renderAssetList();
     }
+});
 
-    assetItem.innerHTML = `${assetInfoHtml}<button class="remove-asset-btn">&times;</button>`;
-    assetList.appendChild(assetItem);
-    assetItem.querySelector('.remove-asset-btn').addEventListener('click', () => {
-        URL.revokeObjectURL(fileURL);
-        assetItem.remove();
-    });
-}
+// REMOVED: The old addAssetToList function is no longer needed.
 
 // --- Story Weaver Tabs & Workflow ---
 function initializeTabs() {
@@ -196,7 +253,7 @@ async function generateContent(prompt) {
         alert("API Key not found. Please set it in the settings (the ⚙️ icon).");
         return "Error: API Key not set. Please click the settings icon (⚙️) to enter your Gemini API key.";
     }
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
     const payload = {
         contents: [{
@@ -244,8 +301,8 @@ function craftSuperPrompt(promptText) {
     const activeGems = document.querySelectorAll('#guidance-gems-container .gem-option.active');
     activeGems.forEach(gem => promptData.gems.push(gem.textContent));
 
-    const assetItems = document.querySelectorAll('#asset-list .asset-name');
-    assetItems.forEach(item => promptData.assets.push(item.textContent));
+    // MODIFIED: Use the loadedAssets array for rich context from file content
+    const contextualAssets = loadedAssets.filter(asset => asset.type === 'text' || asset.type === 'json');
 
     let formattedPrompt = `You are AIME, an AI creative partner specializing in storytelling.\n\n--- STORY BRAINSTORM REQUEST ---\n`;
     formattedPrompt += `USER'S CORE IDEA: "${promptData.prompt}"\n\n`;
@@ -254,10 +311,22 @@ function craftSuperPrompt(promptText) {
         formattedPrompt += `--- GUIDANCE GEMS (GENRE, TONE, THEMES) ---\n`;
         formattedPrompt += `Incorporate these elements: ${promptData.gems.join(', ')}\n`;
     }
-    if (promptData.assets.length > 0) {
+    
+    // MODIFIED: Build a more detailed context block from actual asset content
+    if (contextualAssets.length > 0) {
         formattedPrompt += `\n--- CONTEXTUAL ASSETS (REFERENCE THESE) ---\n`;
-        formattedPrompt += `Use the following as context: ${promptData.assets.join(', ')}\n`;
+        contextualAssets.forEach(asset => {
+            formattedPrompt += `\n[ASSET: ${asset.fileName}]\n`;
+            if (asset.type === 'json') {
+                // Stringify the pre-parsed JSON content
+                formattedPrompt += JSON.stringify(asset.content, null, 2);
+            } else {
+                formattedPrompt += asset.content;
+            }
+            formattedPrompt += `\n[END ASSET: ${asset.fileName}]\n`;
+        });
     }
+
     formattedPrompt += `\n--- TASK ---\nBased on all the information above, generate three distinct and creative story concepts. For each concept, you MUST provide a "Title:", a one-sentence "Logline:", and a "Concept:" paragraph. Separate each of the three concepts with '---'.`;
 
     return formattedPrompt;
@@ -519,6 +588,7 @@ function initializeWorkflowButtons() {
     if (!mainColumn) return;
 
     mainColumn.addEventListener('click', async (e) => {
+        // Handle "Develop Outline" from Brainstorm card
         if (e.target.classList.contains('develop-outline-btn')) {
             e.target.textContent = 'Developing...';
             e.target.disabled = true;
@@ -539,6 +609,27 @@ function initializeWorkflowButtons() {
             await generateOutline(fullConcept);
             e.target.textContent = 'Develop Outline';
             e.target.disabled = false;
+        }
+
+        // NEW: Handle "Create Treatment" from Outline tab
+        if (e.target.id === 'create-treatment-from-outline-btn') {
+            e.target.textContent = 'Creating...';
+            e.target.disabled = true;
+
+            // Switch to the treatment tab to show progress
+            const treatmentTabButton = document.querySelector('.writer-nav-button[data-tab="treatment"]');
+            if (treatmentTabButton) {
+                treatmentTabButton.click();
+            }
+            
+            await generateTreatment();
+            
+            // Re-enable the button after generation is complete
+            const btn = document.getElementById('create-treatment-from-outline-btn');
+            if(btn) {
+                btn.textContent = 'Create Treatment';
+                btn.disabled = false;
+            }
         }
     });
 }
@@ -758,4 +849,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeFloatingToolbar();
     initializeSaveButton();
 });
+
+
+
+
+
+
 
