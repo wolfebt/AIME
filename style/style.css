@@ -353,41 +353,113 @@ select.input-field {
 }
 
 
-/* Guidance Gems */
-.gem-category { margin-bottom: 1rem; }
-.gem-title {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--medium-text);
-    margin-bottom: 0.5rem;
-}
-.gem-options {
+/* --- NEW Guidance Gems Dropdown Styles --- */
+#guidance-gems-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    flex-direction: column;
+    gap: 0.75rem;
 }
-.gem-option {
-    background-color: rgba(139, 148, 158, 0.1);
-    border: 1px solid var(--panel-border);
-    color: var(--medium-text);
-    padding: 6px 12px;
-    border-radius: 20px;
+
+.gem-dropdown-container {
+    position: relative;
+}
+
+.gem-dropdown-header {
+    width: 100%;
+    background-color: var(--dark-bg);
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 0.75rem;
+    color: var(--light-text);
+    font-family: var(--font-main);
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: all 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
     cursor: pointer;
-    font-size: 0.85rem;
+}
+
+.gem-dropdown-header:hover, .gem-dropdown-container.open .gem-dropdown-header {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+}
+
+.gem-selected-value {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gem-dropdown-chevron {
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+}
+
+.gem-dropdown-container.open .gem-dropdown-chevron {
+    transform: rotate(180deg);
+}
+
+.gem-dropdown-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    width: 100%;
+    z-index: 50;
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    padding: 0.5rem;
+    box-sizing: border-box;
+    animation: fadeInPanel 0.2s ease-out;
+}
+
+@keyframes fadeInPanel {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.gem-dropdown-container.open .gem-dropdown-panel {
+    display: block;
+}
+
+.gem-dropdown-options {
+    display: flex;
+    flex-direction: column;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 0.5rem;
+    padding-right: 4px; /* For scrollbar */
+}
+
+.gem-option {
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--medium-text);
+    padding: 0.6rem 0.75rem;
+    border-radius: 6px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.95rem;
     transition: all 0.2s;
 }
+
 .gem-option:hover {
-    background-color: rgba(139, 148, 158, 0.2);
+    background-color: rgba(139, 148, 158, 0.1);
     color: var(--light-text);
 }
+
 .gem-option.active {
     background-color: var(--accent-blue);
     color: white;
     font-weight: 500;
-    border-color: transparent;
 }
-.gem-input { width: 100%; }
-.gem-group { margin-bottom: 1rem; }
 
 /* Buttons */
 .generate-btn-large, .save-btn-large {
