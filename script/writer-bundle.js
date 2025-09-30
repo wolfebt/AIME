@@ -758,3 +758,4 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeFloatingToolbar();
     initializeSaveButton();
 });
+
