@@ -11,15 +11,11 @@ function checkApiKeyStatus() {
 
     const savedKey = localStorage.getItem('AIME_API_KEY');
     if (savedKey) {
-        settingsBtn.classList.remove('needs-key');
-<<<<<<< HEAD
         settingsBtn.classList.add('has-key');
+        settingsBtn.classList.remove('needs-key');
     } else {
-        settingsBtn.classList.remove('has-key');
-=======
-    } else {
->>>>>>> 491155f1b920e1a976ead501ba7e02d2f5bf1130
         settingsBtn.classList.add('needs-key');
+        settingsBtn.classList.remove('has-key');
     }
 }
 
@@ -32,15 +28,11 @@ function initializeSettingsModal() {
     const apiKeyInput = document.getElementById('api-key-input');
     const viewKeyBtn = document.getElementById('view-api-key');
 
-    if (!settingsBtn || !modalOverlay || !closeBtn || !saveBtn || !apiKeyInput) return;
+    if (!settingsBtn || !modalOverlay || !closeBtn || !saveBtn || !apiKeyInput || !viewKeyBtn) return;
 
     const openModal = () => {
         const savedKey = localStorage.getItem('AIME_API_KEY');
-        if (savedKey) {
-            apiKeyInput.value = savedKey;
-        } else {
-            apiKeyInput.value = '';
-        }
+        apiKeyInput.value = savedKey || '';
         apiKeyInput.type = 'password';
         modalOverlay.classList.remove('hidden');
     };
@@ -79,9 +71,5 @@ function initializeSettingsModal() {
 document.addEventListener('DOMContentLoaded', () => {
     initializeSettingsModal();
     checkApiKeyStatus(); // Initial check on page load
-<<<<<<< HEAD
 });
 
-=======
-});
->>>>>>> 491155f1b920e1a976ead501ba7e02d2f5bf1130
