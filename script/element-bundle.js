@@ -4,6 +4,8 @@
     Creator: Wolfe.BT, TangentLLC
 */
 
+let loadedAssets = []; // Data store for asset content
+
 // --- Resizable Columns ---
 function initializeResizableColumns() {
     // This functionality is currently disabled in the initializer at the bottom
@@ -70,8 +72,6 @@ function initializeAccordions() {
 }
 
 // --- Asset Hub Importer ---
-let loadedAssets = []; // Data store for asset content
-
 function initializeAssetImporter() {
     const importBtn = document.getElementById('import-asset-btn');
     const fileInput = document.getElementById('asset-upload');
@@ -393,13 +393,10 @@ function craftSuperPrompt(elementType) {
     if (contextualAssets.length > 0) {
         prompt += `\n--- CONTEXTUAL ASSETS (REFERENCE THESE) ---\n`;
         contextualAssets.forEach(asset => {
+            // This section is now modeled after the working writer-bundle.js implementation
             if (asset.importance === 'Non-Informative') return;
 
-            prompt += `\n[ASSET: ${asset.fileName} | Importance: ${asset.importance}]\n`;
-            if (asset.annotation) {
-                prompt += `Director's Note: ${asset.annotation}\n`;
-            }
-
+            prompt += `\n[ASSET: ${asset.fileName}]\n`;
             if (asset.type === 'json') {
                 prompt += JSON.stringify(asset.content, null, 2);
             } else {
@@ -409,7 +406,7 @@ function craftSuperPrompt(elementType) {
         });
     }
 
-    prompt += `\n--- TASK ---\nGenerate the content for the primary "${elementType}" Element. Use the Guidance Gems for style. Critically, use the Contextual Assets for lore, background, and specific direction, paying close attention to their specified Importance and Director's Notes. Be descriptive, imaginative, and ensure the output is consistent with all provided data. Format the output clearly with headings.`;
+    prompt += `\n--- TASK ---\nGenerate the content for the primary "${elementType}" Element. Use the Guidance Gems for style. Critically, use the Contextual Assets for lore, background, and specific direction. Be descriptive, imaginative, and ensure the output is consistent with all provided data. Format the output clearly with headings.`;
 
     console.log("Super Prompt:", prompt);
     return prompt;
