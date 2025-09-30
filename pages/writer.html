@@ -78,12 +78,6 @@
                         <textarea id="main-prompt" class="input-field" placeholder="Enter your core idea, a theme, or a character concept..."></textarea>
                         <button id="generate-button" class="generate-btn-large">Brainstorm Concepts</button>
                         <button id="save-button" class="save-btn-large">Save Concepts</button>
-                        <div id="refine-tools-container" class="refine-tools" style="display: none;">
-                            <p class="refine-tools-title">AI Text Tools (Select text to use)</p>
-                            <button class="action-btn" data-action="rephrase">Rephrase</button>
-                            <button class="action-btn" data-action="shorten">Shorten</button>
-                            <button class="action-btn" data-action="expand">Expand</button>
-                        </div>
                     </div>
                 </div>
                 <div class="accordion glass-panel active" style="margin-top: 1.5rem;">
@@ -112,6 +106,18 @@
             </div>
         </div>
     </main>
+
+    <!-- NEW Floating Text Toolbar -->
+    <div id="text-toolbar" class="glass-panel hidden">
+        <button class="toolbar-btn" data-action="rephrase">Rephrase</button>
+        <button class="toolbar-btn" data-action="shorten">Shorten</button>
+        <button class="toolbar-btn" data-action="expand">Expand</button>
+        <button class="toolbar-btn" data-action="custom">Custom...</button>
+        <div id="custom-prompt-container" class="hidden">
+            <input type="text" id="custom-prompt-input" placeholder="e.g., make this more dramatic">
+            <button id="custom-prompt-submit">Go</button>
+        </div>
+    </div>
 
     <!-- Settings Modal (from global-ui.js) -->
     <div id="settings-modal-overlay" class="modal-overlay hidden">

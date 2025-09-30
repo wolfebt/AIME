@@ -405,8 +405,8 @@ select.input-field {
     box-shadow: 0 0 15px rgba(91, 33, 182, 0.4);
 }
 .save-btn-large {
-    background: #166534; /* Green */
-    box-shadow: 0 0 15px rgba(22, 101, 52, 0.4);
+    background: var(--accent-purple);
+    box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
 }
 
 .generate-btn-large:hover:not(:disabled) {
@@ -415,7 +415,7 @@ select.input-field {
 }
 .save-btn-large:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(22, 101, 52, 0.6);
+    box-shadow: 0 0 25px rgba(37, 99, 235, 0.6);
 }
 .generate-btn-large:disabled, .save-btn-large:disabled {
     opacity: 0.5;
@@ -690,8 +690,9 @@ select.input-field {
     background-color: rgba(139, 148, 158, 0.1);
     border: 1px solid var(--panel-border);
     color: var(--medium-text);
-    width: 40px;
+    width: auto;
     height: 40px;
+    padding: 0 1rem;
     border-radius: 8px;
     cursor: pointer;
     display: flex;
@@ -703,6 +704,43 @@ select.input-field {
     background-color: rgba(139, 148, 158, 0.2);
     color: var(--light-text);
 }
+
+/* NEW STYLES FOR FLOATING TOOLBAR */
+#text-toolbar {
+    position: absolute;
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    z-index: 100;
+    transition: opacity 0.2s;
+}
+#text-toolbar.hidden {
+    display: none;
+}
+#custom-prompt-container {
+    display: flex;
+    gap: 0.5rem;
+}
+#custom-prompt-container.hidden {
+    display: none;
+}
+#custom-prompt-input {
+    background-color: var(--dark-bg);
+    border: 1px solid var(--panel-border);
+    color: var(--light-text);
+    border-radius: 6px;
+    padding: 0 0.5rem;
+}
+#custom-prompt-submit {
+    background-color: var(--accent-blue);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0 0.75rem;
+    cursor: pointer;
+}
+/* END NEW STYLES */
+
 #refine-tools-container {
     display: flex;
     flex-direction: column;

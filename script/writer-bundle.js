@@ -151,14 +151,13 @@ function initializeTabs() {
     const tabs = document.querySelectorAll('.writer-tab');
     const generateBtn = document.getElementById('generate-button');
     const saveBtn = document.getElementById('save-button');
-    const refineTools = document.getElementById('refine-tools-container');
 
     const buttonTextMap = {
         brainstorm: "Brainstorm Concepts",
         outline: "Suggest Plot Point",
         treatment: "Generate Treatment"
     };
-    
+
     const saveButtonTextMap = {
         brainstorm: "Save Concepts",
         outline: "Save Outline",
@@ -173,6 +172,7 @@ function initializeTabs() {
             const tabName = button.dataset.tab;
             document.getElementById(`${tabName}-tab`).classList.add('active');
 
+            // Update button text
             if (generateBtn && buttonTextMap[tabName]) {
                 generateBtn.textContent = buttonTextMap[tabName];
             }
@@ -180,8 +180,8 @@ function initializeTabs() {
                 saveBtn.textContent = saveButtonTextMap[tabName];
             }
 
-            if (generateBtn && refineTools) {
-                refineTools.style.display = (tabName === 'treatment') ? 'block' : 'none';
+            // Show/hide the main generate button
+            if (generateBtn) {
                 generateBtn.style.display = (tabName === 'treatment') ? 'none' : 'block';
             }
         });
@@ -289,7 +289,7 @@ function createBrainstormCard(data) {
     card.className = 'brainstorm-card glass-panel';
     card.innerHTML = `
         <h4 class="card-title editable-content" contenteditable="true">${data.title}</h4>
-        <p class="brainstorm-logline editable-content" contenteditable="true"><em>${data.logline}</em></p>
+        <p class="brainstorm-logline editable-content" contenteditable="true">${data.logline}</p>
         <p class="brainstorm-concept editable-content" contenteditable="true">${data.concept.replace(/\n/g, '<br>')}</p>
         <div class="card-actions">
             <button class="action-btn develop-outline-btn">Develop Outline</button>
@@ -333,6 +333,33 @@ async function generateBrainstormConcepts() {
     generateBtn.disabled = false;
 }
 
+
+function initializeGeneration() {
+    const generateBtn = document.getElementById('generate-button');
+    if (!generateBtn) return;
+
+    generateBtn.addEventListener('click', () => {
+        const activeTabButton = document.querySelector('.writer-nav-button.active');
+        if (!activeTabButton) return;
+
+        const activeTab = activeTabButton.dataset.tab;
+
+        switch (activeTab) {
+            case 'brainstorm':
+                generateBrainstormConcepts();
+                break;
+            case 'outline':
+                const outlineList = document.getElementById('outline-list');
+                const existingText = outlineList.innerText;
+                generatePlotPoint(existingText);
+                break;
+            case 'treatment':
+                generateTreatment();
+                break;
+        }
+    });
+}
+
 // --- Outline, Treatment, and Writing Canvas Logic ---
 
 function parseOutlineResponse(responseText) {
@@ -373,27 +400,35 @@ function createPlotPointListItem(data) {
 async function generatePlotPoint(existingOutlineText) {
     const outlineList = document.getElementById('outline-list');
     if (!outlineList) return;
-    
-    const prompt = `You are AIME, an AI creative partner. Based on the following plot points, suggest ONE new, logical plot point that could happen next.
+
+    const generateBtn = document.getElementById('generate-button');
+    generateBtn.disabled = true;
+    generateBtn.textContent = 'Suggesting...';
+
+    const prompt = `You are AIME, an AI creative partner. Based on the following plot points, suggest the next logical plot point to continue the narrative.
 
 --- EXISTING PLOT ---
 ${existingOutlineText}
 
 --- TASK ---
-Generate ONE new plot point. You MUST provide a short, punchy "Title:" and a "Description:" paragraph. Do not use '---' in your response.`;
+Generate a single, new plot point that follows from the existing ones. Provide a short, punchy "Title:" and a "Description:" paragraph. Do not use '---' separators.`;
 
     const aiResponse = await generateContent(prompt);
-     if (aiResponse.startsWith("Error:")) {
-        alert(aiResponse); // Use an alert for this since we are appending
-        return;
-    }
-    const newPoint = parseOutlineResponse(aiResponse); // Will return array with one item
-    if (newPoint.length > 0) {
-        const li = createPlotPointListItem(newPoint[0]);
-        outlineList.appendChild(li);
+
+    if (!aiResponse.startsWith("Error:")) {
+        const plotPoints = parseOutlineResponse(aiResponse); // This can still parse a single point
+        if (plotPoints.length > 0) {
+            const li = createPlotPointListItem(plotPoints[0]);
+            outlineList.appendChild(li);
+        } else {
+            alert("AIME had trouble formatting the suggestion. Please try again.");
+        }
     } else {
-        alert("AIME had trouble generating a new plot point. Please try again.");
+        alert(aiResponse);
     }
+
+    generateBtn.disabled = false;
+    generateBtn.textContent = 'Suggest Plot Point';
 }
 
 
@@ -490,8 +525,7 @@ function initializeWorkflowButtons() {
 
             const card = e.target.closest('.brainstorm-card');
             if (!card) return;
-            
-            // Get EDITED content from the card
+
             const title = card.querySelector('.card-title').textContent;
             const logline = card.querySelector('.brainstorm-logline').textContent;
             const concept = card.querySelector('.brainstorm-concept').textContent;
@@ -542,15 +576,15 @@ async function generateTreatment() {
     treatmentCanvas.innerHTML = `<p>${formattedHtml}</p>`;
 }
 
-async function handleTextTool(action, selection) {
+async function handleTextTool(action, selection, customPrompt = '') {
     const selectedText = selection.toString().trim();
     if (selectedText === '') {
         alert("Please select some text to modify.");
         return;
     }
 
-    const refineButtons = document.querySelectorAll('#refine-tools-container .action-btn');
-    refineButtons.forEach(btn => btn.disabled = true);
+    const toolbar = document.getElementById('text-toolbar');
+    toolbar.classList.add('hidden'); // Hide toolbar during processing
 
     let prompt = '';
     switch (action) {
@@ -563,8 +597,14 @@ async function handleTextTool(action, selection) {
         case 'expand':
             prompt = `Expand upon the following text, adding more detail and description:\n\n"${selectedText}"`;
             break;
+        case 'custom':
+            if (customPrompt.trim() === '') {
+                alert("Please enter a custom instruction.");
+                return;
+            }
+            prompt = `Apply the following instruction to the text below:\n\nInstruction: "${customPrompt}"\n\nText: "${selectedText}"`;
+            break;
         default:
-             refineButtons.forEach(btn => btn.disabled = false);
              return;
     }
 
@@ -577,56 +617,58 @@ async function handleTextTool(action, selection) {
         range.deleteContents();
         range.insertNode(document.createTextNode(aiResponse));
     }
-    
-    refineButtons.forEach(btn => btn.disabled = false);
 }
 
-function initializeRefinementTools() {
-    const refineContainer = document.getElementById('refine-tools-container');
+function initializeFloatingToolbar() {
     const canvas = document.getElementById('treatment-canvas');
-    if (!refineContainer || !canvas) return;
+    const toolbar = document.getElementById('text-toolbar');
+    const customPromptContainer = document.getElementById('custom-prompt-container');
+    const customPromptInput = document.getElementById('custom-prompt-input');
 
-    refineContainer.addEventListener('click', (e) => {
-        const button = e.target.closest('.action-btn');
-        if (!button) return;
+    if (!canvas || !toolbar || !customPromptContainer || !customPromptInput) return;
 
-        const selection = window.getSelection();
-        
-        if (selection && !selection.isCollapsed && canvas.contains(selection.anchorNode)) {
-            const action = button.dataset.action;
-            handleTextTool(action, selection);
-        } else {
-            alert("Please select some text within the draft canvas to refine.");
-        }
-    });
-}
+    let currentSelection = null;
 
-function initializeGeneration() {
-    const generateBtn = document.getElementById('generate-button');
-    if (!generateBtn) return;
+    // Show/hide toolbar on text selection
+    document.addEventListener('mouseup', (e) => {
+        // A brief delay allows click events on the toolbar to register before it's hidden
+        setTimeout(() => {
+            const selection = window.getSelection();
+            if (selection && !selection.isCollapsed && canvas.contains(selection.anchorNode)) {
+                currentSelection = selection;
+                const range = selection.getRangeAt(0);
+                const rect = range.getBoundingClientRect();
 
-    generateBtn.addEventListener('click', () => {
-        const activeTabButton = document.querySelector('.writer-nav-button.active');
-        if (!activeTabButton) return;
-        const activeTab = activeTabButton.dataset.tab;
-
-        if (activeTab === 'brainstorm') {
-            generateBrainstormConcepts();
-        } else if (activeTab === 'outline') {
-            const outlineItems = document.querySelectorAll('#outline-list .outline-item');
-            if (outlineItems.length === 0) {
-                alert("Please generate an outline first before adding new plot points.");
-                return;
+                toolbar.style.left = `${rect.left + window.scrollX + rect.width / 2 - toolbar.offsetWidth / 2}px`;
+                toolbar.style.top = `${rect.top + window.scrollY - toolbar.offsetHeight - 10}px`;
+                toolbar.classList.remove('hidden');
+            } else {
+                // Hide only if the mouse isn't over the toolbar itself
+                if (!toolbar.contains(e.target)) {
+                    toolbar.classList.add('hidden');
+                    customPromptContainer.classList.add('hidden');
+                }
             }
-            let fullOutline = "";
-            outlineItems.forEach((item, index) => {
-                const title = item.querySelector('.outline-item-title').textContent;
-                const description = item.querySelector('.outline-item-description').textContent;
-                fullOutline += `${index + 1}. ${title}: ${description}\n`;
-            });
-            generatePlotPoint(fullOutline);
-        } else if (activeTab === 'treatment') {
-             generateTreatment();
+        }, 100);
+    });
+
+    toolbar.addEventListener('click', (e) => {
+        const button = e.target.closest('button');
+        if (!button) return;
+        
+        const action = button.dataset.action;
+
+        if (action === 'custom') {
+            customPromptContainer.classList.toggle('hidden');
+            return;
+        }
+        
+        if (currentSelection) {
+            if (button.id === 'custom-prompt-submit') {
+                handleTextTool('custom', currentSelection, customPromptInput.value);
+            } else {
+                handleTextTool(action, currentSelection);
+            }
         }
     });
 }
@@ -676,7 +718,7 @@ function initializeSaveButton() {
 
             case 'treatment':
                 const treatmentCanvas = document.getElementById('treatment-canvas');
-                content = treatmentCanvas.innerText;
+                content = treatmentCanvas.innerText; // Use innerText to get clean text
                  if (content.trim() === '' || treatmentCanvas.querySelector('.placeholder-text')) {
                     alert("Nothing to save!");
                     return;
@@ -713,7 +755,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeGeneration();
     initializeWorkflowButtons();
     initializeOutline();
-    initializeRefinementTools();
+    initializeFloatingToolbar();
     initializeSaveButton();
 });
 
