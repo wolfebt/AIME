@@ -83,10 +83,12 @@ body {
     transition: color 0.3s ease;
 }
 /* The JS adds/removes these classes to change the button's color. */
-.settings-btn.needs-key {
+/* We target both the button and the SVG to ensure the color overrides any conflicting styles. */
+.settings-btn.needs-key, .settings-btn.needs-key svg {
     color: var(--accent-red) !important;
 }
-.settings-btn.has-key {
+
+.settings-btn.has-key, .settings-btn.has-key svg {
     color: var(--accent-purple) !important;
 }
 /* --- END SETTINGS BUTTON REBUILT --- */
