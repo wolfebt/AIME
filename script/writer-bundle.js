@@ -5,6 +5,7 @@
 */
 
 let loadedAssets = []; // NEW: Data store for asset content
+let selectedGems = {}; // Data store for all selected guidance options
 
 // --- Resizable Columns ---
 function initializeResizableColumns() {
@@ -102,6 +103,7 @@ function initializeAccordions() {
 }
 
 // --- Guidance Gems ---
+// REFACTORED: This entire section has been rewritten to use a modal for multi-selection.
 function initializeGuidanceGems() {
     const container = document.getElementById('guidance-gems-container');
     if (!container) return;
@@ -116,128 +118,116 @@ function initializeGuidanceGems() {
         "Themes": ["Redemption", "Betrayal", "Discovery", "Survival", "Love", "Hate", "Power", "Corruption", "Nature vs. Nurture"]
     };
 
-    container.innerHTML = ''; // Clear existing content
+    // Modal elements
+    const modalOverlay = document.getElementById('gem-selection-modal-overlay');
+    const modalTitle = document.getElementById('gem-modal-title');
+    const modalOptionsContainer = document.getElementById('gem-modal-options-container');
+    const modalSaveBtn = document.getElementById('gem-modal-save-btn');
+    const modalCloseBtn = document.getElementById('gem-modal-close-btn');
 
-    for (const [title, options] of Object.entries(gemsData)) {
-        const dropdownContainer = document.createElement('div');
-        dropdownContainer.className = 'gem-dropdown-container';
-        dropdownContainer.dataset.category = title;
-
-        // Header
-        const header = document.createElement('button');
-        header.className = 'gem-dropdown-header';
-        header.innerHTML = `
-            <span class="gem-selected-value" data-default-text="${title}">${title}</span>
-            <svg class="gem-dropdown-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
-        `;
-        dropdownContainer.appendChild(header);
-
-        // Panel
-        const panel = document.createElement('div');
-        panel.className = 'gem-dropdown-panel';
-
-        // Options
-        const optionsDiv = document.createElement('div');
-        optionsDiv.className = 'gem-dropdown-options';
-        options.forEach(optionText => {
-            const button = document.createElement('button');
-            button.className = 'gem-option';
-            button.textContent = optionText;
-            optionsDiv.appendChild(button);
-        });
-        panel.appendChild(optionsDiv);
-
-        // Custom Input
-        const customInputContainer = document.createElement('div');
-        customInputContainer.className = 'custom-gem-input-container';
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.placeholder = `Add custom ${title}...`;
-        input.className = 'input-field custom-gem-input';
-        const addButton = document.createElement('button');
-        addButton.textContent = 'Add';
-        addButton.className = 'add-gem-btn';
-        customInputContainer.appendChild(input);
-        customInputContainer.appendChild(addButton);
-        panel.appendChild(customInputContainer);
-
-        dropdownContainer.appendChild(panel);
-        container.appendChild(dropdownContainer);
+    if (!modalOverlay || !modalTitle || !modalOptionsContainer || !modalSaveBtn || !modalCloseBtn) {
+        console.error("Guidance modal elements not found!");
+        return;
     }
 
-    // --- Event Delegation for all Dropdowns ---
-    container.addEventListener('click', e => {
-        const target = e.target;
+    // --- Functions ---
 
-        // Handle Header Click -> Toggle Panel
-        if (target.closest('.gem-dropdown-header')) {
-            const currentContainer = target.closest('.gem-dropdown-container');
-            const panel = currentContainer.querySelector('.gem-dropdown-panel');
-            const wasOpen = currentContainer.classList.contains('open');
+    function renderSelectedGems(category) {
+        const categoryContainer = container.querySelector(`[data-category="${category}"]`);
+        if (!categoryContainer) return;
 
-            // Close all other open dropdowns
-            document.querySelectorAll('.gem-dropdown-container.open').forEach(openContainer => {
-                if (openContainer !== currentContainer) {
-                    openContainer.classList.remove('open');
-                }
+        const pillContainer = categoryContainer.querySelector('.gem-pill-container');
+        pillContainer.innerHTML = ''; // Clear existing pills
+
+        if (selectedGems[category] && selectedGems[category].length > 0) {
+            selectedGems[category].forEach(gemText => {
+                const pill = document.createElement('span');
+                pill.className = 'gem-selected-pill';
+                pill.textContent = gemText;
+                pillContainer.appendChild(pill);
             });
-
-            // Toggle the current one
-            if (!wasOpen) {
-                currentContainer.classList.add('open');
-            } else {
-                currentContainer.classList.remove('open');
-            }
-            return;
+        } else {
+            pillContainer.innerHTML = `<span class="gem-selected-placeholder">None selected</span>`;
         }
+    }
 
-        // Handle Option Click -> Select Gem
-        if (target.classList.contains('gem-option')) {
-            const container = target.closest('.gem-dropdown-container');
-            const headerText = container.querySelector('.gem-selected-value');
+    function openGemsModal(category) {
+        modalTitle.textContent = `Select ${category}`;
+        modalOptionsContainer.innerHTML = ''; // Clear previous options
+        modalOverlay.dataset.currentCategory = category; // Store which category is being edited
 
-            // Find the previously active button in this category and deactivate it
-            const currentlyActive = container.querySelector('.gem-option.active');
-            if (currentlyActive) {
-                currentlyActive.classList.remove('active');
+        const options = gemsData[category] || [];
+        const currentSelections = selectedGems[category] || [];
+
+        options.forEach(option => {
+            const button = document.createElement('button');
+            button.className = 'gem-modal-option-button';
+            button.textContent = option;
+            button.dataset.value = option;
+            if (currentSelections.includes(option)) {
+                button.classList.add('active');
             }
+            modalOptionsContainer.appendChild(button);
+        });
 
-            // Activate the new button
-            target.classList.add('active');
-            headerText.textContent = target.textContent;
-            container.classList.remove('open'); // Close dropdown
-            return;
-        }
+        modalOverlay.classList.remove('hidden');
+    }
 
-        // Handle Add Button Click -> Create and Select New Gem
-        if (target.classList.contains('add-gem-btn')) {
-            const container = target.closest('.gem-dropdown-container');
-            const input = container.querySelector('.custom-gem-input');
-            const value = input.value.trim();
+    function closeGemsModal() {
+        modalOverlay.classList.add('hidden');
+    }
 
-            if (value) {
-                const optionsDiv = container.querySelector('.gem-dropdown-options');
+    function saveGemsSelection() {
+        const category = modalOverlay.dataset.currentCategory;
+        if (!category) return;
 
-                // Create new option
-                const newGem = document.createElement('button');
-                newGem.className = 'gem-option';
-                newGem.textContent = value;
-                optionsDiv.appendChild(newGem);
+        const selectedButtons = modalOptionsContainer.querySelectorAll('.gem-modal-option-button.active');
+        const newSelections = Array.from(selectedButtons).map(btn => btn.dataset.value);
 
-                // Select the new option
-                newGem.click(); // This will trigger the option click handler above
+        selectedGems[category] = newSelections;
+        renderSelectedGems(category);
+        closeGemsModal();
+    }
 
-                input.value = ''; // Clear input
-            }
+    // --- Initial Setup ---
+
+    container.innerHTML = ''; // Clear existing content
+    for (const category of Object.keys(gemsData)) {
+        selectedGems[category] = []; // Initialize data store
+
+        const categoryContainer = document.createElement('div');
+        categoryContainer.className = 'gem-category-container';
+        categoryContainer.dataset.category = category;
+
+        categoryContainer.innerHTML = `
+            <button class="gem-category-button">${category}</button>
+            <div class="gem-pill-container">
+                <span class="gem-selected-placeholder">None selected</span>
+            </div>
+        `;
+        container.appendChild(categoryContainer);
+    }
+
+    // --- Event Listeners ---
+
+    container.addEventListener('click', e => {
+        if (e.target.matches('.gem-category-button')) {
+            const category = e.target.closest('.gem-category-container').dataset.category;
+            openGemsModal(category);
         }
     });
 
-    // Close dropdowns if clicking outside
-    document.addEventListener('click', e => {
-        if (!container.contains(e.target)) {
-            document.querySelectorAll('.gem-dropdown-container.open').forEach(openContainer => {
-                openContainer.classList.remove('open');
-            });
+    modalSaveBtn.addEventListener('click', saveGemsSelection);
+    modalCloseBtn.addEventListener('click', closeGemsModal);
+    modalOverlay.addEventListener('click', e => {
+        if (e.target === modalOverlay) {
+            closeGemsModal();
+        }
+    });
+
+    modalOptionsContainer.addEventListener('click', e => {
+        if (e.target.matches('.gem-modal-option-button')) {
+            e.target.classList.toggle('active');
         }
     });
 }
@@ -449,23 +439,20 @@ async function generateContent(prompt) {
 }
 
 function craftSuperPrompt(promptText) {
-    let promptData = {
-        prompt: promptText,
-        gems: [],
-        assets: []
-    };
-    const activeGems = document.querySelectorAll('#guidance-gems-container .gem-option.active');
-    activeGems.forEach(gem => promptData.gems.push(gem.textContent));
+    let allSelectedGems = [];
+    for (const category in selectedGems) {
+        allSelectedGems.push(...selectedGems[category]);
+    }
 
     // MODIFIED: Use the loadedAssets array for rich context from file content
     const contextualAssets = loadedAssets.filter(asset => asset.type === 'text' || asset.type === 'json');
 
     let formattedPrompt = `You are AIME, an AI creative partner specializing in storytelling.\n\n--- STORY BRAINSTORM REQUEST ---\n`;
-    formattedPrompt += `USER'S CORE IDEA: "${promptData.prompt}"\n\n`;
+    formattedPrompt += `USER'S CORE IDEA: "${promptText}"\n\n`;
 
-    if (promptData.gems.length > 0) {
+    if (allSelectedGems.length > 0) {
         formattedPrompt += `--- GUIDANCE GEMS (GENRE, TONE, THEMES) ---\n`;
-        formattedPrompt += `Incorporate these elements: ${promptData.gems.join(', ')}\n`;
+        formattedPrompt += `Incorporate these elements: ${allSelectedGems.join(', ')}\n`;
     }
     
     // MODIFIED: Build a more detailed context block from actual asset content
