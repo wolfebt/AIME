@@ -103,13 +103,6 @@ function initializeAssetImporter() {
                     assetData.type = 'image';
                 } else if (aimeExtensions.includes(extension) || file.name.endsWith('.json')) {
                     assetData.type = 'json';
-                    try {
-                        assetData.content = JSON.parse(e.target.result);
-                    } catch (err) {
-                        // If parsing fails, treat it as a text file.
-                        assetData.type = 'text';
-                        assetData.content = e.target.result;
-                    }
                 } else {
                     assetData.type = 'text';
                 }
@@ -146,8 +139,15 @@ function renderAssetList() {
             iconHtml = `<img src="${asset.content}" class="asset-thumbnail" alt="${asset.fileName}">`;
             typeClass = 'image-asset';
         } else if (asset.type === 'json') {
-            const assetType = asset.content.assetType || 'JSON';
-            const isAimeAsset = asset.content.assetType;
+            let parsedContent = {};
+            try {
+                parsedContent = JSON.parse(asset.content);
+            } catch (e) {
+                // If parsing fails, we can treat it as a simple text file visually
+                console.error(`Failed to parse JSON for asset ${asset.fileName}:`, e);
+            }
+            const assetType = parsedContent.assetType || 'JSON';
+            const isAimeAsset = !!parsedContent.assetType;
             iconHtml = isAimeAsset ? assetType.slice(0, 4) : 'JSON';
             typeClass = isAimeAsset ? 'aime-asset' : 'text-asset';
         } else {
@@ -397,11 +397,16 @@ function craftSuperPrompt(elementType) {
 
             let assetEntry = '';
             if (asset.type === 'json') {
-                const assetType = asset.content.assetType || 'JSON Data';
-                assetEntry += `\n[Reference Asset: ${assetType} | Importance: ${asset.importance}]\n`;
-                if (asset.annotation) assetEntry += `  - Director's Note: ${asset.annotation}\n`;
-                // Robustly stringify the entire JSON object content
-                assetEntry += JSON.stringify(asset.content, null, 2) + '\n';
+                try {
+                    const parsedContent = JSON.parse(asset.content);
+                    const assetType = parsedContent.assetType || 'JSON Data';
+                    assetEntry += `\n[Reference Asset: ${assetType} | Importance: ${asset.importance}]\n`;
+                    if (asset.annotation) assetEntry += `  - Director's Note: ${asset.annotation}\n`;
+                    assetEntry += JSON.stringify(parsedContent, null, 2) + '\n';
+                } catch (e) {
+                    console.error(`Skipping malformed JSON asset ${asset.fileName} in super prompt:`, e);
+                    return; // Skip this asset if it's invalid
+                }
             } else { // Plain text asset
                 assetEntry += `\n[Reference Asset: Text File | Importance: ${asset.importance}]\n`;
                 assetEntry += `- Filename: ${asset.fileName}\n`;
