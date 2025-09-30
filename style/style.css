@@ -622,6 +622,11 @@ select.input-field {
 .outline-item.dragging {
     opacity: 0.5;
 }
+.editable-content:focus {
+    outline: 1px solid var(--accent-blue);
+    background-color: rgba(37, 99, 235, 0.1);
+    border-radius: 4px;
+}
 .outline-item-header {
     display: flex;
     justify-content: space-between;

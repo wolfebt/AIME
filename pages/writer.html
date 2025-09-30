@@ -35,8 +35,7 @@
         <div class="writer-nav glass-panel">
             <button class="writer-nav-button active" data-tab="brainstorm">1. Brainstorm</button>
             <button class="writer-nav-button" data-tab="outline">2. Outline</button>
-            <button class="writer-nav-button" data-tab="treatment">3. Treatment</button>
-            <button class="writer-nav-button" data-tab="refine">4. Refine</button>
+            <button class="writer-nav-button" data-tab="treatment">3. Draft</button>
         </div>
         <div class="workspace-layout">
             <div class="main-column">
@@ -61,16 +60,10 @@
                 <!-- Treatment Tab -->
                 <div id="treatment-tab" class="writer-tab">
                     <div class="tab-controls glass-panel">
-                        <h3 class="tab-title">Generate a Treatment</h3>
+                        <h3 class="tab-title">Draft Your Story</h3>
                     </div>
                     <div id="treatment-canvas" class="writing-canvas glass-panel" contenteditable="true">
                          <p class="placeholder-text">Generate an outline, then click "Generate Treatment" to create a story treatment here.</p>
-                    </div>
-                </div>
-                <!-- Refine & Write Tab -->
-                <div id="refine-tab" class="writer-tab">
-                    <div id="writing-canvas-main" class="writing-canvas glass-panel" contenteditable="true">
-                        <p class="placeholder-text">Begin writing your manuscript here. Select text to use the AI refinement tools.</p>
                     </div>
                 </div>
             </div>
@@ -84,6 +77,7 @@
                     <div class="accordion-content">
                         <textarea id="main-prompt" class="input-field" placeholder="Enter your core idea, a theme, or a character concept..."></textarea>
                         <button id="generate-button" class="generate-btn-large">Brainstorm Concepts</button>
+                        <button id="save-button" class="save-btn-large">Save Concepts</button>
                         <div id="refine-tools-container" class="refine-tools" style="display: none;">
                             <p class="refine-tools-title">AI Text Tools (Select text to use)</p>
                             <button class="action-btn" data-action="rephrase">Rephrase</button>
@@ -107,9 +101,6 @@
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content asset-hub-container">
-                        <div id="save-buttons-container">
-                            <!-- Save buttons are dynamically added here by writer-bundle.js -->
-                        </div>
                         <p class="asset-hub-subtitle">Import files to guide the story.</p>
                         <div class="asset-import-area">
                             <input type="file" id="asset-upload" multiple style="display: none;">

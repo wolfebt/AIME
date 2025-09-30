@@ -150,12 +150,19 @@ function initializeTabs() {
     const tabButtons = document.querySelectorAll('.writer-nav-button');
     const tabs = document.querySelectorAll('.writer-tab');
     const generateBtn = document.getElementById('generate-button');
+    const saveBtn = document.getElementById('save-button');
+    const refineTools = document.getElementById('refine-tools-container');
 
     const buttonTextMap = {
         brainstorm: "Brainstorm Concepts",
         outline: "Suggest Plot Point",
-        treatment: "Generate Treatment",
-        write: "Continue Writing"
+        treatment: "Generate Treatment"
+    };
+    
+    const saveButtonTextMap = {
+        brainstorm: "Save Concepts",
+        outline: "Save Outline",
+        treatment: "Save Draft"
     };
 
     tabButtons.forEach(button => {
@@ -168,6 +175,14 @@ function initializeTabs() {
 
             if (generateBtn && buttonTextMap[tabName]) {
                 generateBtn.textContent = buttonTextMap[tabName];
+            }
+            if (saveBtn && saveButtonTextMap[tabName]) {
+                saveBtn.textContent = saveButtonTextMap[tabName];
+            }
+
+            if (generateBtn && refineTools) {
+                refineTools.style.display = (tabName === 'treatment') ? 'block' : 'none';
+                generateBtn.style.display = (tabName === 'treatment') ? 'none' : 'block';
             }
         });
     });
@@ -273,9 +288,9 @@ function createBrainstormCard(data) {
     const card = document.createElement('div');
     card.className = 'brainstorm-card glass-panel';
     card.innerHTML = `
-        <h4 class="card-title">${data.title}</h4>
-        <p class="brainstorm-logline"><em>${data.logline}</em></p>
-        <p class="brainstorm-concept">${data.concept.replace(/\n/g, '<br>')}</p>
+        <h4 class="card-title editable-content" contenteditable="true">${data.title}</h4>
+        <p class="brainstorm-logline editable-content" contenteditable="true"><em>${data.logline}</em></p>
+        <p class="brainstorm-concept editable-content" contenteditable="true">${data.concept.replace(/\n/g, '<br>')}</p>
         <div class="card-actions">
             <button class="action-btn develop-outline-btn">Develop Outline</button>
         </div>
@@ -318,25 +333,6 @@ async function generateBrainstormConcepts() {
     generateBtn.disabled = false;
 }
 
-
-function initializeGeneration() {
-    const generateBtn = document.getElementById('generate-button');
-    if (!generateBtn) return;
-
-    generateBtn.addEventListener('click', () => {
-        const activeTabButton = document.querySelector('.writer-nav-button.active');
-        if (!activeTabButton) return;
-
-        const activeTab = activeTabButton.dataset.tab;
-
-        if (activeTab === 'brainstorm') {
-            generateBrainstormConcepts();
-        } else {
-            console.log(`Generation for "${activeTab}" tab not yet implemented.`);
-        }
-    });
-}
-
 // --- Outline, Treatment, and Writing Canvas Logic ---
 
 function parseOutlineResponse(responseText) {
@@ -363,16 +359,43 @@ function createPlotPointListItem(data) {
     li.setAttribute('draggable', 'true');
     li.innerHTML = `
         <div class="outline-item-header">
-            <span class="outline-item-title">${data.title}</span>
+            <span class="outline-item-title editable-content" contenteditable="true">${data.title}</span>
             <button class="remove-item-btn">&times;</button>
         </div>
-        <p class="outline-item-description">${data.description.replace(/\n/g, '<br>')}</p>
+        <p class="outline-item-description editable-content" contenteditable="true">${data.description.replace(/\n/g, '<br>')}</p>
     `;
     li.querySelector('.remove-item-btn').addEventListener('click', () => {
         li.remove();
     });
     return li;
 }
+
+async function generatePlotPoint(existingOutlineText) {
+    const outlineList = document.getElementById('outline-list');
+    if (!outlineList) return;
+    
+    const prompt = `You are AIME, an AI creative partner. Based on the following plot points, suggest ONE new, logical plot point that could happen next.
+
+--- EXISTING PLOT ---
+${existingOutlineText}
+
+--- TASK ---
+Generate ONE new plot point. You MUST provide a short, punchy "Title:" and a "Description:" paragraph. Do not use '---' in your response.`;
+
+    const aiResponse = await generateContent(prompt);
+     if (aiResponse.startsWith("Error:")) {
+        alert(aiResponse); // Use an alert for this since we are appending
+        return;
+    }
+    const newPoint = parseOutlineResponse(aiResponse); // Will return array with one item
+    if (newPoint.length > 0) {
+        const li = createPlotPointListItem(newPoint[0]);
+        outlineList.appendChild(li);
+    } else {
+        alert("AIME had trouble generating a new plot point. Please try again.");
+    }
+}
+
 
 async function generateOutline(conceptText) {
     const outlineList = document.getElementById('outline-list');
@@ -467,7 +490,8 @@ function initializeWorkflowButtons() {
 
             const card = e.target.closest('.brainstorm-card');
             if (!card) return;
-
+            
+            // Get EDITED content from the card
             const title = card.querySelector('.card-title').textContent;
             const logline = card.querySelector('.brainstorm-logline').textContent;
             const concept = card.querySelector('.brainstorm-concept').textContent;
@@ -518,23 +542,16 @@ async function generateTreatment() {
     treatmentCanvas.innerHTML = `<p>${formattedHtml}</p>`;
 }
 
-
-function initializeTreatment() {
-    const generateBtn = document.getElementById('generate-treatment-btn-main');
-    if (generateBtn) {
-        generateBtn.addEventListener('click', generateTreatment);
-    }
-}
-
 async function handleTextTool(action, selection) {
-    if (!selection || selection.toString().trim() === '') {
+    const selectedText = selection.toString().trim();
+    if (selectedText === '') {
         alert("Please select some text to modify.");
         return;
     }
-    const toolbar = document.getElementById('text-toolbar');
-    toolbar.classList.add('hidden'); // Hide toolbar during processing
 
-    const selectedText = selection.toString();
+    const refineButtons = document.querySelectorAll('#refine-tools-container .action-btn');
+    refineButtons.forEach(btn => btn.disabled = true);
+
     let prompt = '';
     switch (action) {
         case 'rephrase':
@@ -547,84 +564,129 @@ async function handleTextTool(action, selection) {
             prompt = `Expand upon the following text, adding more detail and description:\n\n"${selectedText}"`;
             break;
         default:
-            return;
+             refineButtons.forEach(btn => btn.disabled = false);
+             return;
     }
 
     const aiResponse = await generateContent(prompt);
+
     if (aiResponse.startsWith("Error:")) {
         alert(aiResponse);
-        return;
+    } else {
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(document.createTextNode(aiResponse));
     }
-
-    const range = selection.getRangeAt(0);
-    range.deleteContents();
-    range.insertNode(document.createTextNode(aiResponse));
+    
+    refineButtons.forEach(btn => btn.disabled = false);
 }
 
-function initializeWritingCanvas() {
-    const canvas = document.getElementById('writing-canvas-main');
-    const toolbar = document.getElementById('text-toolbar');
-    if (!canvas || !toolbar) return;
+function initializeRefinementTools() {
+    const refineContainer = document.getElementById('refine-tools-container');
+    const canvas = document.getElementById('treatment-canvas');
+    if (!refineContainer || !canvas) return;
 
-    let currentSelection = null;
+    refineContainer.addEventListener('click', (e) => {
+        const button = e.target.closest('.action-btn');
+        if (!button) return;
 
-    document.addEventListener('mouseup', () => {
         const selection = window.getSelection();
-        if (selection && selection.rangeCount > 0 && !selection.isCollapsed && canvas.contains(selection.anchorNode)) {
-            currentSelection = selection;
-            const range = selection.getRangeAt(0);
-            const rect = range.getBoundingClientRect();
-
-            toolbar.style.left = `${rect.left + window.scrollX + rect.width / 2 - toolbar.offsetWidth / 2}px`;
-            toolbar.style.top = `${rect.top + window.scrollY - toolbar.offsetHeight - 10}px`;
-            toolbar.classList.remove('hidden');
-        } else {
-            if (!toolbar.matches(':hover')) {
-                 toolbar.classList.add('hidden');
-            }
-            currentSelection = null;
-        }
-    });
-
-    toolbar.addEventListener('click', (e) => {
-        const button = e.target.closest('.toolbar-btn');
-        if (button && currentSelection) {
+        
+        if (selection && !selection.isCollapsed && canvas.contains(selection.anchorNode)) {
             const action = button.dataset.action;
-            handleTextTool(action, currentSelection);
+            handleTextTool(action, selection);
+        } else {
+            alert("Please select some text within the draft canvas to refine.");
         }
     });
 }
 
-function initializeSaveButtons() {
-    const savePromptBtn = document.getElementById('save-prompt-info-btn');
-    const saveBrainstormBtn = document.getElementById('save-brainstorm-btn');
+function initializeGeneration() {
+    const generateBtn = document.getElementById('generate-button');
+    if (!generateBtn) return;
 
-    if (savePromptBtn) {
-        savePromptBtn.addEventListener('click', () => {
-            const promptText = document.getElementById('main-prompt').value;
-            const gems = Array.from(document.querySelectorAll('#guidance-gems-container .gem-option.active')).map(g => g.textContent);
-            const content = `Prompt: ${promptText}\n\nGems: ${gems.join(', ')}`;
-            downloadFile('AIME_Prompt_Info.txt', content);
-        });
-    }
+    generateBtn.addEventListener('click', () => {
+        const activeTabButton = document.querySelector('.writer-nav-button.active');
+        if (!activeTabButton) return;
+        const activeTab = activeTabButton.dataset.tab;
 
-    if (saveBrainstormBtn) {
-        saveBrainstormBtn.addEventListener('click', () => {
-            const cards = document.querySelectorAll('.brainstorm-card');
-            if (cards.length === 0) {
-                alert("Nothing to save!");
+        if (activeTab === 'brainstorm') {
+            generateBrainstormConcepts();
+        } else if (activeTab === 'outline') {
+            const outlineItems = document.querySelectorAll('#outline-list .outline-item');
+            if (outlineItems.length === 0) {
+                alert("Please generate an outline first before adding new plot points.");
                 return;
             }
-            let content = "--- AIME Brainstorm Session ---\n\n";
-            cards.forEach((card, index) => {
-                const title = card.querySelector('.card-title').textContent;
-                const logline = card.querySelector('.brainstorm-logline').textContent;
-                const concept = card.querySelector('.brainstorm-concept').textContent;
-                content += `Concept ${index + 1}:\nTitle: ${title}\nLogline: ${logline}\n\n${concept}\n\n---\n\n`;
+            let fullOutline = "";
+            outlineItems.forEach((item, index) => {
+                const title = item.querySelector('.outline-item-title').textContent;
+                const description = item.querySelector('.outline-item-description').textContent;
+                fullOutline += `${index + 1}. ${title}: ${description}\n`;
             });
-            downloadFile('AIME_Brainstorm_Content.txt', content);
-        });
-    }
+            generatePlotPoint(fullOutline);
+        } else if (activeTab === 'treatment') {
+             generateTreatment();
+        }
+    });
+}
+
+function initializeSaveButton() {
+    const saveBtn = document.getElementById('save-button');
+    if (!saveBtn) return;
+
+    saveBtn.addEventListener('click', () => {
+        const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
+        if (!activeTab) return;
+
+        let content = '';
+        let filename = 'AIME_Story_Weaver_Export.txt';
+
+        switch (activeTab) {
+            case 'brainstorm':
+                const cards = document.querySelectorAll('.brainstorm-card');
+                if (cards.length === 0) {
+                    alert("Nothing to save!");
+                    return;
+                }
+                filename = 'AIME_Brainstorm_Concepts.txt';
+                content = "--- AIME Brainstorm Session ---\n\n";
+                cards.forEach((card, index) => {
+                    const title = card.querySelector('.card-title').textContent;
+                    const logline = card.querySelector('.brainstorm-logline').textContent;
+                    const concept = card.querySelector('.brainstorm-concept').textContent;
+                    content += `Concept ${index + 1}:\nTitle: ${title}\nLogline: ${logline}\n\n${concept}\n\n---\n\n`;
+                });
+                break;
+
+            case 'outline':
+                const outlineItems = document.querySelectorAll('.outline-item');
+                 if (outlineItems.length === 0) {
+                    alert("Nothing to save!");
+                    return;
+                }
+                filename = 'AIME_Story_Outline.txt';
+                content = "--- AIME Story Outline ---\n\n";
+                outlineItems.forEach((item, index) => {
+                    const title = item.querySelector('.outline-item-title').textContent;
+                    const description = item.querySelector('.outline-item-description').textContent;
+                    content += `${index + 1}. ${title}\n   - ${description}\n\n`;
+                });
+                break;
+
+            case 'treatment':
+                const treatmentCanvas = document.getElementById('treatment-canvas');
+                content = treatmentCanvas.innerText;
+                 if (content.trim() === '' || treatmentCanvas.querySelector('.placeholder-text')) {
+                    alert("Nothing to save!");
+                    return;
+                }
+                filename = 'AIME_Story_Draft.txt';
+                break;
+        }
+
+        downloadFile(filename, content);
+    });
 }
 
 function downloadFile(filename, text) {
@@ -651,7 +713,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeGeneration();
     initializeWorkflowButtons();
     initializeOutline();
-    initializeTreatment();
-    initializeWritingCanvas();
-    initializeSaveButtons();
+    initializeRefinementTools();
+    initializeSaveButton();
 });
+
