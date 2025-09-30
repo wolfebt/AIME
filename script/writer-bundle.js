@@ -66,6 +66,7 @@ function initializeAccordions() {
                 const c = acc.querySelector('.accordion-content');
                 const v = h.querySelector('.accordion-chevron');
                 if (h.classList.contains('active')) {
+                    acc.classList.remove('open'); // NEW: Remove open class from container
                     h.classList.remove('active');
                     v.style.transform = 'rotate(0deg)';
                     c.style.maxHeight = null;
@@ -75,6 +76,7 @@ function initializeAccordions() {
 
             // If the clicked accordion wasn't already open, open it
             if (!wasActive) {
+                accordion.classList.add('open'); // NEW: Add open class to container
                 header.classList.add('active');
                 chevron.style.transform = 'rotate(180deg)';
                 content.style.padding = '1.5rem';
@@ -85,6 +87,7 @@ function initializeAccordions() {
         // Handle initially active accordions, ensuring only one is open
         if (header.classList.contains('active')) {
             if (!alreadyOpenOnLoad) {
+                accordion.classList.add('open'); // NEW: Add open class to container
                 content.style.padding = '1.5rem';
                 content.style.maxHeight = content.scrollHeight + "px";
                 chevron.style.transform = 'rotate(180deg)';
@@ -92,6 +95,7 @@ function initializeAccordions() {
             } else {
                 // If one is already open, force subsequent 'active' ones to be closed.
                 header.classList.remove('active');
+                 accordion.classList.remove('open'); // NEW: Remove open class
             }
         }
     });
