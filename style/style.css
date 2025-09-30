@@ -353,11 +353,11 @@ select.input-field {
 }
 
 
-/* --- NEW Guidance Gems Dropdown Styles --- */
+/* --- Guidance Gems Dropdown Styles --- */
 #guidance-gems-container {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.75rem; /* Space between each dropdown */
 }
 
 .gem-dropdown-container {
@@ -366,37 +366,70 @@ select.input-field {
 
 .gem-dropdown-header {
     width: 100%;
-    background-color: var(--dark-bg);
-    border: 1px solid #30363d;
+    background-color: rgba(0,0,0,0.2); /* Darker field background */
+    border: 1px solid var(--panel-border);
     border-radius: 8px;
-    padding: 0.75rem;
+    padding: 0.5rem 0.75rem;
     color: var(--light-text);
-    font-family: var(--font-main);
-    font-size: 1rem;
     box-sizing: border-box;
-    transition: all 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
     display: flex;
     justify-content: space-between;
     align-items: center;
     text-align: left;
     cursor: pointer;
+    min-height: 42px; /* Set a minimum height */
 }
 
 .gem-dropdown-header:hover, .gem-dropdown-container.open .gem-dropdown-header {
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 10px rgba(91, 33, 182, 0.3);
 }
 
-.gem-selected-value {
-    white-space: nowrap;
+.gem-category-title {
+    font-weight: 500;
+    color: var(--medium-text);
+    flex-shrink: 0;
+    margin-right: 1rem;
+}
+
+.gem-selected-list-container {
+    flex-grow: 1;
     overflow: hidden;
-    text-overflow: ellipsis;
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.gem-selected-placeholder {
+    color: var(--medium-text);
+    font-style: italic;
+    font-size: 0.9rem;
+}
+
+.gem-selected-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    align-items: center;
+}
+
+.gem-selected-pill {
+    background-color: var(--accent-purple);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
 }
 
 .gem-dropdown-chevron {
     transition: transform 0.3s ease;
     flex-shrink: 0;
     margin-left: 0.5rem;
+    color: var(--medium-text);
 }
 
 .gem-dropdown-container.open .gem-dropdown-chevron {
@@ -410,11 +443,11 @@ select.input-field {
     left: 0;
     width: 100%;
     z-index: 50;
-    background-color: #161b22;
-    border: 1px solid #30363d;
+    background-color: #1c2128; /* Darker panel background */
+    border: 1px solid var(--panel-border);
     border-radius: 8px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-    padding: 0.5rem;
+    padding: 0.75rem;
     box-sizing: border-box;
     animation: fadeInPanel 0.2s ease-out;
 }
@@ -430,33 +463,36 @@ select.input-field {
 
 .gem-dropdown-options {
     display: flex;
-    flex-direction: column;
-    max-height: 200px;
+    flex-wrap: wrap; /* Allow options to wrap */
+    gap: 0.5rem; /* Space between option buttons */
+    max-height: 250px;
     overflow-y: auto;
-    margin-bottom: 0.5rem;
-    padding-right: 4px; /* For scrollbar */
+    margin-bottom: 0.75rem;
+    padding: 5px;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 6px;
 }
 
 .gem-option {
-    width: 100%;
     background: none;
-    border: none;
+    border: 1px solid #30363d;
     color: var(--medium-text);
-    padding: 0.6rem 0.75rem;
-    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    border-radius: 15px; /* Pill shape */
     text-align: left;
     cursor: pointer;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     transition: all 0.2s;
 }
 
 .gem-option:hover {
-    background-color: rgba(139, 148, 158, 0.1);
+    border-color: var(--accent-purple);
     color: var(--light-text);
 }
 
 .gem-option.active {
-    background-color: var(--accent-blue);
+    background-color: var(--accent-purple);
+    border-color: var(--accent-purple);
     color: white;
     font-weight: 500;
 }
@@ -1146,8 +1182,21 @@ select.input-field {
 .custom-gem-input {
     flex-grow: 1;
     height: 38px;
+    /* Overriding default input styles to match the application's theme */
+    background-color: var(--dark-bg);
+    border: 1px solid #30363d;
+    border-radius: 6px;
     padding: 6px 12px;
-    /* Inherits from .input-field but we can override if needed */
+    color: var(--light-text);
+    font-family: var(--font-main);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.custom-gem-input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.2);
 }
 
 .add-gem-btn {

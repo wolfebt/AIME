@@ -215,7 +215,6 @@ function initializeGuidanceGems() {
     const container = document.getElementById('guidance-gems-container');
     if (!container) return;
 
-    // Unified and expanded list of gems
     const gemsData = {
         "Genre": ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Sci-Fi", "Horror", "Mystery", "Romance", "Thriller", "Whimsical", "Gritty", "Noir"],
         "Tone": ["Serious", "Humorous", "Formal", "Informal", "Optimistic", "Pessimistic", "Joyful", "Sad", "Hopeful", "Cynical", "Dark", "Uplifting"],
@@ -229,68 +228,144 @@ function initializeGuidanceGems() {
     container.innerHTML = ''; // Clear existing content
 
     for (const [title, options] of Object.entries(gemsData)) {
-        const categoryDiv = document.createElement('div');
-        categoryDiv.className = 'gem-category';
+        // Create main dropdown container
+        const dropdownContainer = document.createElement('div');
+        dropdownContainer.className = 'gem-dropdown-container';
+        dropdownContainer.dataset.category = title;
 
-        const titleEl = document.createElement('h4');
-        titleEl.className = 'gem-title';
-        titleEl.textContent = title;
-        categoryDiv.appendChild(titleEl);
+        // Create the header button
+        const header = document.createElement('button');
+        header.className = 'gem-dropdown-header';
+        header.innerHTML = `
+            <span class="gem-category-title">${title}</span>
+            <div class="gem-selected-list-container">
+                <span class="gem-selected-placeholder">Select...</span>
+                <div class="gem-selected-list"></div>
+            </div>
+            <svg class="gem-dropdown-chevron" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        `;
 
+        // Create the dropdown panel
+        const panel = document.createElement('div');
+        panel.className = 'gem-dropdown-panel';
+
+        // Create options container
         const optionsDiv = document.createElement('div');
-        optionsDiv.className = 'gem-options';
+        optionsDiv.className = 'gem-dropdown-options';
         options.forEach(optionText => {
             const button = document.createElement('button');
             button.className = 'gem-option';
             button.textContent = optionText;
+            button.dataset.value = optionText;
             optionsDiv.appendChild(button);
         });
-        categoryDiv.appendChild(optionsDiv);
 
-        // Add the custom input field and button
+        // Create custom input container
         const customInputContainer = document.createElement('div');
         customInputContainer.className = 'custom-gem-input-container';
-
         const input = document.createElement('input');
         input.type = 'text';
         input.placeholder = `Add custom ${title}...`;
         input.className = 'input-field custom-gem-input';
-
         const addButton = document.createElement('button');
         addButton.textContent = 'Add';
         addButton.className = 'add-gem-btn';
 
-        addButton.addEventListener('click', () => {
-            const value = input.value.trim();
-            if (value) {
-                const newGem = document.createElement('button');
-                newGem.className = 'gem-option active'; // Add as active by default
-                newGem.textContent = value;
-                optionsDiv.appendChild(newGem);
-                input.value = ''; // Clear the input
-            }
-        });
-
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addButton.click();
-            }
-        });
-
         customInputContainer.appendChild(input);
         customInputContainer.appendChild(addButton);
-        categoryDiv.appendChild(customInputContainer);
 
-        container.appendChild(categoryDiv);
+        // Assemble the panel
+        panel.appendChild(optionsDiv);
+        panel.appendChild(customInputContainer);
+
+        // Assemble the full dropdown
+        dropdownContainer.appendChild(header);
+        dropdownContainer.appendChild(panel);
+        container.appendChild(dropdownContainer);
     }
 
-    // Use event delegation for toggling gem options
+    // --- Event Delegation for the entire container ---
+
+    // Handle clicks on headers, options, and add buttons
     container.addEventListener('click', (e) => {
-        if (e.target.classList.contains('gem-option')) {
-            e.target.classList.toggle('active');
+        const dropdownHeader = e.target.closest('.gem-dropdown-header');
+        const gemOption = e.target.closest('.gem-option');
+        const addBtn = e.target.closest('.add-gem-btn');
+        const dropdownContainer = e.target.closest('.gem-dropdown-container');
+
+        // Toggle dropdown panel
+        if (dropdownHeader) {
+            const container = dropdownHeader.closest('.gem-dropdown-container');
+            container.classList.toggle('open');
+            return; // Exit after handling header click
+        }
+
+        // Toggle a gem option
+        if (gemOption) {
+            gemOption.classList.toggle('active');
+            updateSelectedDisplay(gemOption.closest('.gem-dropdown-container'));
+            return;
+        }
+
+        // Add a custom gem
+        if (addBtn) {
+            const container = addBtn.closest('.gem-dropdown-container');
+            const input = addBtn.previousElementSibling;
+            const optionsDiv = container.querySelector('.gem-dropdown-options');
+            const value = input.value.trim();
+
+            if (value && !container.querySelector(`.gem-option[data-value="${value}"]`)) {
+                const newGem = document.createElement('button');
+                newGem.className = 'gem-option active';
+                newGem.textContent = value;
+                newGem.dataset.value = value;
+                optionsDiv.appendChild(newGem);
+                updateSelectedDisplay(container);
+                input.value = ''; // Clear input
+            }
         }
     });
+
+    // Handle 'Enter' key for custom input
+    container.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.matches('.custom-gem-input')) {
+            e.preventDefault();
+            e.target.nextElementSibling.click(); // Trigger the 'Add' button click
+        }
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#guidance-gems-container')) {
+            document.querySelectorAll('.gem-dropdown-container.open').forEach(container => {
+                container.classList.remove('open');
+            });
+        }
+    });
+}
+
+function updateSelectedDisplay(dropdownContainer) {
+    if (!dropdownContainer) return;
+
+    const placeholder = dropdownContainer.querySelector('.gem-selected-placeholder');
+    const list = dropdownContainer.querySelector('.gem-selected-list');
+    const activeGems = dropdownContainer.querySelectorAll('.gem-option.active');
+
+    list.innerHTML = ''; // Clear current list
+
+    if (activeGems.length > 0) {
+        placeholder.style.display = 'none';
+        list.style.display = 'flex';
+        activeGems.forEach(gem => {
+            const pill = document.createElement('span');
+            pill.className = 'gem-selected-pill';
+            pill.textContent = gem.textContent;
+            list.appendChild(pill);
+        });
+    } else {
+        placeholder.style.display = 'block';
+        list.style.display = 'none';
+    }
 }
 
 // --- Element Generation Logic ---
