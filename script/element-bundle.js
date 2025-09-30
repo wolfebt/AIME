@@ -543,7 +543,7 @@ function saveElementAsset() {
     }
 
     // Use the 'name' field for the filename, otherwise default to 'Untitled'
-    const assetName = assetData.traits.name || 'Untitled';
+    const assetName = (assetData.traits.name && assetData.traits.name.trim()) || 'Untitled';
     const filename = `${assetName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.${extension}`;
 
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(assetData, null, 2));
