@@ -80,22 +80,78 @@ function initializeAccordions() {
 function initializeGuidanceGems() {
     const container = document.getElementById('guidance-gems-container');
     if (!container) return;
+
+    // Unified and expanded list of gems
     const gemsData = {
-        "Genre": ["Science Fiction", "Fantasy", "Mystery", "Thriller", "Horror", "Romance"],
-        "Tone": ["Serious", "Humorous", "Dark", "Whimsical", "Gritty"],
-        "Pacing": ["Fast-paced", "Slow-burn", "Action-Packed"],
-        "Themes": ["Redemption", "Betrayal", "Discovery", "Survival"]
+        "Genre": ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Sci-Fi", "Horror", "Mystery", "Romance", "Thriller", "Whimsical", "Gritty", "Noir"],
+        "Tone": ["Serious", "Humorous", "Formal", "Informal", "Optimistic", "Pessimistic", "Joyful", "Sad", "Hopeful", "Cynical", "Dark", "Uplifting"],
+        "Pacing": ["Fast-paced", "Slow-burn", "Steady", "Urgent", "Relaxed", "Meditative", "Action-Packed"],
+        "Point of View": ["First Person", "Third Person Limited", "Third Person Omniscient", "Second Person", "Alternating POV"],
+        "Literary Devices": ["Metaphor", "Simile", "Personification", "Alliteration", "Symbolism", "Irony", "Foreshadowing", "Satire"],
+        "Structure": ["Linear", "Non-linear", "Episodic", "In Medias Res", "Frame Story"],
+        "Themes": ["Redemption", "Betrayal", "Discovery", "Survival", "Love", "Hate", "Power", "Corruption", "Nature vs. Nurture"]
     };
 
-    let html = '';
+    container.innerHTML = ''; // Clear existing content
+
     for (const [title, options] of Object.entries(gemsData)) {
-        html += `<div class="gem-category"><h4 class="gem-title">${title}</h4><div class="gem-options">`;
-        options.forEach(option => {
-            html += `<button class="gem-option">${option}</button>`;
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'gem-category';
+
+        const titleEl = document.createElement('h4');
+        titleEl.className = 'gem-title';
+        titleEl.textContent = title;
+        categoryDiv.appendChild(titleEl);
+
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'gem-options';
+        options.forEach(optionText => {
+            const button = document.createElement('button');
+            button.className = 'gem-option';
+            button.textContent = optionText;
+            optionsDiv.appendChild(button);
         });
-        html += `</div></div>`;
+        categoryDiv.appendChild(optionsDiv);
+
+        // Add the custom input field and button
+        const customInputContainer = document.createElement('div');
+        customInputContainer.className = 'custom-gem-input-container';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = `Add custom ${title}...`;
+        input.className = 'input-field custom-gem-input';
+
+        const addButton = document.createElement('button');
+        addButton.textContent = 'Add';
+        addButton.className = 'add-gem-btn';
+
+        addButton.addEventListener('click', () => {
+            const value = input.value.trim();
+            if (value) {
+                const newGem = document.createElement('button');
+                newGem.className = 'gem-option active'; // Add as active by default
+                newGem.textContent = value;
+                optionsDiv.appendChild(newGem);
+                input.value = ''; // Clear the input
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addButton.click();
+            }
+        });
+
+        customInputContainer.appendChild(input);
+        customInputContainer.appendChild(addButton);
+        categoryDiv.appendChild(customInputContainer);
+
+        container.appendChild(categoryDiv);
     }
-    container.innerHTML = html;
+
+    // Use event delegation for toggling gem options
     container.addEventListener('click', (e) => {
         if (e.target.classList.contains('gem-option')) {
             e.target.classList.toggle('active');
