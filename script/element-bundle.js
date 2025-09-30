@@ -400,25 +400,8 @@ function craftSuperPrompt(elementType) {
                 const assetType = asset.content.assetType || 'JSON Data';
                 assetEntry += `\n[Reference Asset: ${assetType} | Importance: ${asset.importance}]\n`;
                 if (asset.annotation) assetEntry += `  - Director's Note: ${asset.annotation}\n`;
-
-                const data = asset.content;
-                // Add traits from AIME assets
-                if(data.traits) {
-                    for (const [key, value] of Object.entries(data.traits)) {
-                        assetEntry += `  - ${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}\n`;
-                    }
-                }
-                // Add custom fields from AIME assets
-                if (data.custom_fields) {
-                    for (const [key, value] of Object.entries(data.custom_fields)) {
-                        assetEntry += `  - ${key}: ${value}\n`;
-                    }
-                }
-                // If it's a generic JSON, just stringify it
-                if (!data.assetType) {
-                     assetEntry += JSON.stringify(data, null, 2) + '\n';
-                }
-
+                // Robustly stringify the entire JSON object content
+                assetEntry += JSON.stringify(asset.content, null, 2) + '\n';
             } else { // Plain text asset
                 assetEntry += `\n[Reference Asset: Text File | Importance: ${asset.importance}]\n`;
                 assetEntry += `- Filename: ${asset.fileName}\n`;
