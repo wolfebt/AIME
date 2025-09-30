@@ -1224,3 +1224,27 @@ select.input-field {
     color: white;
 }
 
+/* NEW: Styles for the static Guidance Gems and Asset Hub panels */
+.side-panel-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* This creates the space between the panels */
+}
+
+.guidance-gems-panel,
+.asset-hub-panel {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    /* The glass-panel class already provides the background and border */
+}
+
+.side-panel-title {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--panel-border);
+    padding-bottom: 0.75rem;
+}
+
