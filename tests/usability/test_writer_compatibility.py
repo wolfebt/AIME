@@ -45,8 +45,7 @@ def run_test(playwright):
     # This is crucial because file:// origins are sandboxed
     page.evaluate("localStorage.setItem('AIME_API_KEY', 'DUMMY_API_KEY_FOR_TESTING')")
 
-    # Expand the Asset Hub
-    page.get_by_role("button", name="Asset Hub").click()
+    # The Asset Hub is no longer an accordion, so no click is needed to expand it.
 
     # Import the saved persona file
     with page.expect_file_chooser() as fc_info:
