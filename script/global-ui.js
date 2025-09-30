@@ -4,10 +4,10 @@
     Creator: Wolfe.BT, TangentLLC
 */
 
-// --- API Key Status Check ---
+// This function checks for the API key and updates the settings button's class for styling.
 function checkApiKeyStatus() {
     const settingsBtn = document.getElementById('settings-btn');
-    if (!settingsBtn) return;
+    if (!settingsBtn) return; // Exit if the button isn't on the page
 
     const savedKey = localStorage.getItem('AIME_API_KEY');
     if (savedKey) {
@@ -19,36 +19,34 @@ function checkApiKeyStatus() {
     }
 }
 
-// --- Settings Modal Logic ---
+// This function handles opening, closing, and saving data for the settings modal.
 function initializeSettingsModal() {
     const settingsBtn = document.getElementById('settings-btn');
     const modalOverlay = document.getElementById('settings-modal-overlay');
+    
+    // Robustly check if all required modal elements exist before proceeding.
+    if (!settingsBtn || !modalOverlay) return;
+
     const closeBtn = document.getElementById('modal-close-btn');
     const saveBtn = document.getElementById('modal-save-btn');
     const apiKeyInput = document.getElementById('api-key-input');
     const viewKeyBtn = document.getElementById('view-api-key');
 
-    if (!settingsBtn || !modalOverlay || !closeBtn || !saveBtn || !apiKeyInput || !viewKeyBtn) {
-        // This check prevents errors if an element is missing on a specific page.
-        return;
-    }
+    if (!closeBtn || !saveBtn || !apiKeyInput || !viewKeyBtn) return;
 
-    const openModal = () => {
+    // Event Listeners
+    settingsBtn.addEventListener('click', () => {
         const savedKey = localStorage.getItem('AIME_API_KEY');
         apiKeyInput.value = savedKey || '';
         apiKeyInput.type = 'password';
         modalOverlay.classList.remove('hidden');
-    };
+    });
 
-    const closeModal = () => {
-        modalOverlay.classList.add('hidden');
-    };
+    closeBtn.addEventListener('click', () => modalOverlay.classList.add('hidden'));
 
-    settingsBtn.addEventListener('click', openModal);
-    closeBtn.addEventListener('click', closeModal);
     modalOverlay.addEventListener('click', (e) => {
         if (e.target === modalOverlay) {
-            closeModal();
+            modalOverlay.classList.add('hidden');
         }
     });
 
@@ -61,8 +59,8 @@ function initializeSettingsModal() {
             localStorage.removeItem('AIME_API_KEY');
             alert('API Key cleared.');
         }
-        checkApiKeyStatus(); // Re-check status after saving/clearing
-        closeModal();
+        checkApiKeyStatus();
+        modalOverlay.classList.add('hidden');
     });
 
     viewKeyBtn.addEventListener('click', () => {
@@ -70,9 +68,9 @@ function initializeSettingsModal() {
     });
 }
 
-// --- DOMContentLoaded Initializer ---
+// Initialize all global UI components when the page content is loaded.
 document.addEventListener('DOMContentLoaded', () => {
     initializeSettingsModal();
-    checkApiKeyStatus(); // Initial check on page load
+    checkApiKeyStatus();
 });
 
