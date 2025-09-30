@@ -66,28 +66,30 @@ body {
     gap: 1rem;
 }
 
-/* --- SETTINGS BUTTON FIX --- */
+/* --- SETTINGS BUTTON REBUILT --- */
+/* This is a more forceful set of rules to override browser defaults. */
 .settings-btn {
-    background: transparent;
-    border: none;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
     cursor: pointer;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: var(--medium-text); /* Default color for the icon */
 }
+/* The SVG will inherit the color from the button. */
 .settings-btn svg {
     width: 24px;
     height: 24px;
-    transition: stroke 0.3s ease;
+    stroke: currentColor;
+    transition: color 0.3s ease;
 }
-.settings-btn.needs-key svg {
-    stroke: var(--accent-red);
+/* The JS adds/removes these classes to change the button's color. */
+.settings-btn.needs-key {
+    color: var(--accent-red) !important;
 }
-.settings-btn.has-key svg {
-    stroke: var(--accent-purple);
+.settings-btn.has-key {
+    color: var(--accent-purple) !important;
 }
-/* --- END SETTINGS BUTTON FIX --- */
+/* --- END SETTINGS BUTTON REBUILT --- */
 
 
 .logo-title {
