@@ -362,14 +362,14 @@ function initializeTabs() {
 // --- AI Generation Logic ---
 
 async function generateContent(prompt) {
-    const apiKey = localStorage.getItem('AIME_API_KEY');
-    if (!apiKey) {
-        alert("API Key not found. Please set it in the settings (the ⚙️ icon).");
-        return "Error: API Key not set. Please click the settings icon (⚙️) to enter your Gemini API key.";
-    }
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+    const userApiKey = localStorage.getItem('AIME_API_KEY');
+    const proxyUrl = 'http://127.0.0.1:5001/api/proxy';
+
+    // This is the model the frontend wants to use.
+    const model = 'gemini-pro';
 
     const payload = {
+        model: model, // Pass the model to the proxy
         contents: [{
             parts: [{
                 text: prompt
@@ -377,32 +377,49 @@ async function generateContent(prompt) {
         }],
     };
 
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    // Add the user's API key to the header if it exists.
+    // The server will prioritize this over its own key.
+    if (userApiKey) {
+        headers['X-AIME-API-Key'] = userApiKey;
+    }
+
     try {
-        const response = await fetch(apiUrl, {
+        const response = await fetch(proxyUrl, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: headers,
             body: JSON.stringify(payload)
         });
 
+        const result = await response.json();
+
         if (!response.ok) {
-            const errorBody = await response.text();
-            console.error("API Error Response:", errorBody);
-            throw new Error(`API request failed with status ${response.status}`);
+            // Use the error message from the proxy if available
+            const errorMessage = result.error || `API request failed with status ${response.status}`;
+            throw new Error(errorMessage);
         }
 
-        const result = await response.json();
         const candidate = result.candidates?.[0];
         if (candidate && candidate.content?.parts?.[0]?.text) {
             return candidate.content.parts[0].text;
         } else {
-            console.warn("Invalid response format from API.", result);
-            throw new Error("Invalid response format from API.");
+            // Handle cases where the API returns a 200 OK but with no valid candidate
+            // This can happen for safety reasons or other issues.
+            console.warn("Invalid or empty response from API.", result);
+            const finishReason = candidate?.finishReason;
+            const safetyRatings = JSON.stringify(candidate?.safetyRatings, null, 2);
+            return `Error: The AI model returned an empty response. This may be due to the safety filter. Finish Reason: ${finishReason}. Safety Ratings: ${safetyRatings}`;
         }
     } catch (error) {
-        console.error("Error generating content:", error);
-        return "An error occurred while generating content. Please check the console for details.";
+        console.error("Error generating content via proxy:", error);
+        // Check if the error is due to a network failure (proxy server not running)
+        if (error instanceof TypeError) { // In browsers, network errors are often TypeErrors
+            return "Error: Could not connect to the AIME backend server. Please ensure it is running on port 5001.";
+        }
+        return `An error occurred: ${error.message}`;
     }
 }
 
