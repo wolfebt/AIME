@@ -196,7 +196,7 @@ async function generateContent(prompt) {
         alert("API Key not found. Please set it in the settings (the ⚙️ icon).");
         return "Error: API Key not set. Please click the settings icon (⚙️) to enter your Gemini API key.";
     }
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-preview-0514:generateContent?key=${apiKey}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
     const payload = {
         contents: [{
