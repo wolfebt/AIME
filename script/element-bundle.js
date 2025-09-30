@@ -101,7 +101,7 @@ function addAimeAssetToList(file, assetList) {
             const data = JSON.parse(event.target.result);
             const assetItem = document.createElement('div');
             assetItem.className = 'asset-item aime-asset';
-            assetItem.dataset.assetData = JSON.stringify({ assetType: data.assetType, traits: data.traits });
+            assetItem.dataset.assetData = JSON.stringify({ assetType: data.assetType, traits: data.traits, custom_fields: data.custom_fields || {} });
 
             const assetType = data.assetType || 'AIME';
             const assetName = data.traits.name || file.name;
@@ -171,24 +171,77 @@ function initializeGuidanceGems() {
     const container = document.getElementById('guidance-gems-container');
     if (!container) return;
 
+    // Unified and expanded list of gems
     const gemsData = {
-        "Genre": ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Sci-Fi", "Horror", "Mystery", "Romance", "Thriller"],
-        "Tone": ["Serious", "Humorous", "Formal", "Informal", "Optimistic", "Pessimistic", "Joyful", "Sad", "Hopeful", "Cynical"],
-        "Pacing": ["Fast-paced", "Slow-burn", "Steady", "Urgent", "Relaxed", "Meditative"],
-        "Point of View": ["First Person", "Third Person Limited", "Third Person Omniscient", "Second Person"],
-        "Literary Devices": ["Metaphor", "Simile", "Personification", "Alliteration", "Symbolism", "Irony", "Foreshadowing"],
-        "Structure": ["Linear", "Non-linear", "Episodic", "In Medias Res", "Frame Story"]
+        "Genre": ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Sci-Fi", "Horror", "Mystery", "Romance", "Thriller", "Whimsical", "Gritty", "Noir"],
+        "Tone": ["Serious", "Humorous", "Formal", "Informal", "Optimistic", "Pessimistic", "Joyful", "Sad", "Hopeful", "Cynical", "Dark", "Uplifting"],
+        "Pacing": ["Fast-paced", "Slow-burn", "Steady", "Urgent", "Relaxed", "Meditative", "Action-Packed"],
+        "Point of View": ["First Person", "Third Person Limited", "Third Person Omniscient", "Second Person", "Alternating POV"],
+        "Literary Devices": ["Metaphor", "Simile", "Personification", "Alliteration", "Symbolism", "Irony", "Foreshadowing", "Satire"],
+        "Structure": ["Linear", "Non-linear", "Episodic", "In Medias Res", "Frame Story"],
+        "Themes": ["Redemption", "Betrayal", "Discovery", "Survival", "Love", "Hate", "Power", "Corruption", "Nature vs. Nurture"]
     };
 
-    let html = '';
+    container.innerHTML = ''; // Clear existing content
+
     for (const [title, options] of Object.entries(gemsData)) {
-        html += `<div class="gem-category"><h4 class="gem-title">${title}</h4><div class="gem-options">`;
-        options.forEach(option => {
-            html += `<button class="gem-option">${option}</button>`;
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'gem-category';
+
+        const titleEl = document.createElement('h4');
+        titleEl.className = 'gem-title';
+        titleEl.textContent = title;
+        categoryDiv.appendChild(titleEl);
+
+        const optionsDiv = document.createElement('div');
+        optionsDiv.className = 'gem-options';
+        options.forEach(optionText => {
+            const button = document.createElement('button');
+            button.className = 'gem-option';
+            button.textContent = optionText;
+            optionsDiv.appendChild(button);
         });
-        html += `</div></div>`;
+        categoryDiv.appendChild(optionsDiv);
+
+        // Add the custom input field and button
+        const customInputContainer = document.createElement('div');
+        customInputContainer.className = 'custom-gem-input-container';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = `Add custom ${title}...`;
+        input.className = 'input-field custom-gem-input';
+
+        const addButton = document.createElement('button');
+        addButton.textContent = 'Add';
+        addButton.className = 'add-gem-btn';
+
+        addButton.addEventListener('click', () => {
+            const value = input.value.trim();
+            if (value) {
+                const newGem = document.createElement('button');
+                newGem.className = 'gem-option active'; // Add as active by default
+                newGem.textContent = value;
+                optionsDiv.appendChild(newGem);
+                input.value = ''; // Clear the input
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addButton.click();
+            }
+        });
+
+        customInputContainer.appendChild(input);
+        customInputContainer.appendChild(addButton);
+        categoryDiv.appendChild(customInputContainer);
+
+        container.appendChild(categoryDiv);
     }
-    container.innerHTML = html;
+
+    // Use event delegation for toggling gem options
     container.addEventListener('click', (e) => {
         if (e.target.classList.contains('gem-option')) {
             e.target.classList.toggle('active');
@@ -200,7 +253,7 @@ function initializeGuidanceGems() {
 async function generateElementContent(button) {
     const elementType = button.dataset.elementType;
     const responseContainer = document.getElementById('response-container');
-    
+
     const apiKey = localStorage.getItem('AIME_API_KEY');
     if (!apiKey) {
         alert('API Key not found. Please set it in the settings.');
@@ -216,7 +269,7 @@ async function generateElementContent(button) {
         </div>`;
 
     const superPrompt = craftSuperPrompt(elementType);
-    
+
     try {
         const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
         const payload = { contents: [{ parts: [{ text: superPrompt }] }] };
@@ -254,14 +307,35 @@ function craftSuperPrompt(elementType) {
     const inputs = document.querySelectorAll('.form-section .input-field');
     let hasPrimaryTraits = false;
     inputs.forEach(input => {
-        const label = input.previousElementSibling ? input.previousElementSibling.textContent : input.id;
-        if (input.value.trim()) {
-            prompt += `${label}: ${input.value.trim()}\n`;
-            hasPrimaryTraits = true;
+        // Exclude custom fields from this section
+        if (!input.closest('#custom-fields-container')) {
+            const label = input.previousElementSibling ? input.previousElementSibling.textContent : input.id;
+            if (input.value.trim()) {
+                prompt += `${label}: ${input.value.trim()}\n`;
+                hasPrimaryTraits = true;
+            }
         }
     });
     if (!hasPrimaryTraits) {
         prompt += "No specific traits provided for this element. Please generate creatively.\n";
+    }
+
+    // --- 1.5. Custom User Fields ---
+    const customFieldGroups = document.querySelectorAll('#custom-fields-container .custom-field-group');
+    let hasCustomFields = false;
+    let customFieldsPrompt = '';
+    customFieldGroups.forEach(group => {
+        const key = group.querySelector('.custom-field-key').value.trim();
+        const value = group.querySelector('.custom-field-value').value.trim();
+        if (key && value) {
+            customFieldsPrompt += `${key}: ${value}\n`;
+            hasCustomFields = true;
+        }
+    });
+
+    if (hasCustomFields) {
+        prompt += "\n--- CUSTOM USER FIELDS ---\n";
+        prompt += customFieldsPrompt;
     }
 
     // --- 2. Guidance Gems ---
@@ -290,6 +364,12 @@ function craftSuperPrompt(elementType) {
                     for (const [key, value] of Object.entries(data.traits)) {
                         assetEntry += `  - ${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}\n`;
                     }
+                    // Also include custom fields from the asset
+                    if (data.custom_fields) {
+                         for (const [key, value] of Object.entries(data.custom_fields)) {
+                            assetEntry += `  - ${key}: ${value}\n`;
+                        }
+                    }
                 } catch (e) {
                     const assetName = item.querySelector('.asset-name')?.textContent || 'Unnamed Asset';
                     assetEntry += `\n[Reference Asset: Plain Text | Importance: ${importance}]\n- Filename: ${assetName}\n`;
@@ -306,7 +386,7 @@ function craftSuperPrompt(elementType) {
     }
 
     prompt += `\n--- TASK ---\nGenerate the content for the primary "${elementType}" Element. Use the Guidance Gems for style. Critically, use the Contextual Assets for lore, background, and specific direction, paying close attention to their specified Importance and Director's Notes. Be descriptive, imaginative, and ensure the output is consistent with all provided data. Format the output clearly with headings.`;
-    
+
     console.log("Super Prompt:", prompt);
     return prompt;
 }
@@ -324,16 +404,36 @@ function saveElementAsset() {
     const assetData = {
         assetType: elementType,
         timestamp: new Date().toISOString(),
-        traits: {}
+        traits: {},
+        custom_fields: {}
     };
 
+    // Process standard trait fields
     const inputs = document.querySelectorAll('.form-section .input-field');
     inputs.forEach(input => {
-        const fieldId = input.dataset.fieldId;
-        if (fieldId && input.value.trim() !== '') {
-            assetData.traits[fieldId] = input.value.trim();
+        if (!input.closest('#custom-fields-container')) {
+            const fieldId = input.dataset.fieldId;
+            if (fieldId && input.value.trim() !== '') {
+                assetData.traits[fieldId] = input.value.trim();
+            }
         }
     });
+
+    // Process custom fields
+    const customFieldGroups = document.querySelectorAll('#custom-fields-container .custom-field-group');
+    customFieldGroups.forEach(group => {
+        const key = group.querySelector('.custom-field-key').value.trim();
+        const value = group.querySelector('.custom-field-value').value.trim();
+
+        if (key !== '' && value !== '') {
+            assetData.custom_fields[key] = value;
+        }
+    });
+
+    // If no custom fields were added, remove the empty object for a cleaner output file
+    if (Object.keys(assetData.custom_fields).length === 0) {
+        delete assetData.custom_fields;
+    }
 
     // Use the 'name' field for the filename, otherwise default to 'Untitled'
     const assetName = assetData.traits.name || 'Untitled';
@@ -349,6 +449,62 @@ function saveElementAsset() {
     downloadAnchorNode.remove();
 }
 
+
+// --- Custom Fields Logic ---
+function initializeCustomFields() {
+    const container = document.getElementById('custom-fields-container');
+    if (!container) return;
+
+    addCustomField(container); // Add the first field
+
+    container.addEventListener('input', (e) => {
+        // Use event delegation to handle input on dynamically added fields
+        if (e.target.classList.contains('custom-field-value')) {
+            const allValueInputs = container.querySelectorAll('.custom-field-value');
+            const lastValueInput = allValueInputs[allValueInputs.length - 1];
+
+            // Check if the user is typing in the *last* value field and it's not empty
+            if (e.target === lastValueInput && e.target.value.trim() !== '') {
+                addCustomField(container);
+            }
+        }
+    });
+}
+
+function addCustomField(container) {
+    const fieldGroup = document.createElement('div');
+    fieldGroup.className = 'custom-field-group';
+
+    const keyInput = document.createElement('input');
+    keyInput.type = 'text';
+    keyInput.className = 'input-field custom-field-key';
+    keyInput.placeholder = 'Field Name (e.g., Diet)';
+
+    const valueInput = document.createElement('input');
+    valueInput.type = 'text';
+    valueInput.className = 'input-field custom-field-value';
+    valueInput.placeholder = 'Field Value (e.g., Carnivorous)';
+
+    const removeBtn = document.createElement('button');
+    removeBtn.textContent = '×';
+    removeBtn.className = 'remove-custom-field-btn';
+    removeBtn.title = 'Remove Field';
+    removeBtn.onclick = () => {
+        // Prevent removing the very last field if it's the only one
+        if (container.querySelectorAll('.custom-field-group').length > 1) {
+            fieldGroup.remove();
+        } else {
+            // Clear the fields instead of removing the last one
+            keyInput.value = '';
+            valueInput.value = '';
+        }
+    };
+
+    fieldGroup.appendChild(keyInput);
+    fieldGroup.appendChild(valueInput);
+    fieldGroup.appendChild(removeBtn);
+    container.appendChild(fieldGroup);
+}
 
 function initializeGeneration() {
     const generateButton = document.getElementById('generate-button');
@@ -368,10 +524,24 @@ function initializeClearButton() {
     const clearButton = document.getElementById('clear-fields-button');
     if (clearButton) {
         clearButton.addEventListener('click', () => {
+            // Clear standard input fields
             const inputs = document.querySelectorAll('.form-section .input-field');
-            inputs.forEach(input => input.value = '');
+            inputs.forEach(input => {
+                if (!input.closest('#custom-fields-container')) {
+                    input.value = '';
+                }
+            });
+
+            // Clear the response container
             const responseContainer = document.getElementById('response-container');
             if (responseContainer) responseContainer.innerHTML = '';
+
+            // Clear and reset custom fields
+            const customFieldsContainer = document.getElementById('custom-fields-container');
+            if (customFieldsContainer) {
+                customFieldsContainer.innerHTML = '';
+                addCustomField(customFieldsContainer); // Add back the initial empty field
+            }
         });
     }
 }
@@ -382,6 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeAccordions();
     initializeGuidanceGems();
     initializeAssetImporter();
+    initializeCustomFields();
     initializeGeneration();
     initializeSaveButton();
     initializeClearButton();

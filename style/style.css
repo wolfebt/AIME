@@ -1061,3 +1061,76 @@ select.input-field {
     }
 }
 
+/* Custom Guidance Gems Additions */
+.custom-gem-input-container {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    align-items: center;
+}
+
+.custom-gem-input {
+    flex-grow: 1;
+    height: 38px;
+    padding: 6px 12px;
+    /* Inherits from .input-field but we can override if needed */
+}
+
+.add-gem-btn {
+    background-color: transparent;
+    border: 1px solid var(--accent-blue);
+    color: var(--accent-blue);
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.add-gem-btn:hover {
+    background-color: var(--accent-blue);
+    color: white;
+}
+
+/* Custom User Fields Styling */
+.custom-field-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.custom-field-key {
+    flex: 1;
+}
+
+.custom-field-value {
+    flex: 2;
+}
+
+.remove-custom-field-btn {
+    background: transparent;
+    border: 1px solid var(--panel-border);
+    color: var(--medium-text);
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    cursor: pointer;
+    font-size: 1.4rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    padding-bottom: 2px; /* Optical alignment */
+    transition: all 0.2s ease;
+}
+
+.remove-custom-field-btn:hover {
+    background-color: var(--accent-red);
+    color: white;
+    border-color: transparent;
+}
+
