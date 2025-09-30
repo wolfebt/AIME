@@ -528,7 +528,7 @@ select.input-field {
     flex-direction: column;
     gap: 0.75rem;
     margin-top: 1rem;
-    max-height: 200px;
+    /* max-height: 200px; */ /* <-- Removed this line to allow the container to grow */
     overflow-y: auto;
 }
 .asset-item {
