@@ -372,12 +372,8 @@ function updateSelectedDisplay(dropdownContainer) {
 async function generateElementContent(button) {
     const elementType = button.dataset.elementType;
     const responseContainer = document.getElementById('response-container');
-
-    const apiKey = localStorage.getItem('AIME_API_KEY');
-    if (!apiKey) {
-        alert('API Key not found. Please set it in the settings.');
-        return;
-    }
+    const userApiKey = localStorage.getItem('AIME_API_KEY');
+    const proxyUrl = 'http://127.0.0.1:5001/api/proxy';
 
     button.disabled = true;
     button.textContent = 'Generating...';
@@ -389,29 +385,53 @@ async function generateElementContent(button) {
 
     const superPrompt = craftSuperPrompt(elementType);
 
-    try {
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-        const payload = { contents: [{ parts: [{ text: superPrompt }] }] };
+    // This is the model the frontend wants to use.
+    const model = 'gemini-2.5-flash-preview-05-20';
 
-        const response = await fetch(apiUrl, {
+    const payload = {
+        model: model,
+        contents: [{ parts: [{ text: superPrompt }] }]
+    };
+
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    if (userApiKey) {
+        headers['X-AIME-API-Key'] = userApiKey;
+    }
+
+    try {
+        const response = await fetch(proxyUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify(payload)
         });
 
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
         const result = await response.json();
+
+        if (!response.ok) {
+            const errorMessage = result.error || `API request failed with status ${response.status}`;
+            throw new Error(errorMessage);
+        }
+
         const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
 
         if (text) {
             responseContainer.innerHTML = `<div class="response-content">${text.replace(/\n/g, '<br>')}</div>`;
         } else {
-            responseContainer.innerHTML = `<p class="error-text">Received an empty response from the AI.</p>`;
+            console.warn("Invalid or empty response from API.", result);
+            const finishReason = result.candidates?.[0]?.finishReason;
+            const safetyRatings = JSON.stringify(result.candidates?.[0]?.safetyRatings, null, 2);
+            responseContainer.innerHTML = `<p class="error-text">Error: The AI model returned an empty response. This may be due to the safety filter. Finish Reason: ${finishReason}. Safety Ratings: ${safetyRatings}</p>`;
         }
     } catch (error) {
-        console.error('Error generating content:', error);
-        responseContainer.innerHTML = `<p class="error-text">An error occurred. Check the console for details.</p>`;
+        console.error('Error generating content via proxy:', error);
+        if (error instanceof TypeError) {
+            responseContainer.innerHTML = `<p class="error-text">Error: Could not connect to the AIME backend server. Please ensure it is running on port 5001.</p>`;
+        } else {
+            responseContainer.innerHTML = `<p class="error-text">An error occurred: ${error.message}</p>`;
+        }
     } finally {
         button.disabled = false;
         button.textContent = 'Generate';

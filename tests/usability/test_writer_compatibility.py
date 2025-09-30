@@ -103,8 +103,8 @@ def run_test(playwright):
             })
         )
 
-    # Intercept network requests to the Gemini API
-    page.route("**/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent**", handle_api_request)
+    # Intercept network requests to the local proxy server
+    page.route("**/api/proxy**", handle_api_request)
 
     # Fill the main prompt and click the generate button
     page.locator("#main-prompt").fill(WRITER_PROMPT)

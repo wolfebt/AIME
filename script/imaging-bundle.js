@@ -168,12 +168,8 @@ async function generateImage() {
     const generateBtn = document.getElementById('generate-button');
     const imageContainer = document.getElementById('image-container');
     const toolbar = document.getElementById('image-toolbar');
-
-    const apiKey = localStorage.getItem('AIME_API_KEY');
-    if (!apiKey) {
-        alert('API Key not found. Please set it in the settings.');
-        return;
-    }
+    const userApiKey = localStorage.getItem('AIME_API_KEY');
+    const proxyUrl = 'http://127.0.0.1:5001/api/proxy';
 
     generateBtn.disabled = true;
     generateBtn.textContent = 'Generating...';
@@ -185,35 +181,53 @@ async function generateImage() {
         </div>`;
 
     const promptText = craftImageSuperPrompt();
+    const model = 'imagen-3.0-generate-002'; // The specific model for image generation
+
+    // The image generation model expects a different payload structure, which we pass through
+    const payload = {
+        model: model, // Pass model to the proxy
+        instances: [{ "prompt": promptText }],
+        "parameters": {
+            "sampleCount": 1
+        }
+    };
+
+    const headers = {
+        'Content-Type': 'application/json'
+    };
+
+    if (userApiKey) {
+        headers['X-AIME-API-Key'] = userApiKey;
+    }
 
     try {
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
-        const payload = {
-            instances: [{ prompt: promptText }],
-            parameters: { "sampleCount": 1 }
-        };
-
-        const response = await fetch(apiUrl, {
+        const response = await fetch(proxyUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: headers,
             body: JSON.stringify(payload)
         });
 
+        const result = await response.json();
+
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorMessage = result.error || `API request failed with status ${response.status}`;
+            throw new Error(errorMessage);
         }
 
-        const result = await response.json();
         if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
             const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
             imageContainer.innerHTML = `<img src="${imageUrl}" alt="Generated Image">`;
             toolbar.classList.remove('hidden');
         } else {
-            imageContainer.innerHTML = `<p class="placeholder-text">Could not generate image. Response was empty.</p>`;
+            imageContainer.innerHTML = `<p class="placeholder-text">Could not generate image. The AI may have refused the prompt for safety reasons.</p>`;
         }
     } catch (error) {
-        console.error('Error generating image:', error);
-        imageContainer.innerHTML = `<p class="placeholder-text">An error occurred during image generation. Check the console for details.</p>`;
+        console.error('Error generating image via proxy:', error);
+        if (error instanceof TypeError) {
+            imageContainer.innerHTML = `<p class="placeholder-text">Error: Could not connect to the AIME backend. Please ensure it is running.</p>`;
+        } else {
+            imageContainer.innerHTML = `<p class="placeholder-text">An error occurred: ${error.message}</p>`;
+        }
     } finally {
         generateBtn.disabled = false;
         generateBtn.textContent = 'Generate Image';
