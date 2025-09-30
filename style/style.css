@@ -281,8 +281,13 @@ body {
 .accordion {
     border: 1px solid var(--panel-border);
     border-radius: 0.75rem;
-    overflow: hidden;
+    overflow: hidden; /* Default to hidden */
     background-color: rgba(36, 41, 47, 0.7);
+    transition: overflow 0.4s ease-out; /* Smooth transition for overflow */
+}
+
+.accordion.open {
+    overflow: visible; /* Allow content to overflow when open */
 }
 .accordion-header {
     width: 100%;
