@@ -340,8 +340,10 @@ body {
     box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
 }
 textarea.input-field {
-    min-height: 120px;
-    resize: vertical;
+    /* Set height for one line of text + padding + border. `em` is relative to font-size. */
+    height: calc(1.6em + 1.5rem + 2px);
+    resize: none;
+    overflow-y: hidden;
 }
 select.input-field {
     appearance: none;

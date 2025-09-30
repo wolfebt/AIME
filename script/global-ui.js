@@ -85,9 +85,33 @@ function initializeSettingsModal() {
     });
 }
 
+// --- Auto-Expanding Textareas ---
+function initializeAutoExpandingTextareas() {
+    // Use event delegation on the document body to catch input events on any textarea
+    document.body.addEventListener('input', event => {
+        if (event.target.tagName.toLowerCase() === 'textarea') {
+            const textarea = event.target;
+            // Temporarily reset height to auto to get the correct scrollHeight
+            textarea.style.height = 'auto';
+            // Set the height to the scrollHeight to fit the content
+            textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+    });
+
+    // Initial resize for any textareas that might have content on page load
+    document.querySelectorAll('textarea').forEach(textarea => {
+        // Only resize if there is actual content, not just a placeholder
+        if (textarea.value) {
+            textarea.style.height = 'auto';
+            textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+    });
+}
+
 // Initialize all global UI components when the page content is loaded.
 document.addEventListener('DOMContentLoaded', () => {
     initializeSettingsModal();
     checkApiKeyStatus();
+    initializeAutoExpandingTextareas();
 });
 
