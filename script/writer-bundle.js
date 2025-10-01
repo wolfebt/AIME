@@ -124,13 +124,45 @@ function initializeGuidanceGems() {
     const modalOptionsContainer = document.getElementById('gem-modal-options-container');
     const modalSaveBtn = document.getElementById('gem-modal-save-btn');
     const modalCloseBtn = document.getElementById('gem-modal-close-btn');
+    const customGemInput = document.getElementById('custom-gem-input');
+    const addCustomGemBtn = document.getElementById('add-custom-gem-btn');
 
-    if (!modalOverlay || !modalTitle || !modalOptionsContainer || !modalSaveBtn || !modalCloseBtn) {
+    if (!modalOverlay || !modalTitle || !modalOptionsContainer || !modalSaveBtn || !modalCloseBtn || !customGemInput || !addCustomGemBtn) {
         console.error("Guidance modal elements not found!");
         return;
     }
 
     // --- Functions ---
+    function addCustomGem() {
+        const category = modalOverlay.dataset.currentCategory;
+        const value = customGemInput.value.trim();
+
+        if (!category || value === '') return;
+
+        // Prevent duplicates (case-insensitive)
+        if (gemsData[category] && gemsData[category].map(v => v.toLowerCase()).includes(value.toLowerCase())) {
+            customGemInput.value = '';
+            return;
+        }
+
+        // Add to the main data source if it doesn't exist
+        if (!gemsData[category]) {
+            gemsData[category] = [];
+        }
+        gemsData[category].push(value);
+
+        // Create and add the new button to the modal UI, and activate it
+        const button = document.createElement('button');
+        button.className = 'gem-modal-option-button active';
+        button.textContent = value;
+        button.dataset.value = value;
+        modalOptionsContainer.appendChild(button);
+
+        // Clear and refocus input for better UX
+        customGemInput.value = '';
+        customGemInput.focus();
+    }
+
 
     function renderSelectedGems(category) {
         const categoryContainer = container.querySelector(`[data-category="${category}"]`);
@@ -170,7 +202,9 @@ function initializeGuidanceGems() {
             modalOptionsContainer.appendChild(button);
         });
 
+        customGemInput.value = ''; // Clear previous custom input
         modalOverlay.classList.remove('hidden');
+        customGemInput.focus(); // Focus on the input for easy typing
     }
 
     function closeGemsModal() {
@@ -228,6 +262,14 @@ function initializeGuidanceGems() {
     modalOptionsContainer.addEventListener('click', e => {
         if (e.target.matches('.gem-modal-option-button')) {
             e.target.classList.toggle('active');
+        }
+    });
+
+    addCustomGemBtn.addEventListener('click', addCustomGem);
+    customGemInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // prevent form submission
+            addCustomGem();
         }
     });
 }
