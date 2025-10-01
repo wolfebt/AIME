@@ -691,6 +691,30 @@ function initializeClearButton() {
     }
 }
 
+// --- Element Page Tabs ---
+function initializeElementTabs() {
+    const tabButtons = document.querySelectorAll('.element-nav-button');
+    const tabs = document.querySelectorAll('.element-tab');
+
+    if (!tabButtons.length || !tabs.length) return;
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Deactivate all buttons and tabs
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Activate the clicked button and corresponding tab
+            button.classList.add('active');
+            const tabName = button.dataset.tab;
+            const targetTab = document.getElementById(`${tabName}-tab`);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+        });
+    });
+}
+
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     // initializeResizableColumns(); // Intentionally disabled for stability
@@ -701,4 +725,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeGeneration();
     initializeSaveButton();
     initializeClearButton();
+    initializeElementTabs(); // Add this line
 });
