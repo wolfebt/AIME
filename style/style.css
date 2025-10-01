@@ -392,6 +392,13 @@ textarea.input-field {
     flex: 1 1 70%; /* Grow, shrink, basis of 70% */
 }
 
+/* FIX: This rule provides a more specific selector to override browser-default styles on the initial custom field text input. */
+#custom-fields-container .custom-field-group input[type="text"] {
+    background-color: var(--dark-bg);
+    border: 1px solid #30363d;
+    color: var(--light-text);
+}
+
 .remove-custom-field-btn {
     background: none;
     border: 1px solid transparent;
