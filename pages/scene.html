@@ -45,22 +45,22 @@
                 <div class="form-section glass-panel" style="padding: 1.5rem;">
                     <h4 id="SCENE">Scene Traits</h4>
                     <h5 class="form-subheader">Core Details</h5>
-                    <div class="form-group"><label for="scene-name">Scene Name / Slugline</label><input type="text" id="scene-name" class="input-field" data-field-id="name" placeholder="e.g., 'INT. COFFEE SHOP - DAY'"></div>
-                    <div class="form-group"><label for="scene-location">Location Description</label><textarea id="scene-location" class="input-field" data-field-id="location" placeholder="A precise description of where the scene unfolds."></textarea></div>
-                    <div class="form-group"><label for="scene-time">Time of Day & Duration</label><input type="text" id="scene-time" class="input-field" data-field-id="time" placeholder="e.g., 'Dusk, lasting a few minutes.'"></div>
-                    <div class="form-group"><label for="scene-mood">Mood & Atmosphere</label><textarea id="scene-mood" class="input-field" data-field-id="mood" placeholder="The overall emotional and psychological tone (e.g., tense, humorous, melancholic)."></textarea></div>
+                    <div class="form-group"><label for="scene-name">Scene Name / Slugline</label><input type="text" id="scene-name" class="input-field" data-field-id="name" placeholder="e.g., 'INT. COFFEE SHOP - DAY'" autocomplete="off"></div>
+                    <div class="form-group"><label for="scene-location">Location Description</label><textarea id="scene-location" class="input-field" data-field-id="location" placeholder="A precise description of where the scene unfolds." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="scene-time">Time of Day & Duration</label><input type="text" id="scene-time" class="input-field" data-field-id="time" placeholder="e.g., 'Dusk, lasting a few minutes.'" autocomplete="off"></div>
+                    <div class="form-group"><label for="scene-mood">Mood & Atmosphere</label><textarea id="scene-mood" class="input-field" data-field-id="mood" placeholder="The overall emotional and psychological tone (e.g., tense, humorous, melancholic)." autocomplete="off"></textarea></div>
 
                     <h5 class="form-subheader">Sensory Details</h5>
-                    <div class="form-group"><label for="scene-sight">Visual Details (Sight)</label><textarea id="scene-sight" class="input-field" data-field-id="sight" placeholder="Lighting, colors, key objects, and character appearances."></textarea></div>
-                    <div class="form-group"><label for="scene-sound">Auditory Details (Sound)</label><textarea id="scene-sound" class="input-field" data-field-id="sound" placeholder="Dialogue, background noise, sound effects, music, or silence."></textarea></div>
-                    <div class="form-group"><label for="scene-smell">Olfactory & Other Senses</label><textarea id="scene-smell" class="input-field" data-field-id="smell" placeholder="Prominent smells, temperatures, and tactile sensations."></textarea></div>
+                    <div class="form-group"><label for="scene-sight">Visual Details (Sight)</label><textarea id="scene-sight" class="input-field" data-field-id="sight" placeholder="Lighting, colors, key objects, and character appearances." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="scene-sound">Auditory Details (Sound)</label><textarea id="scene-sound" class="input-field" data-field-id="sound" placeholder="Dialogue, background noise, sound effects, music, or silence." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="scene-smell">Olfactory & Other Senses</label><textarea id="scene-smell" class="input-field" data-field-id="smell" placeholder="Prominent smells, temperatures, and tactile sensations." autocomplete="off"></textarea></div>
 
                     <h5 class="form-subheader">Narrative Elements</h5>
-                    <div class="form-group"><label for="scene-characters">Key Characters Present</label><textarea id="scene-characters" class="input-field" data-field-id="characters" placeholder="List the characters involved in the scene and their initial state."></textarea></div>
-                    <div class="form-group"><label for="scene-objective">Scene Objective / Goal</label><textarea id="scene-objective" class="input-field" data-field-id="objective" placeholder="What the protagonist or main characters want to achieve in this scene."></textarea></div>
-                    <div class="form-group"><label for="scene-conflict">Core Conflict / Tension</label><textarea id="scene-conflict" class="input-field" data-field-id="conflict" placeholder="The primary obstacle or source of tension preventing the goal."></textarea></div>
-                    <div class="form-group"><label for="scene-beats">Narrative Beats / Pacing</label><textarea id="scene-beats" class="input-field" data-field-id="beats" placeholder="The key moments or sequence of events that happen in the scene."></textarea></div>
-                    <div class="form-group"><label for="scene-objects">Key Objects & Interactivity</label><textarea id="scene-objects" class="input-field" data-field-id="objects" placeholder="Important props or elements that characters can interact with."></textarea></div>
+                    <div class="form-group"><label for="scene-characters">Key Characters Present</label><textarea id="scene-characters" class="input-field" data-field-id="characters" placeholder="List the characters involved in the scene and their initial state." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="scene-objective">Scene Objective / Goal</label><textarea id="scene-objective" class="input-field" data-field-id="objective" placeholder="What the protagonist or main characters want to achieve in this scene." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="scene-conflict">Core Conflict / Tension</label><textarea id="scene-conflict" class="input-field" data-field-id="conflict" placeholder="The primary obstacle or source of tension preventing the goal." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="scene-beats">Narrative Beats / Pacing</label><textarea id="scene-beats" class="input-field" data-field-id="beats" placeholder="The key moments or sequence of events that happen in the scene." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="scene-objects">Key Objects & Interactivity</label><textarea id="scene-objects" class="input-field" data-field-id="objects" placeholder="Important props or elements that characters can interact with." autocomplete="off"></textarea></div>
                     <h5 class="form-subheader">Custom User Fields</h5>
                     <div id="custom-fields-container">
                         <!-- Dynamically generated fields will be inserted here by JavaScript -->
@@ -80,7 +80,7 @@
                         <div class="asset-hub-container">
                             <p class="asset-hub-subtitle">Import Personas, Settings, etc. to populate this Scene.</p>
                             <div class="asset-import-area">
-                                <input type="file" id="asset-upload" multiple="" style="display: none;">
+                                <input type="file" id="asset-upload" multiple="" style="display: none;" autocomplete="off">
                                 <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
                             </div>
                             <div id="asset-list" class="asset-list"></div>
@@ -106,7 +106,7 @@
                 <div class="form-group">
                     <label for="api-key-input">Gemini API Key</label>
                     <div class="password-input-wrapper">
-                        <input type="password" id="api-key-input" class="input-field" placeholder="Enter your API key">
+                        <input type="password" id="api-key-input" class="input-field" placeholder="Enter your API key" autocomplete="off">
                         <button id="view-api-key" class="view-api-key-btn" title="Show/Hide Key">👁</button>
                     </div>
                 </div>
@@ -128,7 +128,7 @@
                 <!-- Clickable option buttons will be dynamically inserted here -->
             </div>
             <div class="gem-modal-custom-input-area">
-                <input type="text" id="custom-gem-input" class="input-field" placeholder="Add a custom option...">
+                <input type="text" id="custom-gem-input" class="input-field" placeholder="Add a custom option..." autocomplete="off">
                 <button id="add-custom-gem-btn" class="action-btn">Add</button>
             </div>
             <div class="modal-footer">
@@ -138,6 +138,3 @@
     </div>
 </body>
 </html>
-
-
-
