@@ -421,63 +421,56 @@ function initializeTabs() {
 
 async function generateContent(prompt) {
     const userApiKey = localStorage.getItem('AIME_API_KEY');
-    const proxyUrl = 'http://127.0.0.1:5001/api/proxy';
+    const model = 'gemini-pro'; // The model to use
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${userApiKey}`;
 
-    // This is the model the frontend wants to use.
-    const model = 'gemini-pro';
+    if (!userApiKey) {
+        return "Error: API key not found. Please set your AIME_API_KEY in the application settings.";
+    }
 
     const payload = {
-        model: model, // Pass the model to the proxy
         contents: [{
             parts: [{
                 text: prompt
             }]
         }],
+        // Optional: Add safety settings and generation config if needed
+        // safetySettings: [...],
+        // generationConfig: {...}
     };
-
-    const headers = {
-        'Content-Type': 'application/json'
-    };
-
-    // Add the user's API key to the header if it exists.
-    // The server will prioritize this over its own key.
-    if (userApiKey) {
-        headers['X-AIME-API-Key'] = userApiKey;
-    }
 
     try {
-        const response = await fetch(proxyUrl, {
+        const response = await fetch(apiUrl, {
             method: 'POST',
-            headers: headers,
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(payload)
         });
 
         const result = await response.json();
 
         if (!response.ok) {
-            // Use the error message from the proxy if available
-            const errorMessage = result.error || `API request failed with status ${response.status}`;
-            throw new Error(errorMessage);
+            const errorDetails = result.error || { message: `API request failed with status ${response.status}` };
+            console.error("API Error Response:", errorDetails);
+            throw new Error(`API Error: ${errorDetails.message} (Code: ${errorDetails.code})`);
         }
 
         const candidate = result.candidates?.[0];
         if (candidate && candidate.content?.parts?.[0]?.text) {
             return candidate.content.parts[0].text;
         } else {
-            // Handle cases where the API returns a 200 OK but with no valid candidate
-            // This can happen for safety reasons or other issues.
             console.warn("Invalid or empty response from API.", result);
-            const finishReason = candidate?.finishReason;
-            const safetyRatings = JSON.stringify(candidate?.safetyRatings, null, 2);
+            const finishReason = candidate?.finishReason || 'N/A';
+            const safetyRatings = candidate?.safetyRatings ? JSON.stringify(candidate.safetyRatings, null, 2) : 'N/A';
             return `Error: The AI model returned an empty response. This may be due to the safety filter. Finish Reason: ${finishReason}. Safety Ratings: ${safetyRatings}`;
         }
     } catch (error) {
-        console.error("Error generating content via proxy:", error);
-        // Check if the error is due to a network failure (proxy server not running)
-        if (error instanceof TypeError) { // In browsers, network errors are often TypeErrors
-            return "Error: Could not connect to the AIME backend server. Please ensure it is running on port 5001.";
+        console.error("Error generating content:", error);
+        if (error instanceof TypeError) { // Network or CORS errors
+            return "Error: A network error occurred. Please check your internet connection and ensure you can access the Google API.";
         }
-        return `An error occurred: ${error.message}`;
+        return `Error: ${error.message}`;
     }
 }
 
