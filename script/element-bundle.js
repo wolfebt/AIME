@@ -215,15 +215,27 @@ document.addEventListener('input', e => {
 let selectedGems = {}; // Data store for all selected guidance options
 
 // MODIFICATION: Move gemsData to global scope for persistence
-const gemsData = {
-    "Genre": ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Sci-Fi", "Horror", "Mystery", "Romance", "Thriller", "Whimsical", "Gritty", "Noir"],
-    "Tone": ["Serious", "Humorous", "Formal", "Informal", "Optimistic", "Pessimistic", "Joyful", "Sad", "Hopeful", "Cynical", "Dark", "Uplifting"],
-    "Pacing": ["Fast-paced", "Slow-burn", "Steady", "Urgent", "Relaxed", "Meditative", "Action-Packed"],
-    "Point of View": ["First Person", "Third Person Limited", "Third Person Omniscient", "Second Person", "Alternating POV"],
-    "Literary Devices": ["Metaphor", "Simile", "Personification", "Alliteration", "Symbolism", "Irony", "Foreshadowing", "Satire"],
-    "Structure": ["Linear", "Non-linear", "Episodic", "In Medias Res", "Frame Story"],
-    "Themes": ["Redemption", "Betrayal", "Discovery", "Survival", "Love", "Hate", "Power", "Corruption", "Nature vs. Nurture"]
+// This object now holds all gem configurations, keyed by element type.
+const allGemsData = {
+    "STORY": { // Default gems for story-related elements
+        "Genre": ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Sci-Fi", "Horror", "Mystery", "Romance", "Thriller", "Whimsical", "Gritty", "Noir"],
+        "Tone": ["Serious", "Humorous", "Formal", "Informal", "Optimistic", "Pessimistic", "Joyful", "Sad", "Hopeful", "Cynical", "Dark", "Uplifting"],
+        "Pacing": ["Fast-paced", "Slow-burn", "Steady", "Urgent", "Relaxed", "Meditative", "Action-Packed"],
+        "Point of View": ["First Person", "Third Person Limited", "Third Person Omniscient", "Second Person", "Alternating POV"],
+        "Literary Devices": ["Metaphor", "Simile", "Personification", "Alliteration", "Symbolism", "Irony", "Foreshadowing", "Satire"],
+        "Structure": ["Linear", "Non-linear", "Episodic", "In Medias Res", "Frame Story"],
+        "Themes": ["Redemption", "Betrayal", "Discovery", "Survival", "Love", "Hate", "Power", "Corruption", "Nature vs. Nurture"]
+    },
+    "PERSONA": { // Specific gems for the Persona element
+        "Descriptive Tone": ["Heroic & Grand", "Villainous & Menacing", "Tragic & Sympathetic", "Comedic & Light", "Mysterious & Obscure"],
+        "Character Complexity": ["Morally Ambiguous", "Straightforward Hero/Villain", "Complex Anti-Hero", "Innocent Idealist"],
+        "Speech Pattern": ["Eloquent & Articulate", "Laconic & Terse", "Fast-Talking & Energetic", "Sarcastic & Witty", "Formal & Proper"],
+        "Physicality Focus": ["Emphasize Strength/Power", "Emphasize Agility/Grace", "Emphasize Intellect/Presence", "Emphasize Frailty"],
+        "Inner World Focus": ["Emotionally Reserved", "Openly Expressive", "Logically Detached", "Driven by Passion", "Riddled with Anxiety"]
+    }
 };
+
+let gemsData = {}; // This will be populated dynamically based on the element type.
 
 function initializeGuidanceGems() {
     const container = document.getElementById('guidance-gems-container');
@@ -336,6 +348,19 @@ function initializeGuidanceGems() {
     }
 
     // --- Initial Setup ---
+
+    // MODIFICATION: Dynamically select the correct gems based on the page's element type.
+    const generateButton = document.getElementById('generate-button');
+    const elementType = generateButton ? generateButton.dataset.elementType : null;
+
+    // Use persona-specific gems if on PERSONA page, otherwise default to STORY gems
+    if (elementType && allGemsData[elementType]) {
+        gemsData = allGemsData[elementType];
+    } else {
+        // Fallback for elements that don't have a specific gem set (like WORLD, SCENE, etc.)
+        // This makes the system extensible.
+        gemsData = allGemsData['STORY'];
+    }
 
     container.innerHTML = ''; // Clear existing content
     for (const category of Object.keys(gemsData)) {
