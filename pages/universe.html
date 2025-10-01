@@ -43,20 +43,37 @@
         <div class="workspace-layout">
             <div class="main-column">
                 <div class="form-section glass-panel" style="padding: 1.5rem;">
-                    <h4 id="UNIVERSE">Core Concept</h4>
-                    <div class="form-group"><label for="universe-name">Universe Name</label><input type="text" id="universe-name" class="input-field" data-field-id="name"></div>
-                    <div class="form-group"><label for="primary-genre">Primary Genre</label><input type="text" id="primary-genre" class="input-field" data-field-id="genre"></div>
-                    <div class="form-group"><label for="themes-motifs">Core Themes & Motifs</label><input type="text" id="themes-motifs" class="input-field" data-field-id="themes" placeholder="e.g., Redemption, Hubris, Nature vs. Technology"></div>
-                    <div class="form-group"><label for="one-line-pitch">One-Line Pitch</label><input type="text" id="one-line-pitch" class="input-field" data-field-id="pitch"></div>
-                    <div class="form-group"><label for="inspirations-tone">Inspirations & Tone</label><textarea id="inspirations-tone" class="input-field" data-field-id="inspirations" placeholder="e.g., Inspired by Dune with a cosmic horror tone."></textarea></div>
-                    <div class="form-group"><label for="laws-physics">Fundamental Laws of Physics</label><textarea id="laws-physics" class="input-field" data-field-id="physics" placeholder="The basic rules governing reality."></textarea></div>
-                    <div class="form-group"><label for="metaphysical-rules">Metaphysical Rules</label><textarea id="metaphysical-rules" class="input-field" data-field-id="metaphysics" placeholder="Rules for the soul, afterlife, fate vs. free will, etc."></textarea></div>
-                    <div class="form-group"><label for="source-power">Source of Power</label><textarea id="source-power" class="input-field" data-field-id="power_source" placeholder="e.g., Magic from celestial alignments, psychic power from genetics."></textarea></div>
-                    <div class="form-group"><label for="cosmology">Cosmology & Celestial Bodies</label><textarea id="cosmology" class="input-field" data-field-id="cosmology" placeholder="Structure of the cosmos, unique planets, dimensions, etc."></textarea></div>
-                    <div class="form-group"><label for="universal-constants">Universal Constants</label><textarea id="universal-constants" class="input-field" data-field-id="constants" placeholder="Unchangeable truths, prophecies, or pivotal historical events."></textarea></div>
+                    <h4 id="core-concept">Core Concept</h4>
+                    <div class="form-group"><label for="universe-name">Universe Name</label><input type="text" id="universe-name" class="input-field" data-field-id="name" autocomplete="off"></div>
+                    <div class="form-group"><label for="primary-genre">Primary Genre</label><input type="text" id="primary-genre" class="input-field" data-field-id="genre" autocomplete="off"></div>
+
+                    <h4 id="themes-motifs">Core Themes & Motifs</h4>
+                    <div class="form-group"><label for="high-concept-pitch">High Concept Pitch</label><input type="text" id="high-concept-pitch" class="input-field" data-field-id="pitch" autocomplete="off"></div>
+                    <div class="form-group"><label for="inspirations-tone">Inspirations & Tone</label><textarea id="inspirations-tone" class="input-field" data-field-id="inspirations" placeholder="e.g., Inspired by Dune with a cosmic horror tone." autocomplete="off"></textarea></div>
+
+                    <h4 id="rules-of-reality">Rules of Reality</h4>
+                    <div class="form-group"><label for="laws-physics">Fundamental Laws of Physics</label><textarea id="laws-physics" class="input-field" data-field-id="physics" placeholder="The basic rules governing reality." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="universal-constants">Universal Constants</label><textarea id="universal-constants" class="input-field" data-field-id="constants" placeholder="Unchangeable truths or pivotal historical events." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="ftl-travel">Faster-Than-Light Travel</label><textarea id="ftl-travel" class="input-field" data-field-id="ftl" placeholder="Methods, limitations, and consequences of FTL." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="exotic-matter">Exotic Matter & Energy</label><textarea id="exotic-matter" class="input-field" data-field-id="exotic_matter" placeholder="Unique substances or energy forms and their properties." autocomplete="off"></textarea></div>
+
+                    <h4 id="metaphysical-rules">Metaphysical Rules</h4>
+                    <div class="form-group"><label for="soul-consciousness">The Soul & Consciousness</label><textarea id="soul-consciousness" class="input-field" data-field-id="soul" placeholder="Nature of the soul, consciousness, and the afterlife." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="time-causality">Time & Causality</label><textarea id="time-causality" class="input-field" data-field-id="time" placeholder="How time flows, potential for time travel, paradoxes." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="destiny-prophecy">Destiny & Prophecy</label><textarea id="destiny-prophecy" class="input-field" data-field-id="destiny" placeholder="The role of fate, prophecies, and free will." autocomplete="off"></textarea></div>
+
+                    <h4 id="source-of-power">Source of Power</h4>
+                    <div class="form-group"><label for="power-origin">Origin Point</label><textarea id="power-origin" class="input-field" data-field-id="power_origin" placeholder="e.g., Magic from celestial alignments, psychic power from genetics." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="power-access">Access Methods</label><textarea id="power-access" class="input-field" data-field-id="power_access" placeholder="How individuals or groups tap into the source of power." autocomplete="off"></textarea></div>
+
+                    <h4 id="cosmology">Cosmology & Celestial Bodies</h4>
+                    <div class="form-group"><label for="cosmology-scale">Scale & Structure</label><textarea id="cosmology-scale" class="input-field" data-field-id="cosmology_scale" placeholder="Size of the universe, multiverses, arrangement of galaxies." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="cosmology-planes">Extra-planar Realities</label><textarea id="cosmology-planes" class="input-field" data-field-id="cosmology_planes" placeholder="Alternate dimensions, spiritual realms, etc." autocomplete="off"></textarea></div>
+                    <div class="form-group"><label for="cosmology-phenomena">Unique Celestial Phenomena</label><textarea id="cosmology-phenomena" class="input-field" data-field-id="cosmology_phenomena" placeholder="e.g., Living stars, crystalline asteroid fields, temporal rifts." autocomplete="off"></textarea></div>
+
                     <h5 class="form-subheader">Custom Notes</h5>
                     <div class="form-group">
-                        <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, notes, or custom fields here."></textarea>
+                        <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, notes, or custom fields here." autocomplete="off"></textarea>
                     </div>
                 </div>
                 <div id="response-container" class="response-container glass-panel"></div>
