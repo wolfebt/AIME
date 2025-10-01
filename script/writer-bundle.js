@@ -7,6 +7,17 @@
 let loadedAssets = []; // NEW: Data store for asset content
 let selectedGems = {}; // Data store for all selected guidance options
 
+// MODIFICATION: Move gemsData to global scope for persistence
+const gemsData = {
+    "Genre": ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Sci-Fi", "Horror", "Mystery", "Romance", "Thriller", "Whimsical", "Gritty", "Noir"],
+    "Tone": ["Serious", "Humorous", "Formal", "Informal", "Optimistic", "Pessimistic", "Joyful", "Sad", "Hopeful", "Cynical", "Dark", "Uplifting"],
+    "Pacing": ["Fast-paced", "Slow-burn", "Steady", "Urgent", "Relaxed", "Meditative", "Action-Packed"],
+    "Point of View": ["First Person", "Third Person Limited", "Third Person Omniscient", "Second Person", "Alternating POV"],
+    "Literary Devices": ["Metaphor", "Simile", "Personification", "Alliteration", "Symbolism", "Irony", "Foreshadowing", "Satire"],
+    "Structure": ["Linear", "Non-linear", "Episodic", "In Medias Res", "Frame Story"],
+    "Themes": ["Redemption", "Betrayal", "Discovery", "Survival", "Love", "Hate", "Power", "Corruption", "Nature vs. Nurture"]
+};
+
 // --- Resizable Columns ---
 function initializeResizableColumns() {
     const workspace = document.querySelector('.workspace-layout');
@@ -107,16 +118,6 @@ function initializeAccordions() {
 function initializeGuidanceGems() {
     const container = document.getElementById('guidance-gems-container');
     if (!container) return;
-
-    const gemsData = {
-        "Genre": ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Sci-Fi", "Horror", "Mystery", "Romance", "Thriller", "Whimsical", "Gritty", "Noir"],
-        "Tone": ["Serious", "Humorous", "Formal", "Informal", "Optimistic", "Pessimistic", "Joyful", "Sad", "Hopeful", "Cynical", "Dark", "Uplifting"],
-        "Pacing": ["Fast-paced", "Slow-burn", "Steady", "Urgent", "Relaxed", "Meditative", "Action-Packed"],
-        "Point of View": ["First Person", "Third Person Limited", "Third Person Omniscient", "Second Person", "Alternating POV"],
-        "Literary Devices": ["Metaphor", "Simile", "Personification", "Alliteration", "Symbolism", "Irony", "Foreshadowing", "Satire"],
-        "Structure": ["Linear", "Non-linear", "Episodic", "In Medias Res", "Frame Story"],
-        "Themes": ["Redemption", "Betrayal", "Discovery", "Survival", "Love", "Hate", "Power", "Corruption", "Nature vs. Nurture"]
-    };
 
     // Modal elements
     const modalOverlay = document.getElementById('gem-selection-modal-overlay');

@@ -14,8 +14,8 @@
     --panel-border: rgba(139, 148, 158, 0.2);
     --light-text: #e6edf3;
     --medium-text: #8b949e;
-    --accent-blue: #2563eb;
-    --accent-purple: #5b21b6;
+    --accent-blue: #1e40af; /* Darker Blue */
+    --accent-purple: #4c1d95; /* Darker Purple */
     --accent-red: #F87171; /* Red for missing key */
     --font-main: 'Inter', sans-serif;
 }
@@ -177,8 +177,8 @@ body {
 
 .hub-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 40px rgba(139, 92, 246, 0.2);
-    border-color: rgba(139, 92, 246, 0.7);
+    box-shadow: 0 8px 40px rgba(76, 29, 149, 0.2);
+    border-color: rgba(76, 29, 149, 0.7);
 }
 
 .card-title {
@@ -342,7 +342,7 @@ body {
 .input-field:focus {
     outline: none;
     border-color: var(--accent-blue);
-    box-shadow: 0 0 10px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 0 10px rgba(30, 64, 175, 0.3);
 }
 textarea.input-field {
     /* Set height for one line of text + padding + border. `em` is relative to font-size. */
@@ -375,7 +375,7 @@ select.input-field {
 
 .gem-category-button {
     width: 100%;
-    background-color: rgba(37, 99, 235, 0.7); /* Dark blue fill */
+    background-color: var(--accent-blue); /* Dark blue fill */
     border: 1px solid var(--panel-border);
     border-radius: 8px;
     padding: 0.6rem 1rem;
@@ -389,7 +389,7 @@ select.input-field {
 
 .gem-category-button:hover {
     border-color: var(--accent-purple);
-    background-color: #1e40af; /* Slightly lighter blue on hover */
+    background-color: #2563eb; /* Lighter blue on hover */
 }
 
 .gem-pill-container {
@@ -449,8 +449,8 @@ select.input-field {
     color: var(--light-text);
     font-weight: 600;
     border-color: var(--accent-purple);
-    background-color: rgba(91, 33, 182, 0.2);
-    box-shadow: 0 0 10px rgba(91, 33, 182, 0.3);
+    background-color: rgba(76, 29, 149, 0.2);
+    box-shadow: 0 0 10px rgba(76, 29, 149, 0.3);
 }
 
 /* Buttons */
@@ -467,21 +467,21 @@ select.input-field {
     margin-top: 0.5rem;
 }
 .generate-btn-large {
-    background: linear-gradient(90deg, rgba(37, 99, 235, 0.7), var(--accent-purple));
-    box-shadow: 0 0 15px rgba(91, 33, 182, 0.4);
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+    box-shadow: 0 0 15px rgba(76, 29, 149, 0.4);
 }
 .save-btn-large {
-    background: var(--accent-purple);
-    box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+    box-shadow: 0 0 15px rgba(30, 64, 175, 0.4);
 }
 
 .generate-btn-large:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(91, 33, 182, 0.6);
+    box-shadow: 0 0 25px rgba(76, 29, 149, 0.6);
 }
 .save-btn-large:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(37, 99, 235, 0.6);
+    box-shadow: 0 0 25px rgba(30, 64, 175, 0.6);
 }
 .generate-btn-large:disabled, .save-btn-large:disabled {
     opacity: 0.5;
@@ -609,7 +609,7 @@ select.input-field {
 }
 .writer-nav-button:hover { background-color: rgba(139, 148, 158, 0.1); }
 .writer-nav-button.active {
-    background-color: rgba(37, 99, 235, 0.7);
+    background-color: var(--accent-blue);
     color: white;
     font-weight: 600;
     border-color: transparent;
@@ -630,7 +630,7 @@ select.input-field {
     outline: none;
 }
 .writing-canvas:focus {
-    box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 0 15px rgba(30, 64, 175, 0.3);
     border-color: var(--accent-blue);
 }
 .placeholder-text, .loading-text, .error-text {
@@ -660,7 +660,7 @@ select.input-field {
     font-weight: 500;
     transition: all 0.2s;
 }
-.action-btn:hover { background-color: #4c1d95; }
+.action-btn:hover { background-color: #5b21b6; }
 
 .brainstorm-card {
     margin-bottom: 1.5rem;
@@ -690,7 +690,7 @@ select.input-field {
 }
 .editable-content:focus {
     outline: 1px solid var(--accent-blue);
-    background-color: rgba(37, 99, 235, 0.1);
+    background-color: rgba(30, 64, 175, 0.1);
     border-radius: 4px;
 }
 .outline-item-header {
@@ -798,7 +798,7 @@ select.input-field {
     padding: 0 0.5rem;
 }
 #custom-prompt-submit {
-    background-color: rgba(37, 99, 235, 0.7);
+    background-color: var(--accent-blue);
     color: white;
     border: none;
     border-radius: 6px;
@@ -891,7 +891,7 @@ select.input-field {
 }
 .media-bin-item:hover { border-color: var(--accent-blue); }
 .media-bin-item.active {
-    background-color: rgba(37, 99, 235, 0.2);
+    background-color: rgba(30, 64, 175, 0.2);
     border-color: var(--accent-blue);
 }
 .clip-type-indicator {
@@ -1128,76 +1128,6 @@ select.input-field {
 }
 
 /* Custom Guidance Gems Additions */
-.custom-gem-input-container {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-    align-items: center;
-}
-
-.custom-gem-input {
-    flex-grow: 1;
-    height: 38px;
-    /* Overriding default input styles to match the application's theme */
-    background-color: var(--dark-bg);
-    border: 1px solid #30363d;
-    border-radius: 6px;
-    padding: 6px 12px;
-    color: var(--light-text);
-    font-family: var(--font-main);
-    font-size: 0.9rem;
-    transition: all 0.2s;
-}
-
-.custom-gem-input:focus {
-    outline: none;
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 8px rgba(37, 99, 235, 0.2);
-}
-
-.add-gem-btn {
-    background-color: transparent;
-    border: 1px solid var(--accent-blue);
-    color: var(--accent-blue);
-    padding: 6px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.2s;
-    flex-shrink: 0;
-}
-
-.add-gem-btn:hover {
-    background-color: var(--accent-blue);
-    color: white;
-}
-
-/* NEW: Styles for the static Guidance Gems and Asset Hub panels */
-.side-panel-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem; /* This creates the space between the panels */
-}
-
-.guidance-gems-panel,
-.asset-hub-panel {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    /* The glass-panel class already provides the background and border */
-}
-
-.side-panel-title {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    font-size: 1.2rem;
-    font-weight: 600;
-    border-bottom: 1px solid var(--panel-border);
-    padding-bottom: 0.75rem;
-}
-
-/* Custom Input for Guidance Modal */
 .gem-modal-custom-input-area {
     display: flex;
     gap: 0.75rem;
@@ -1212,9 +1142,9 @@ select.input-field {
 
 .gem-modal-custom-input-area .action-btn {
     flex-shrink: 0;
-    background-color: rgba(37, 99, 235, 0.7);
+    background-color: var(--accent-blue);
 }
 
 .gem-modal-custom-input-area .action-btn:hover {
-    background-color: #1e40af;
+    background-color: #2563eb;
 }
