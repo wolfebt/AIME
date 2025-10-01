@@ -232,6 +232,13 @@ const allGemsData = {
         "Speech Pattern": ["Eloquent & Articulate", "Laconic & Terse", "Fast-Talking & Energetic", "Sarcastic & Witty", "Formal & Proper"],
         "Physicality Focus": ["Emphasize Strength/Power", "Emphasize Agility/Grace", "Emphasize Intellect/Presence", "Emphasize Frailty"],
         "Inner World Focus": ["Emotionally Reserved", "Openly Expressive", "Logically Detached", "Driven by Passion", "Riddled with Anxiety"]
+    },
+    "SPECIES": {
+        "Origin Type": ["Natural Evolution", "Magical Creation", "Genetic Engineering", "Extra-dimensional Being", "Artificial/Mechanical"],
+        "Role in World": ["Apex Predator", "Keystone Species", "Prey Animal", "Parasitic", "Symbiotic"],
+        "Societal Model": ["Hive-Mind/Collective", "Solitary", "Pack-Based", "Tribal System", "Complex Civilization"],
+        "Technological Aptitude": ["Technologically Advanced", "Primitive Tool-Users", "Organic Technology", "Strongly Anti-Technology"],
+        "General Temperament": ["Aggressive & Territorial", "Docile & Peaceful", "Xenophobic & Insular", "Curious & Inquisitive", "Secretive"]
     }
 };
 
