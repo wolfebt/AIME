@@ -53,16 +53,17 @@ def run_test(playwright):
     expect(page.locator("#persona-name")).to_have_value("")
     expect(page.locator("#custom-notes")).to_have_value("")
 
-    # --- 4. Test "Guidance Gems" ---
-    # Open the "Genre" modal
-    page.get_by_role("button", name="Genre", exact=True).click()
-    # Select "Fantasy" in the modal
-    modal_fantasy_button = page.locator("#gem-modal-options-container").get_by_role("button", name="Fantasy")
-    modal_fantasy_button.click()
+    # --- 4. Test "Guidance Gems" (Persona Specific) ---
+    # This test is updated to reflect the new Persona-specific gems.
+    # Open the "Descriptive Tone" modal
+    page.get_by_role("button", name="Descriptive Tone", exact=True).click()
+    # Select "Heroic & Grand" in the modal
+    modal_heroic_button = page.locator("#gem-modal-options-container").get_by_role("button", name="Heroic & Grand")
+    modal_heroic_button.click()
     # Save the selection
     page.locator("#gem-modal-save-btn").click()
     # Verify the pill appears on the main page
-    expect(page.locator(".gem-pill-container .gem-selected-pill")).to_have_text("Fantasy")
+    expect(page.locator(".gem-pill-container .gem-selected-pill")).to_have_text("Heroic & Grand")
 
     # --- 5. Test "Asset Hub" ---
     # The Asset Hub is now a static panel, so no click is needed to expand it.
