@@ -32,7 +32,6 @@
     </header>
 
     <main class="container">
-        <!-- ... rest of persona.html content ... -->
         <div class="element-header">
             <h2 class="element-title animated-gradient">Persona Maker</h2>
             <div class="header-actions">
@@ -42,30 +41,58 @@
         </div>
         <div class="workspace-layout">
             <div class="main-column">
-                <div class="form-section glass-panel" style="padding: 1.5rem;">
-                    <h4 id="PERSONA">Persona Traits</h4>
+                <div class="element-nav glass-panel">
+                    <button class="element-nav-button active" data-tab="core-identity">Core Identity</button>
+                    <button class="element-nav-button" data-tab="appearance">Appearance & Mannerisms</button>
+                    <button class="element-nav-button" data-tab="narrative">Narrative Profile</button>
+                </div>
 
-                    <div class="form-group"><label for="persona-name">Name</label><input type="text" id="persona-name" class="input-field" data-field-id="name"></div>
-                    <div class="form-group"><label for="persona-archetype">Archetype</label><input type="text" id="persona-archetype" class="input-field" data-field-id="archetype" placeholder="e.g., The Mentor, The Rebel, The Trickster"></div>
-                    <div class="form-group"><label for="persona-pitch">One-Line Pitch</label><input type="text" id="persona-pitch" class="input-field" data-field-id="pitch" placeholder="A single, compelling sentence capturing the character's essence."></div>
-                    <div class="form-group"><label for="persona-description">Physical Description</label><textarea id="persona-description" class="input-field" data-field-id="description" placeholder="Details on appearance, posture, and distinguishing marks."></textarea></div>
-                    <div class="form-group"><label for="ethnic-traits">Ethnic Traits</label><textarea id="ethnic-traits" class="input-field" data-field-id="ethnicity" placeholder="Cultural heritage, traditions, and physical features."></textarea></div>
-                    <div class="form-group"><label for="fashion-style">Fashion & Style</label><textarea id="fashion-style" class="input-field" data-field-id="style" placeholder="Specifics on clothing, accessories, and aesthetic choices."></textarea></div>
-                    <div class="form-group"><label for="personality-traits">Personality Traits</label><textarea id="personality-traits" class="input-field" data-field-id="personality" placeholder="Core aspects of their demeanor, values, and temperament."></textarea></div>
-                    <div class="form-group"><label for="quirks-habits">Quirks & Habits</label><textarea id="quirks-habits" class="input-field" data-field-id="quirks" placeholder="Distinctive behaviors, nervous tics, or routines."></textarea></div>
-                    <div class="form-group"><label for="personality-coding">Personality Coding</label><textarea id="personality-coding" class="input-field" data-field-id="coding" placeholder="Underlying psychological patterns or inspirations (e.g., MBTI, Enneagram)."></textarea></div>
-                    <div class="form-group"><label for="persona-goals">Goals & Motivations</label><textarea id="persona-goals" class="input-field" data-field-id="goals" placeholder="Their internal or external desires and what drives them."></textarea></div>
-                    <div class="form-group"><label for="strengths-skills">Strengths & Skills</label><textarea id="strengths-skills" class="input-field" data-field-id="strengths" placeholder="Virtues, talents, and proficiencies."></textarea></div>
-                    <div class="form-group"><label for="flaws-fears">Flaws & Fears</label><textarea id="flaws-fears" class="input-field" data-field-id="flaws" placeholder="Weaknesses, moral failings, and phobias."></textarea></div>
-                    <div class="form-group"><label for="persona-history">Background & History</label><textarea id="persona-history" class="input-field" data-field-id="history" placeholder="Significant life events that shaped them."></textarea></div>
-                    <div class="form-group"><label for="persona-role">Role in Story</label><input type="text" id="persona-role" class="input-field" data-field-id="role" placeholder="Their specific function in the narrative."></div>
-                    <div class="form-group"><label for="persona-relationships">Relationships</label><textarea id="persona-relationships" class="input-field" data-field-id="relationships" placeholder="The web of connections with family, friends, rivals, etc."></textarea></div>
-                    <div class="form-group"><label for="secrets">Secrets</label><textarea id="secrets" class="input-field" data-field-id="secrets" placeholder="Hidden information or a hidden past that drives conflict or character."></textarea></div>
+                <!-- Core Identity Tab -->
+                <div id="core-identity-tab" class="element-tab active">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="persona-name">Name</label><input type="text" id="persona-name" class="input-field" data-field-id="name" placeholder="Full name, including any official titles, honorifics, or designations."></div>
+                        <div class="form-group"><label for="persona-aliases">Aliases & Nicknames</label><input type="text" id="persona-aliases" class="input-field" data-field-id="aliases" placeholder="Other names they go by and the context for each."></div>
+                        <div class="form-group"><label for="persona-pronouns">Gender & Pronouns</label><input type="text" id="persona-pronouns" class="input-field" data-field-id="pronouns" placeholder="e.g., she/her, he/him, they/them"></div>
+                        <div class="form-group"><label for="persona-archetype">Archetype</label><input type="text" id="persona-archetype" class="input-field" data-field-id="archetype" placeholder="e.g., The Mentor, The Rebel, The Trickster"></div>
+                        <div class="form-group"><label for="persona-pitch">One-Line Pitch</label><input type="text" id="persona-pitch" class="input-field" data-field-id="pitch" placeholder="A single, compelling sentence capturing the character's essence."></div>
+                    </div>
+                </div>
+
+                <!-- Appearance & Mannerisms Tab -->
+                <div id="appearance-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="persona-description">Physical Description</label><textarea id="persona-description" class="input-field" data-field-id="description" placeholder="Build, height, weight, hair/eye color, posture, gait, common expressions."></textarea></div>
+                        <div class="form-group"><label for="persona-features">Distinguishing Features</label><textarea id="persona-features" class="input-field" data-field-id="features" placeholder="Scars, tattoos, birthmarks, prosthetics, and the stories behind them."></textarea></div>
+                        <div class="form-group"><label for="ethnic-traits">Ethnic & Cultural Traits</label><textarea id="ethnic-traits" class="input-field" data-field-id="ethnicity" placeholder="Physical features and adornments connected to a specific heritage or group."></textarea></div>
+                        <div class="form-group"><label for="fashion-style">Fashion & Style</label><textarea id="fashion-style" class="input-field" data-field-id="style" placeholder="How they dress and the impression it creates (e.g., utilitarian, expensive, cultural)."></textarea></div>
+                        <div class="form-group"><label for="signature-items">Signature Items</label><textarea id="signature-items" class="input-field" data-field-id="items" placeholder="Objects they are never seen without (e.g., jewelry, weapon, book)."></textarea></div>
+                        <div class="form-group"><label for="voice-patterns">Voice & Speech Patterns</label><textarea id="voice-patterns" class="input-field" data-field-id="voice" placeholder="Tone, pitch, cadence, accent, vocabulary, slang."></textarea></div>
+                        <div class="form-group"><label for="personality-traits">Personality Traits</label><textarea id="personality-traits" class="input-field" data-field-id="personality" placeholder="Core disposition (e.g., cynical, optimistic). Can use frameworks like Myers-Briggs."></textarea></div>
+                        <div class="form-group"><label for="quirks-habits">Quirks & Habits</label><textarea id="quirks-habits" class="input-field" data-field-id="quirks" placeholder="Repeated behaviors that reveal personality (e.g., nervous tics, routines)."></textarea></div>
+                        <div class="form-group"><label for="personality-coding">Personality Coding</label><textarea id="personality-coding" class="input-field" data-field-id="coding" placeholder="Underlying psychological drivers (e.g., Enneagram type, core emotional state)."></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Narrative Profile Tab -->
+                <div id="narrative-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="persona-goals">Goals & Motivations</label><textarea id="persona-goals" class="input-field" data-field-id="goals" placeholder="Their primary external (plot) and internal (emotional) goals, and the 'why' behind them."></textarea></div>
+                        <div class="form-group"><label for="strengths-skills">Strengths & Skills</label><textarea id="strengths-skills" class="input-field" data-field-id="strengths" placeholder="Innate talents, learned skills, and special powers."></textarea></div>
+                        <div class="form-group"><label for="flaws-fears">Flaws & Fears</label><textarea id="flaws-fears" class="input-field" data-field-id="flaws" placeholder="Character flaws (e.g., arrogance) and deep-seated fears/phobias."></textarea></div>
+                        <div class="form-group"><label for="persona-history">Background & History</label><textarea id="persona-history" class="input-field" data-field-id="history" placeholder="Summary of their life story and defining moments."></textarea></div>
+                        <div class="form-group"><label for="persona-role">Role in Story</label><input type="text" id="persona-role" class="input-field" data-field-id="role" placeholder="e.g., Protagonist, Antagonist, Foil, Love Interest, Mentor."></textarea></div>
+                        <div class="form-group"><label for="persona-relationships">Relationships</label><textarea id="persona-relationships" class="input-field" data-field-id="relationships" placeholder="Map of key connections with allies, enemies, family, etc."></textarea></div>
+                        <div class="form-group"><label for="secrets">Secrets</label><textarea id="secrets" class="input-field" data-field-id="secrets" placeholder="What information do they hide and what are the consequences of its reveal?"></textarea></div>
+                    </div>
+                </div>
+
+                <div class="form-section glass-panel">
                     <h5 class="form-subheader">Custom User Fields</h5>
                     <div id="custom-fields-container">
                         <!-- Dynamically generated fields will be inserted here by JavaScript -->
                     </div>
                 </div>
+
                 <div id="response-container" class="response-container glass-panel"></div>
             </div>
             <div class="side-column">
@@ -93,7 +120,7 @@
 
     <!-- Toast Notification Container -->
     <div id="toast-container"></div>
-    
+
     <!-- Settings Modal -->
     <div id="settings-modal-overlay" class="modal-overlay hidden">
         <div class="modal-content glass-panel">
@@ -138,6 +165,3 @@
     </div>
 </body>
 </html>
-
-
-

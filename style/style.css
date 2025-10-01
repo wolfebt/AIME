@@ -683,6 +683,43 @@ select.input-field {
 .writer-tab { display: none; }
 .writer-tab.active { display: block; animation: fadeInTab 0.5s ease-in-out; }
 
+/* Element Page Specific Tab Styles */
+.element-nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 1rem; /* Reduced margin for a tighter layout */
+}
+.element-nav-button {
+    background: none;
+    border: 1px solid var(--panel-border);
+    color: var(--medium-text);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+.element-nav-button:hover {
+    background-color: rgba(139, 148, 158, 0.1);
+}
+.element-nav-button.active {
+    background-color: var(--accent-blue);
+    color: white;
+    font-weight: 600;
+    border-color: transparent;
+}
+.element-tab {
+    display: none;
+}
+.element-tab.active {
+    display: block;
+    animation: fadeInTab 0.5s ease-in-out;
+}
+.element-tab .form-section {
+    margin-top: 0; /* Remove top margin from the form section inside a tab */
+}
+
 @keyframes fadeInTab {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
