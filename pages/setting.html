@@ -71,8 +71,23 @@
             </div>
             <div class="side-column">
                 <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div class="generation-controls-buttons"><button id="generate-button" data-element-type="SETTING" class="generate-btn-large">Generate</button><button id="save-asset-button" class="save-btn-large">Save Setting</button></div></div></div>
-                <div class="accordion glass-panel active" style="margin-top: 1.5rem;"><button class="accordion-header active"><span>Guidance Gems</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div id="guidance-gems-container"></div></div></div>
-                <div class="accordion glass-panel" style="margin-top: 1.5rem;"><button class="accordion-header"><span>Asset Hub</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content asset-hub-container"><p class="asset-hub-subtitle">Import the Parent World, Species, etc. relevant to this Setting.</p><div class="asset-import-area"><input type="file" id="asset-upload" multiple="" style="display: none;"><button id="import-asset-btn" class="import-btn">Import Asset(s)</button></div><div id="asset-list" class="asset-list"></div></div></div>
+                <div class="side-panel-container">
+                    <div class="guidance-gems-panel glass-panel">
+                        <h3 class="side-panel-title">Guidance</h3>
+                        <div id="guidance-gems-container"></div>
+                    </div>
+                    <div class="asset-hub-panel glass-panel">
+                        <h3 class="side-panel-title">Asset Hub</h3>
+                        <div class="asset-hub-container">
+                            <p class="asset-hub-subtitle">Import the Parent World, Species, etc. relevant to this Setting.</p>
+                            <div class="asset-import-area">
+                                <input type="file" id="asset-upload" multiple="" style="display: none;">
+                                <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
+                            </div>
+                            <div id="asset-list" class="asset-list"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -99,6 +114,26 @@
             </div>
             <div class="modal-footer">
                 <button id="modal-save-btn" class="generate-btn-large">Save Key</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guidance Selection Modal -->
+    <div id="gem-selection-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3 id="gem-modal-title">Select Options</h3>
+                <button id="gem-modal-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div id="gem-modal-options-container" class="modal-body">
+                <!-- Clickable option buttons will be dynamically inserted here -->
+            </div>
+            <div class="gem-modal-custom-input-area">
+                <input type="text" id="custom-gem-input" class="input-field" placeholder="Add a custom option...">
+                <button id="add-custom-gem-btn" class="action-btn">Add</button>
+            </div>
+            <div class="modal-footer">
+                <button id="gem-modal-save-btn" class="generate-btn-large">Save Selections</button>
             </div>
         </div>
     </div>

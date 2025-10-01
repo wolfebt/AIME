@@ -57,15 +57,18 @@ def run_test(playwright):
     expect(page.locator(".custom-field-key").first).to_have_value("")
 
     # --- 4. Test "Guidance Gems" ---
-    # Open the "Genre" dropdown and select "Fantasy"
-    page.get_by_role("button", name="Genre Select...").click()
-    page.get_by_role("button", name="Fantasy").click()
-    # Verify the pill appears
-    expect(page.locator(".gem-selected-pill")).to_have_text("Fantasy")
+    # Open the "Genre" modal
+    page.get_by_role("button", name="Genre", exact=True).click()
+    # Select "Fantasy" in the modal
+    modal_fantasy_button = page.locator("#gem-modal-options-container").get_by_role("button", name="Fantasy")
+    modal_fantasy_button.click()
+    # Save the selection
+    page.locator("#gem-modal-save-btn").click()
+    # Verify the pill appears on the main page
+    expect(page.locator(".gem-pill-container .gem-selected-pill")).to_have_text("Fantasy")
 
     # --- 5. Test "Asset Hub" ---
-    # Expand the "Asset Hub" accordion
-    page.get_by_role("button", name="Asset Hub").click()
+    # The Asset Hub is now a static panel, so no click is needed to expand it.
 
     # Set the files for the file chooser
     with page.expect_file_chooser() as fc_info:
