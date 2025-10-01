@@ -421,7 +421,7 @@ function initializeTabs() {
 
 async function generateContent(prompt) {
     const userApiKey = localStorage.getItem('AIME_API_KEY');
-    const model = 'gemini-pro'; // The model to use
+    const model = 'gemini-2.5-flash-preview-05-20'; // The model to use
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${userApiKey}`;
 
     if (!userApiKey) {
