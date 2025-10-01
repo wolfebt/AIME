@@ -104,7 +104,7 @@ def run_test(playwright):
 
     # Intercept network requests to the Google Gemini API
     # The URL must match the one constructed in writer-bundle.js
-    page.route("**/v1beta/models/gemini-pro:generateContent**", handle_api_request)
+    page.route("**/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent**", handle_api_request)
 
     # Fill the main prompt and click the generate button
     page.locator("#main-prompt").fill(WRITER_PROMPT)
