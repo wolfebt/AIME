@@ -624,11 +624,13 @@ function addCustomField(container) {
     keyInput.type = 'text';
     keyInput.className = 'input-field custom-field-key';
     keyInput.placeholder = 'Field Name (e.g., Diet)';
+    keyInput.autocomplete = 'off';
 
     const valueInput = document.createElement('input');
     valueInput.type = 'text';
     valueInput.className = 'input-field custom-field-value';
     valueInput.placeholder = 'Field Value (e.g., Carnivorous)';
+    valueInput.autocomplete = 'off';
 
     const removeBtn = document.createElement('button');
     removeBtn.textContent = '×';
