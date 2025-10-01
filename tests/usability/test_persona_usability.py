@@ -42,19 +42,16 @@ def run_test(playwright):
     # Fill a field to test clearing later
     page.locator("#persona-name").fill("Test Name")
 
-    # Test custom fields
-    custom_field_key = page.locator(".custom-field-key").first
-    custom_field_value = page.locator(".custom-field-value").first
-    custom_field_key.fill("Custom Key 1")
-    custom_field_value.fill("Custom Value 1")
-    # A new field should appear automatically
-    expect(page.locator(".custom-field-group")).to_have_count(2)
+    # Test custom notes
+    custom_notes_area = page.locator("#custom-notes")
+    custom_notes_area.fill("These are some custom notes for testing.")
+    expect(custom_notes_area).to_have_value("These are some custom notes for testing.")
 
     # Test "Clear All Fields"
     clear_btn = page.locator("#clear-fields-button")
     clear_btn.click()
     expect(page.locator("#persona-name")).to_have_value("")
-    expect(page.locator(".custom-field-key").first).to_have_value("")
+    expect(page.locator("#custom-notes")).to_have_value("")
 
     # --- 4. Test "Guidance Gems" ---
     # Open the "Genre" modal

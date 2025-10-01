@@ -464,34 +464,24 @@ function craftSuperPrompt(elementType) {
     const inputs = document.querySelectorAll('.form-section .input-field');
     let hasPrimaryTraits = false;
     inputs.forEach(input => {
-        if (!input.closest('#custom-fields-container')) {
-            const label = input.previousElementSibling ? input.previousElementSibling.textContent : input.id;
-            if (input.value.trim()) {
-                prompt += `${label}: ${input.value.trim()}\n`;
-                hasPrimaryTraits = true;
-            }
+        // Exclude the new custom notes field from this main loop
+        if (input.id === 'custom-notes') return;
+
+        const label = input.previousElementSibling ? input.previousElementSibling.textContent : input.id;
+        if (input.value.trim()) {
+            prompt += `${label}: ${input.value.trim()}\n`;
+            hasPrimaryTraits = true;
         }
     });
     if (!hasPrimaryTraits) {
         prompt += "No specific traits provided for this element. Please generate creatively.\n";
     }
 
-    // --- 1.5. Custom User Fields ---
-    const customFieldGroups = document.querySelectorAll('#custom-fields-container .custom-field-group');
-    let hasCustomFields = false;
-    let customFieldsPrompt = '';
-    customFieldGroups.forEach(group => {
-        const key = group.querySelector('.custom-field-key').value.trim();
-        const value = group.querySelector('.custom-field-value').value.trim();
-        if (key && value) {
-            customFieldsPrompt += `${key}: ${value}\n`;
-            hasCustomFields = true;
-        }
-    });
-
-    if (hasCustomFields) {
-        prompt += "\n--- CUSTOM USER FIELDS ---\n";
-        prompt += customFieldsPrompt;
+    // --- 1.5. Custom Notes ---
+    const customNotes = document.getElementById('custom-notes');
+    if (customNotes && customNotes.value.trim()) {
+        prompt += "\n--- CUSTOM NOTES ---\n";
+        prompt += customNotes.value.trim() + '\n';
     }
 
     // --- 2. Guidance Gems ---
@@ -549,35 +539,24 @@ function saveElementAsset() {
     const assetData = {
         assetType: elementType,
         timestamp: new Date().toISOString(),
-        traits: {},
-        custom_fields: {}
+        traits: {}
     };
 
     // Process standard trait fields
     const inputs = document.querySelectorAll('.form-section .input-field');
     inputs.forEach(input => {
-        if (!input.closest('#custom-fields-container')) {
-            const fieldId = input.dataset.fieldId;
-            if (fieldId && input.value.trim() !== '') {
-                assetData.traits[fieldId] = input.value.trim();
-            }
+        if (input.id === 'custom-notes') return; // Skip the custom notes field in this loop
+
+        const fieldId = input.dataset.fieldId;
+        if (fieldId && input.value.trim() !== '') {
+            assetData.traits[fieldId] = input.value.trim();
         }
     });
 
-    // Process custom fields
-    const customFieldGroups = document.querySelectorAll('#custom-fields-container .custom-field-group');
-    customFieldGroups.forEach(group => {
-        const key = group.querySelector('.custom-field-key').value.trim();
-        const value = group.querySelector('.custom-field-value').value.trim();
-
-        if (key !== '' && value !== '') {
-            assetData.custom_fields[key] = value;
-        }
-    });
-
-    // If no custom fields were added, remove the empty object for a cleaner output file
-    if (Object.keys(assetData.custom_fields).length === 0) {
-        delete assetData.custom_fields;
+    // Process custom notes
+    const customNotes = document.getElementById('custom-notes');
+    if (customNotes && customNotes.value.trim() !== '') {
+        assetData.custom_notes = customNotes.value.trim();
     }
 
     // Use the 'name' field for the filename, otherwise default to 'Untitled'
@@ -592,65 +571,6 @@ function saveElementAsset() {
     document.body.appendChild(downloadAnchorNode); // Required for Firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
-}
-
-
-// --- Custom Fields Logic ---
-function initializeCustomFields() {
-    const container = document.getElementById('custom-fields-container');
-    if (!container) return;
-
-    addCustomField(container); // Add the first field
-
-    container.addEventListener('input', (e) => {
-        // Use event delegation to handle input on dynamically added fields
-        if (e.target.classList.contains('custom-field-value')) {
-            const allValueInputs = container.querySelectorAll('.custom-field-value');
-            const lastValueInput = allValueInputs[allValueInputs.length - 1];
-
-            // Check if the user is typing in the *last* value field and it's not empty
-            if (e.target === lastValueInput && e.target.value.trim() !== '') {
-                addCustomField(container);
-            }
-        }
-    });
-}
-
-function addCustomField(container) {
-    const fieldGroup = document.createElement('div');
-    fieldGroup.className = 'custom-field-group';
-
-    const keyInput = document.createElement('input');
-    keyInput.type = 'text';
-    keyInput.className = 'input-field custom-field-key';
-    keyInput.placeholder = 'Field Name (e.g., Diet)';
-    keyInput.autocomplete = 'off';
-
-    const valueInput = document.createElement('input');
-    valueInput.type = 'text';
-    valueInput.className = 'input-field custom-field-value';
-    valueInput.placeholder = 'Field Value (e.g., Carnivorous)';
-    valueInput.autocomplete = 'off';
-
-    const removeBtn = document.createElement('button');
-    removeBtn.textContent = '×';
-    removeBtn.className = 'remove-custom-field-btn';
-    removeBtn.title = 'Remove Field';
-    removeBtn.onclick = () => {
-        // Prevent removing the very last field if it's the only one
-        if (container.querySelectorAll('.custom-field-group').length > 1) {
-            fieldGroup.remove();
-        } else {
-            // Clear the fields instead of removing the last one
-            keyInput.value = '';
-            valueInput.value = '';
-        }
-    };
-
-    fieldGroup.appendChild(keyInput);
-    fieldGroup.appendChild(valueInput);
-    fieldGroup.appendChild(removeBtn);
-    container.appendChild(fieldGroup);
 }
 
 function initializeGeneration() {
@@ -671,24 +591,15 @@ function initializeClearButton() {
     const clearButton = document.getElementById('clear-fields-button');
     if (clearButton) {
         clearButton.addEventListener('click', () => {
-            // Clear standard input fields
+            // Clear all input fields and textareas
             const inputs = document.querySelectorAll('.form-section .input-field');
             inputs.forEach(input => {
-                if (!input.closest('#custom-fields-container')) {
-                    input.value = '';
-                }
+                input.value = '';
             });
 
             // Clear the response container
             const responseContainer = document.getElementById('response-container');
             if (responseContainer) responseContainer.innerHTML = '';
-
-            // Clear and reset custom fields
-            const customFieldsContainer = document.getElementById('custom-fields-container');
-            if (customFieldsContainer) {
-                customFieldsContainer.innerHTML = '';
-                addCustomField(customFieldsContainer); // Add back the initial empty field
-            }
         });
     }
 }
@@ -723,7 +634,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeAccordions();
     initializeGuidanceGems();
     initializeAssetImporter();
-    initializeCustomFields();
     initializeGeneration();
     initializeSaveButton();
     initializeClearButton();
