@@ -315,6 +315,26 @@ body {
     padding: 0 1.5rem;
 }
 
+/* Static Side Panel Styles (for Elements pages) */
+.side-panel-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.guidance-gems-panel, .asset-hub-panel {
+    padding: 1.5rem;
+}
+
+.side-panel-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--panel-border);
+}
+
 /* Form Styles */
 .form-section {
     display: flex;

@@ -211,161 +211,179 @@ document.addEventListener('input', e => {
 
 
 // --- Guidance Gems ---
+// REFACTORED: This entire section has been rewritten to use a modal for multi-selection.
+let selectedGems = {}; // Data store for all selected guidance options
+
+// MODIFICATION: Move gemsData to global scope for persistence
+const gemsData = {
+    "Genre": ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Sci-Fi", "Horror", "Mystery", "Romance", "Thriller", "Whimsical", "Gritty", "Noir"],
+    "Tone": ["Serious", "Humorous", "Formal", "Informal", "Optimistic", "Pessimistic", "Joyful", "Sad", "Hopeful", "Cynical", "Dark", "Uplifting"],
+    "Pacing": ["Fast-paced", "Slow-burn", "Steady", "Urgent", "Relaxed", "Meditative", "Action-Packed"],
+    "Point of View": ["First Person", "Third Person Limited", "Third Person Omniscient", "Second Person", "Alternating POV"],
+    "Literary Devices": ["Metaphor", "Simile", "Personification", "Alliteration", "Symbolism", "Irony", "Foreshadowing", "Satire"],
+    "Structure": ["Linear", "Non-linear", "Episodic", "In Medias Res", "Frame Story"],
+    "Themes": ["Redemption", "Betrayal", "Discovery", "Survival", "Love", "Hate", "Power", "Corruption", "Nature vs. Nurture"]
+};
+
 function initializeGuidanceGems() {
     const container = document.getElementById('guidance-gems-container');
     if (!container) return;
 
-    const gemsData = {
-        "Genre": ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Sci-Fi", "Horror", "Mystery", "Romance", "Thriller", "Whimsical", "Gritty", "Noir"],
-        "Tone": ["Serious", "Humorous", "Formal", "Informal", "Optimistic", "Pessimistic", "Joyful", "Sad", "Hopeful", "Cynical", "Dark", "Uplifting"],
-        "Pacing": ["Fast-paced", "Slow-burn", "Steady", "Urgent", "Relaxed", "Meditative", "Action-Packed"],
-        "Point of View": ["First Person", "Third Person Limited", "Third Person Omniscient", "Second Person", "Alternating POV"],
-        "Literary Devices": ["Metaphor", "Simile", "Personification", "Alliteration", "Symbolism", "Irony", "Foreshadowing", "Satire"],
-        "Structure": ["Linear", "Non-linear", "Episodic", "In Medias Res", "Frame Story"],
-        "Themes": ["Redemption", "Betrayal", "Discovery", "Survival", "Love", "Hate", "Power", "Corruption", "Nature vs. Nurture"]
-    };
+    // Modal elements - these will be added to the HTML of each element page
+    const modalOverlay = document.getElementById('gem-selection-modal-overlay');
+    const modalTitle = document.getElementById('gem-modal-title');
+    const modalOptionsContainer = document.getElementById('gem-modal-options-container');
+    const modalSaveBtn = document.getElementById('gem-modal-save-btn');
+    const modalCloseBtn = document.getElementById('gem-modal-close-btn');
+    const customGemInput = document.getElementById('custom-gem-input');
+    const addCustomGemBtn = document.getElementById('add-custom-gem-btn');
 
-    container.innerHTML = ''; // Clear existing content
-
-    for (const [title, options] of Object.entries(gemsData)) {
-        // Create main dropdown container
-        const dropdownContainer = document.createElement('div');
-        dropdownContainer.className = 'gem-dropdown-container';
-        dropdownContainer.dataset.category = title;
-
-        // Create the header button
-        const header = document.createElement('button');
-        header.className = 'gem-dropdown-header';
-        header.innerHTML = `
-            <span class="gem-category-title">${title}</span>
-            <div class="gem-selected-list-container">
-                <span class="gem-selected-placeholder">Select...</span>
-                <div class="gem-selected-list"></div>
-            </div>
-            <svg class="gem-dropdown-chevron" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-        `;
-
-        // Create the dropdown panel
-        const panel = document.createElement('div');
-        panel.className = 'gem-dropdown-panel';
-
-        // Create options container
-        const optionsDiv = document.createElement('div');
-        optionsDiv.className = 'gem-dropdown-options';
-        options.forEach(optionText => {
-            const button = document.createElement('button');
-            button.className = 'gem-option';
-            button.textContent = optionText;
-            button.dataset.value = optionText;
-            optionsDiv.appendChild(button);
-        });
-
-        // Create custom input container
-        const customInputContainer = document.createElement('div');
-        customInputContainer.className = 'custom-gem-input-container';
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.placeholder = `Add custom ${title}...`;
-        input.className = 'input-field custom-gem-input';
-        const addButton = document.createElement('button');
-        addButton.textContent = 'Add';
-        addButton.className = 'add-gem-btn';
-
-        customInputContainer.appendChild(input);
-        customInputContainer.appendChild(addButton);
-
-        // Assemble the panel
-        panel.appendChild(optionsDiv);
-        panel.appendChild(customInputContainer);
-
-        // Assemble the full dropdown
-        dropdownContainer.appendChild(header);
-        dropdownContainer.appendChild(panel);
-        container.appendChild(dropdownContainer);
+    if (!modalOverlay || !modalTitle || !modalOptionsContainer || !modalSaveBtn || !modalCloseBtn || !customGemInput || !addCustomGemBtn) {
+        // Fail silently if the modal isn't on the page yet.
+        // This will be resolved when we add the modal HTML to the element pages.
+        return;
     }
 
-    // --- Event Delegation for the entire container ---
+    // --- Functions ---
+    function addCustomGem() {
+        const category = modalOverlay.dataset.currentCategory;
+        const value = customGemInput.value.trim();
 
-    // Handle clicks on headers, options, and add buttons
-    container.addEventListener('click', (e) => {
-        const dropdownHeader = e.target.closest('.gem-dropdown-header');
-        const gemOption = e.target.closest('.gem-option');
-        const addBtn = e.target.closest('.add-gem-btn');
-        const dropdownContainer = e.target.closest('.gem-dropdown-container');
+        if (!category || value === '') return;
 
-        // Toggle dropdown panel
-        if (dropdownHeader) {
-            const container = dropdownHeader.closest('.gem-dropdown-container');
-            container.classList.toggle('open');
-            return; // Exit after handling header click
-        }
-
-        // Toggle a gem option
-        if (gemOption) {
-            gemOption.classList.toggle('active');
-            updateSelectedDisplay(gemOption.closest('.gem-dropdown-container'));
+        // Prevent duplicates (case-insensitive)
+        if (gemsData[category] && gemsData[category].map(v => v.toLowerCase()).includes(value.toLowerCase())) {
+            customGemInput.value = '';
             return;
         }
 
-        // Add a custom gem
-        if (addBtn) {
-            const container = addBtn.closest('.gem-dropdown-container');
-            const input = addBtn.previousElementSibling;
-            const optionsDiv = container.querySelector('.gem-dropdown-options');
-            const value = input.value.trim();
-
-            if (value && !container.querySelector(`.gem-option[data-value="${value}"]`)) {
-                const newGem = document.createElement('button');
-                newGem.className = 'gem-option active';
-                newGem.textContent = value;
-                newGem.dataset.value = value;
-                optionsDiv.appendChild(newGem);
-                updateSelectedDisplay(container);
-                input.value = ''; // Clear input
-            }
+        // Add to the main data source if it doesn't exist
+        if (!gemsData[category]) {
+            gemsData[category] = [];
         }
-    });
+        gemsData[category].push(value);
 
-    // Handle 'Enter' key for custom input
-    container.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && e.target.matches('.custom-gem-input')) {
-            e.preventDefault();
-            e.target.nextElementSibling.click(); // Trigger the 'Add' button click
-        }
-    });
+        // Create and add the new button to the modal UI, and activate it
+        const button = document.createElement('button');
+        button.className = 'gem-modal-option-button active';
+        button.textContent = value;
+        button.dataset.value = value;
+        modalOptionsContainer.appendChild(button);
 
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('#guidance-gems-container')) {
-            document.querySelectorAll('.gem-dropdown-container.open').forEach(container => {
-                container.classList.remove('open');
-            });
-        }
-    });
-}
-
-function updateSelectedDisplay(dropdownContainer) {
-    if (!dropdownContainer) return;
-
-    const placeholder = dropdownContainer.querySelector('.gem-selected-placeholder');
-    const list = dropdownContainer.querySelector('.gem-selected-list');
-    const activeGems = dropdownContainer.querySelectorAll('.gem-option.active');
-
-    list.innerHTML = ''; // Clear current list
-
-    if (activeGems.length > 0) {
-        placeholder.style.display = 'none';
-        list.style.display = 'flex';
-        activeGems.forEach(gem => {
-            const pill = document.createElement('span');
-            pill.className = 'gem-selected-pill';
-            pill.textContent = gem.textContent;
-            list.appendChild(pill);
-        });
-    } else {
-        placeholder.style.display = 'block';
-        list.style.display = 'none';
+        // Clear and refocus input for better UX
+        customGemInput.value = '';
+        customGemInput.focus();
     }
+
+
+    function renderSelectedGems(category) {
+        const categoryContainer = container.querySelector(`[data-category="${category}"]`);
+        if (!categoryContainer) return;
+
+        const pillContainer = categoryContainer.querySelector('.gem-pill-container');
+        pillContainer.innerHTML = ''; // Clear existing pills
+
+        if (selectedGems[category] && selectedGems[category].length > 0) {
+            selectedGems[category].forEach(gemText => {
+                const pill = document.createElement('span');
+                pill.className = 'gem-selected-pill';
+                pill.textContent = gemText;
+                pillContainer.appendChild(pill);
+            });
+        } else {
+            pillContainer.innerHTML = `<span class="gem-selected-placeholder">None selected</span>`;
+        }
+    }
+
+    function openGemsModal(category) {
+        modalTitle.textContent = `Select ${category}`;
+        modalOptionsContainer.innerHTML = ''; // Clear previous options
+        modalOverlay.dataset.currentCategory = category; // Store which category is being edited
+
+        const options = gemsData[category] || [];
+        const currentSelections = selectedGems[category] || [];
+
+        options.forEach(option => {
+            const button = document.createElement('button');
+            button.className = 'gem-modal-option-button';
+            button.textContent = option;
+            button.dataset.value = option;
+            if (currentSelections.includes(option)) {
+                button.classList.add('active');
+            }
+            modalOptionsContainer.appendChild(button);
+        });
+
+        customGemInput.value = ''; // Clear previous custom input
+        modalOverlay.classList.remove('hidden');
+        customGemInput.focus(); // Focus on the input for easy typing
+    }
+
+    function closeGemsModal() {
+        modalOverlay.classList.add('hidden');
+    }
+
+    function saveGemsSelection() {
+        const category = modalOverlay.dataset.currentCategory;
+        if (!category) return;
+
+        const selectedButtons = modalOptionsContainer.querySelectorAll('.gem-modal-option-button.active');
+        const newSelections = Array.from(selectedButtons).map(btn => btn.dataset.value);
+
+        selectedGems[category] = newSelections;
+        renderSelectedGems(category);
+        closeGemsModal();
+    }
+
+    // --- Initial Setup ---
+
+    container.innerHTML = ''; // Clear existing content
+    for (const category of Object.keys(gemsData)) {
+        selectedGems[category] = []; // Initialize data store
+
+        const categoryContainer = document.createElement('div');
+        categoryContainer.className = 'gem-category-container';
+        categoryContainer.dataset.category = category;
+
+        categoryContainer.innerHTML = `
+            <button class="gem-category-button">${category}</button>
+            <div class="gem-pill-container">
+                <span class="gem-selected-placeholder">None selected</span>
+            </div>
+        `;
+        container.appendChild(categoryContainer);
+    }
+
+    // --- Event Listeners ---
+
+    container.addEventListener('click', e => {
+        if (e.target.matches('.gem-category-button')) {
+            const category = e.target.closest('.gem-category-container').dataset.category;
+            openGemsModal(category);
+        }
+    });
+
+    modalSaveBtn.addEventListener('click', saveGemsSelection);
+    modalCloseBtn.addEventListener('click', closeGemsModal);
+    modalOverlay.addEventListener('click', e => {
+        if (e.target === modalOverlay) {
+            closeGemsModal();
+        }
+    });
+
+    modalOptionsContainer.addEventListener('click', e => {
+        if (e.target.matches('.gem-modal-option-button')) {
+            e.target.classList.toggle('active');
+        }
+    });
+
+    addCustomGemBtn.addEventListener('click', addCustomGem);
+    customGemInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault(); // prevent form submission
+            addCustomGem();
+        }
+    });
 }
 
 // --- Element Generation Logic ---
