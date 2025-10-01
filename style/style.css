@@ -1197,3 +1197,25 @@ select.input-field {
     padding-bottom: 0.75rem;
 }
 
+/* Custom Input for Guidance Modal */
+.gem-modal-custom-input-area {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem 0.5rem 0.5rem 0.5rem;
+    border-top: 1px solid var(--panel-border);
+    margin-top: 1rem;
+}
+
+.gem-modal-custom-input-area .input-field {
+    flex-grow: 1;
+}
+
+.gem-modal-custom-input-area .action-btn {
+    flex-shrink: 0;
+    background-color: var(--accent-blue);
+}
+
+.gem-modal-custom-input-area .action-btn:hover {
+    background-color: #1e40af;
+}
+
