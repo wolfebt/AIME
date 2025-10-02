@@ -34,7 +34,7 @@ def proxy():
     request_data = request.get_json()
 
     # Extract the model from the request data, with a fallback
-    model = request_data.pop('model', 'gemini-pro')
+    model = request_data.pop('model', 'gemini-1.5-flash-latest')
 
     # Determine the correct endpoint based on the model name
     if 'imagen' in model:
