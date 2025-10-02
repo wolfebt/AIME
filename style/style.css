@@ -584,9 +584,10 @@ select.input-field {
     width: 100%;
     font-size: 1.1rem;
     margin-top: 0.5rem;
+    text-align: right;
 }
 .generate-btn-large {
-    background: linear-gradient(90deg, var(--accent-blue), var(--accent-purple));
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
     box-shadow: 0 0 15px rgba(76, 29, 149, 0.4);
 }
 .save-btn-large {
