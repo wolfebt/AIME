@@ -410,11 +410,12 @@ function initializeGuidanceGems() {
 
     // Use persona-specific gems if on PERSONA page, otherwise default to STORY gems
     if (elementType && allGemsData[elementType]) {
-        gemsData = allGemsData[elementType];
+        // Create a shallow copy to prevent custom gems from modifying the original allGemsData object
+        gemsData = { ...allGemsData[elementType] };
     } else {
         // Fallback for elements that don't have a specific gem set (like WORLD, SCENE, etc.)
         // This makes the system extensible.
-        gemsData = allGemsData['STORY'];
+        gemsData = { ...allGemsData['STORY'] };
     }
 
     container.innerHTML = ''; // Clear existing content
