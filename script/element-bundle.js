@@ -280,6 +280,13 @@ const allGemsData = {
         "Cosmic Scope": ["Single Galaxy", "Multiverse", "Contained Pocket Dimension", "Planetary System"],
         "Magic/Power System": ["Hard Magic (Rules-based)", "Soft Magic (Mysterious)", "Psionics", "No Supernatural Powers"],
         "Technological Era": ["Ancient", "Medieval", "Industrial", "Information Age", "Futuristic"]
+    },
+    "FACTION": {
+        "Faction Type": ["Mega-corporation", "Rebel Alliance", "Research Guild", "Criminal Syndicate", "Political Party", "Religious Order"],
+        "Organizational Model": ["Rigid Hierarchy", "Democratic Council", "Decentralized Cells", "Cult of Personality", "Feudal Structure"],
+        "Public Face": ["Benevolent & Philanthropic", "Mysterious & Secretive", "Militant & Aggressive", "Pragmatic & Corporate", "Fanatical & Zealous"],
+        "Method of Influence": ["Economic Domination", "Political Manipulation", "Military Might", "Covert Operations", "Cultural Sway"],
+        "Moral Alignment": ["Lawful Good", "Chaotic Evil", "True Neutral", "Lawful Neutral", "Chaotic Good"]
     }
 };
 
@@ -403,11 +410,12 @@ function initializeGuidanceGems() {
 
     // Use persona-specific gems if on PERSONA page, otherwise default to STORY gems
     if (elementType && allGemsData[elementType]) {
-        gemsData = allGemsData[elementType];
+        // Create a shallow copy to prevent custom gems from modifying the original allGemsData object
+        gemsData = { ...allGemsData[elementType] };
     } else {
         // Fallback for elements that don't have a specific gem set (like WORLD, SCENE, etc.)
         // This makes the system extensible.
-        gemsData = allGemsData['STORY'];
+        gemsData = { ...allGemsData['STORY'] };
     }
 
     container.innerHTML = ''; // Clear existing content
