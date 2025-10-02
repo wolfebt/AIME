@@ -246,6 +246,13 @@ const allGemsData = {
         "Narrative Pacing": ["Urgent & Fast-Paced", "Slow & Deliberate", "Meditative & Reflective", "Escalating Tension"],
         "Dialogue Style": ["Formal & Eloquent", "Casual & Colloquial", "Sharp & Witty", "Heavily Subtextual", "Minimalist"],
         "Point of View": ["First Person", "Third Person Limited", "Third Person Omniscient", "Second Person"]
+    },
+    "SETTING": {
+        "Location Type": ["Dense Urban Metropolis", "Quiet Rural Village", "Untamed Wilderness", "Subterranean City", "Ethereal/Planar Realm"],
+        "Architectural Style": ["Gothic & Ornate", "Brutalist & Utilitarian", "Art Deco", "Organic & Nature-Infused", "Ancient & Ruined"],
+        "General Atmosphere": ["Bustling & Lively", "Eerie & Abandoned", "Opulent & Grand", "Gritty & Industrial", "Serene & Peaceful"],
+        "Population Density": ["Sparsely Populated", "Crowded & Overpopulated", "Completely Uninhabited", "Seasonal Population"],
+        "State of Repair": ["Pristine & New", "Well-Maintained", "Visibly Decaying", "Utterly Ruined", "Under Construction"]
     }
 };
 
