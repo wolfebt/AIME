@@ -280,6 +280,13 @@ const allGemsData = {
         "Cosmic Scope": ["Single Galaxy", "Multiverse", "Contained Pocket Dimension", "Planetary System"],
         "Magic/Power System": ["Hard Magic (Rules-based)", "Soft Magic (Mysterious)", "Psionics", "No Supernatural Powers"],
         "Technological Era": ["Ancient", "Medieval", "Industrial", "Information Age", "Futuristic"]
+    },
+    "FACTION": {
+        "Faction Type": ["Mega-corporation", "Rebel Alliance", "Research Guild", "Criminal Syndicate", "Political Party", "Religious Order"],
+        "Organizational Model": ["Rigid Hierarchy", "Democratic Council", "Decentralized Cells", "Cult of Personality", "Feudal Structure"],
+        "Public Face": ["Benevolent & Philanthropic", "Mysterious & Secretive", "Militant & Aggressive", "Pragmatic & Corporate", "Fanatical & Zealous"],
+        "Method of Influence": ["Economic Domination", "Political Manipulation", "Military Might", "Covert Operations", "Cultural Sway"],
+        "Moral Alignment": ["Lawful Good", "Chaotic Evil", "True Neutral", "Lawful Neutral", "Chaotic Good"]
     }
 };
 
