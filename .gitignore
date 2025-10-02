@@ -1,15 +1,21 @@
-# Environment variables
-.env
+# Logs
+server.log
+*.log
 
-# Python virtual environment
-.venv/
-venv/
-env/
-
-# Python cache
+# Python
 __pycache__/
-server/__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
-# IDE folders
-.idea/
+# Environment
+.env
+.venv
+env/
+venv/
+
+# IDEs and editors
 .vscode/
+.idea/
+*.swp
+*.swo
