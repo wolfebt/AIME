@@ -266,6 +266,12 @@ const allGemsData = {
         "Descriptive Style": ["Formal Technical Manual", "In-Universe Advertisement", "Scholarly Historical Entry", "Casual User Review"],
         "Perceived Reliability": ["Flawless & Dependable", "Reliable but Outdated", "Unstable & Dangerous", "Experimental & Unpredictable"],
         "User-Friendliness": ["Highly Intuitive", "Complex & Arcane", "Requires Special Training", "Physically Demanding"]
+    },
+    "PHILOSOPHY": {
+        "Organizational Structure": ["Strict Hierarchy", "Decentralized Cells", "Monastic Orders", "Charismatic Cult", "Academic Tradition"],
+        "Public Perception": ["Widely Accepted Mainstream", "Respected Ancient Tradition", "Fringe Belief System", "Outlawed Secret Society", "State Religion"],
+        "Dominant Tone": ["Dogmatic & Rigid", "Mystical & Esoteric", "Pragmatic & Secular", "Welcoming & Inclusive", "Ascetic & Disciplined"],
+        "Historical Influence": ["Ancient & Fading", "Currently Dominant Cultural Force", "New & Revolutionary Movement", "Subtle & Pervasive"]
     }
 };
 
