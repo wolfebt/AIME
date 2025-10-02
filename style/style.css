@@ -494,7 +494,7 @@ select.input-field {
 
 .gem-category-button {
     width: 100%;
-    background-color: var(--accent-blue); /* Dark blue fill */
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
     border: 1px solid var(--panel-border);
     border-radius: 8px;
     padding: 0.6rem 1rem;
@@ -507,8 +507,8 @@ select.input-field {
 }
 
 .gem-category-button:hover {
-    border-color: var(--accent-purple);
-    background-color: #2563eb; /* Lighter blue on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(76, 29, 149, 0.4);
 }
 
 .gem-pill-container {
