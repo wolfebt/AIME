@@ -36,13 +36,34 @@ def run_test(playwright):
     expect(toast).to_have_text("API Key saved successfully!")
     expect(modal_overlay).to_be_hidden()
 
-    # --- 3. Test Form Interactions ---
-    # Fill a field to test clearing later
+    # --- 3. Test Form Interactions & Tab Functionality ---
+    # Verify Core Identity tab is active by default
+    expect(page.get_by_role("button", name="Core Identity")).to_have_class(re.compile(r"active"))
+    expect(page.locator("#core-identity-tab")).to_have_class(re.compile(r"active"))
+
+    # Fill a field in the first tab
     page.locator("#setting-name").fill("Test Setting")
+    expect(page.locator("#setting-name")).to_have_value("Test Setting")
+
+    # Click and verify Environment tab
+    page.get_by_role("button", name="Environment & Inhabitants").click()
+    expect(page.get_by_role("button", name="Environment & Inhabitants")).to_have_class(re.compile(r"active"))
+    expect(page.locator("#environment-tab")).to_have_class(re.compile(r"active"))
+    expect(page.locator("#core-identity-tab")).not_to_have_class(re.compile(r"active"))
+
+    # Fill a field in the second tab
+    page.locator("#setting-geography").fill("Test Geography")
+    expect(page.locator("#setting-geography")).to_have_value("Test Geography")
 
     # Test "Clear All Fields"
     clear_btn = page.locator("#clear-fields-button")
     clear_btn.click()
+
+    # Verify field on current tab is cleared
+    expect(page.locator("#setting-geography")).to_have_value("")
+
+    # Switch back to first tab and verify it's also cleared
+    page.get_by_role("button", name="Core Identity").click()
     expect(page.locator("#setting-name")).to_have_value("")
 
     # --- 4. Test "Guidance Gems" (Setting Specific) ---
