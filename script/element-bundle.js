@@ -566,10 +566,17 @@ function craftSuperPrompt(elementType) {
     }
 
     // --- 2. Guidance Gems ---
-    const activeGems = document.querySelectorAll('#guidance-gems-container .gem-option.active');
-    if (activeGems.length > 0) {
+    let guidancePrompt = "";
+    // Flatten all selected gems from the global object into a single list for the prompt.
+    Object.values(selectedGems).forEach(gemsArray => {
+        gemsArray.forEach(gem => {
+            guidancePrompt += `- ${gem}\n`;
+        });
+    });
+
+    if (guidancePrompt) {
         prompt += "\n--- GUIDANCE GEMS (STYLISTIC DIRECTION) ---\n";
-        activeGems.forEach(gem => prompt += `- ${gem.textContent.trim()}\n`);
+        prompt += guidancePrompt;
     }
 
     // --- 3. Contextual Assets (from loadedAssets array) ---
