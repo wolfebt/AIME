@@ -227,7 +227,12 @@ function initializeAimeChatbot() {
             addMessage(data.reply, 'aime');
 
         } catch (error) {
-            addMessage(`Error: ${error.message}`, 'error');
+            // Check for a specific API key error message from the server
+            if (error.message && error.message.toLowerCase().includes('api key')) {
+                addMessage('Error: API Key is missing, invalid, or not configured on the server. Please add a valid key in the Settings menu.', 'error');
+            } else {
+                addMessage(`Error: ${error.message}`, 'error');
+            }
         } finally {
             setLoadingState(false);
         }
@@ -247,7 +252,7 @@ function initializeAimeChatbot() {
         messageElement.className = `aime-chat-message ${sender}`;
         // Basic markdown-to-HTML conversion
         let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
-        formattedText = formattedText.replace(/\*(.*?)\/s\*/g, '<em>$1</em>');     // Italics
+        formattedText = formattedText.replace(/\*([^\*]+)\*/g, '<em>$1</em>');     // Italics
         formattedText = formattedText.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>'); // Code blocks
         formattedText = formattedText.replace(/`([^`]+)`/g, '<code>$1</code>'); // Inline code
         messageElement.innerHTML = formattedText;
