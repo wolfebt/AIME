@@ -71,5 +71,67 @@ def proxy():
 
         return jsonify({"error": error_message}), getattr(e.response, 'status_code', 500)
 
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    data = request.get_json()
+    message = data.get('message')
+    context = data.get('context')
+
+    if not message:
+        return jsonify({"error": "Message is required."}), 400
+
+    # Construct a more sophisticated prompt
+    prompt = f"""
+You are AIME, an AI co-author. Your goal is to assist a user in their creative writing project.
+You must be helpful, encouraging, and provide insightful suggestions.
+The user is currently working on the following part of their project:
+---
+{context}
+---
+The user's message is: "{message}"
+Please provide a helpful and context-aware response.
+"""
+
+    # Get the user's API key from the request header, if it exists
+    user_api_key = request.headers.get('X-AIME-API-Key')
+    default_api_key = os.getenv('API_KEY')
+    api_key_to_use = user_api_key or default_api_key
+
+    if not api_key_to_use:
+        return jsonify({"error": "API key not configured."}), 500
+
+    # Use the gemini-pro model for chat
+    model = "gemini-pro"
+    api_url = f"{AI_API_BASE_URL}{model}:generateContent"
+
+    headers = {'Content-Type': 'application/json'}
+    params = {'key': api_key_to_use}
+
+    # Structure the request body for the AI service
+    payload = {
+        "contents": [{
+            "parts": [{"text": prompt}]
+        }]
+    }
+
+    try:
+        response = requests.post(api_url, params=params, headers=headers, json=payload)
+        response.raise_for_status()
+
+        ai_response = response.json()
+
+        # Extract the text from the response
+        # The structure is response['candidates'][0]['content']['parts'][0]['text']
+        chat_content = ai_response.get('candidates', [{}])[0].get('content', {}).get('parts', [{}])[0].get('text', 'Sorry, I could not generate a response.')
+
+        return jsonify({"reply": chat_content})
+
+    except requests.exceptions.RequestException as e:
+        error_message = f"Failed to connect to AI service: {e}"
+        return jsonify({"error": error_message}), 500
+    except (KeyError, IndexError) as e:
+        return jsonify({"error": "Failed to parse AI response."}), 500
+
+
 if __name__ == '__main__':
     app.run(port=5001, debug=True)
