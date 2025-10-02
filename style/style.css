@@ -735,7 +735,7 @@ select.input-field {
     border-color: transparent;
 }
 .writer-tab { display: none; }
-.writer-tab.active { display: block; animation: fadeInTab 0.5s ease-in-out; }
+.writer-tab.active { display: block; animation: fadeInTab 0.5s ease-in-out forwards; }
 
 /* Element Page Specific Tab Styles */
 .element-nav {
@@ -768,10 +768,11 @@ select.input-field {
 }
 .element-tab.active {
     display: block;
-    animation: fadeInTab 0.5s ease-in-out;
+    animation: fadeInTab 0.5s ease-in-out forwards;
 }
 .element-tab .form-section {
     margin-top: 0; /* Remove top margin from the form section inside a tab */
+    padding: 1.5rem; /* Add padding for content inside tab panels */
 }
 
 @keyframes fadeInTab {
