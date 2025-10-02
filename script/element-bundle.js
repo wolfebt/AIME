@@ -261,7 +261,7 @@ const allGemsData = {
         "Historical Feel": ["Ancient & Mysterious", "Gilded Age of Progress", "Dark Age & Decline", "Rebuilding & Exploration"],
         "Cultural Flavor": ["Nomadic & Tribal", "Agrarian & Rural", "Heavily Urbanized", "Militaristic & Expansionist"]
     },
-    "TECHNOLOGY": {
+    "TECHNOLOGY": { // Updated as per user request to ensure alignment.
         "Aesthetic Style": ["Sleek & Minimalist", "Steampunk & Ornate", "Brutalist & Industrial", "Magitech & Arcane", "Organic & Bio-engineered"],
         "Descriptive Style": ["Formal Technical Manual", "In-Universe Advertisement", "Scholarly Historical Entry", "Casual User Review"],
         "Perceived Reliability": ["Flawless & Dependable", "Reliable but Outdated", "Unstable & Dangerous", "Experimental & Unpredictable"],
