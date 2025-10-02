@@ -239,6 +239,13 @@ const allGemsData = {
         "Societal Model": ["Hive-Mind/Collective", "Solitary", "Pack-Based", "Tribal System", "Complex Civilization"],
         "Technological Aptitude": ["Technologically Advanced", "Primitive Tool-Users", "Organic Technology", "Strongly Anti-Technology"],
         "General Temperament": ["Aggressive & Territorial", "Docile & Peaceful", "Xenophobic & Insular", "Curious & Inquisitive", "Secretive"]
+    },
+    "SCENE": {
+        "Primary Mood": ["Tense & Suspenseful", "Lighthearted & Comedic", "Intimate & Romantic", "Somber & Melancholy", "Action-Packed"],
+        "Sensory Focus": ["Emphasize Visuals", "Emphasize Sounds", "Emphasize Smells & Tastes", "Emphasize Tactile Sensations"],
+        "Narrative Pacing": ["Urgent & Fast-Paced", "Slow & Deliberate", "Meditative & Reflective", "Escalating Tension"],
+        "Dialogue Style": ["Formal & Eloquent", "Casual & Colloquial", "Sharp & Witty", "Heavily Subtextual", "Minimalist"],
+        "Point of View": ["First Person", "Third Person Limited", "Third Person Omniscient", "Second Person"]
     }
 };
 
