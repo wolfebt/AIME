@@ -253,6 +253,13 @@ const allGemsData = {
         "General Atmosphere": ["Bustling & Lively", "Eerie & Abandoned", "Opulent & Grand", "Gritty & Industrial", "Serene & Peaceful"],
         "Population Density": ["Sparsely Populated", "Crowded & Overpopulated", "Completely Uninhabited", "Seasonal Population"],
         "State of Repair": ["Pristine & New", "Well-Maintained", "Visibly Decaying", "Utterly Ruined", "Under Construction"]
+    },
+    "WORLD": {
+        "Dominant Biome": ["Volcanic & Harsh", "Arctic & Frozen", "Lush Jungle", "Temperate & Varied", "Barren Desert", "Aquatic & Oceanic"],
+        "Societal Structure": ["Feudal Kingdoms", "Imperial Empire", "Republic/Democracy", "Theocracy", "Corporate-run States"],
+        "Level of Conflict": ["Widespread War", "Political Intrigue", "Cold War", "Era of Peace", "Post-Apocalyptic Survival"],
+        "Historical Feel": ["Ancient & Mysterious", "Gilded Age of Progress", "Dark Age & Decline", "Rebuilding & Exploration"],
+        "Cultural Flavor": ["Nomadic & Tribal", "Agrarian & Rural", "Heavily Urbanized", "Militaristic & Expansionist"]
     }
 };
 
