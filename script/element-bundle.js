@@ -272,6 +272,14 @@ const allGemsData = {
         "Public Perception": ["Widely Accepted Mainstream", "Respected Ancient Tradition", "Fringe Belief System", "Outlawed Secret Society", "State Religion"],
         "Dominant Tone": ["Dogmatic & Rigid", "Mystical & Esoteric", "Pragmatic & Secular", "Welcoming & Inclusive", "Ascetic & Disciplined"],
         "Historical Influence": ["Ancient & Fading", "Currently Dominant Cultural Force", "New & Revolutionary Movement", "Subtle & Pervasive"]
+    },
+    "UNIVERSE": {
+        "Core Genre": ["Fantasy", "Science Fiction", "Horror", "Mystery", "Alternate History"],
+        "Genre Blends": ["Cyberpunk-Noir", "Steampunk-Fantasy", "Space Opera-Western", "Cosmic Horror-Mystery"],
+        "Dominant Tone": ["Grimdark", "Hopeful & Optimistic", "Satirical & Absurdist", "Whimsical & Lighthearted"],
+        "Cosmic Scope": ["Single Galaxy", "Multiverse", "Contained Pocket Dimension", "Planetary System"],
+        "Magic/Power System": ["Hard Magic (Rules-based)", "Soft Magic (Mysterious)", "Psionics", "No Supernatural Powers"],
+        "Technological Era": ["Ancient", "Medieval", "Industrial", "Information Age", "Futuristic"]
     }
 };
 
