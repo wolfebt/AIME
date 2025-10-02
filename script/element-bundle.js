@@ -252,10 +252,12 @@ const allGemsData = {
 let gemsData = {}; // This will be populated dynamically based on the element type.
 
 function initializeGuidanceGems() {
-    const container = document.getElementById('guidance-gems-container');
-    if (!container) return;
+    // MODIFIED: Check for either the new tabbed container or the old single container.
+    const guidanceContainer = document.querySelector('.guidance-container');
+    const oldContainer = document.getElementById('guidance-gems-container');
+    if (!guidanceContainer && !oldContainer) return; // Exit if neither exists
 
-    // Modal elements - these will be added to the HTML of each element page
+    // Modal elements remain the same
     const modalOverlay = document.getElementById('gem-selection-modal-overlay');
     const modalTitle = document.getElementById('gem-modal-title');
     const modalOptionsContainer = document.getElementById('gem-modal-options-container');
@@ -265,8 +267,6 @@ function initializeGuidanceGems() {
     const addCustomGemBtn = document.getElementById('add-custom-gem-btn');
 
     if (!modalOverlay || !modalTitle || !modalOptionsContainer || !modalSaveBtn || !modalCloseBtn || !customGemInput || !addCustomGemBtn) {
-        // Fail silently if the modal isn't on the page yet.
-        // This will be resolved when we add the modal HTML to the element pages.
         return;
     }
 
@@ -274,36 +274,27 @@ function initializeGuidanceGems() {
     function addCustomGem() {
         const category = modalOverlay.dataset.currentCategory;
         const value = customGemInput.value.trim();
-
         if (!category || value === '') return;
-
-        // Prevent duplicates (case-insensitive)
         if (gemsData[category] && gemsData[category].map(v => v.toLowerCase()).includes(value.toLowerCase())) {
             customGemInput.value = '';
             return;
         }
-
-        // Add to the main data source if it doesn't exist
         if (!gemsData[category]) {
             gemsData[category] = [];
         }
         gemsData[category].push(value);
-
-        // Create and add the new button to the modal UI, and activate it
         const button = document.createElement('button');
         button.className = 'gem-modal-option-button active';
         button.textContent = value;
         button.dataset.value = value;
         modalOptionsContainer.appendChild(button);
-
-        // Clear and refocus input for better UX
         customGemInput.value = '';
         customGemInput.focus();
     }
 
-
     function renderSelectedGems(category) {
-        const categoryContainer = container.querySelector(`[data-category="${category}"]`);
+        // MODIFICATION: Query the whole document, as category containers are now in different tabs.
+        const categoryContainer = document.querySelector(`.gem-category-container[data-category="${category}"]`);
         if (!categoryContainer) return;
 
         const pillContainer = categoryContainer.querySelector('.gem-pill-container');
@@ -323,12 +314,10 @@ function initializeGuidanceGems() {
 
     function openGemsModal(category) {
         modalTitle.textContent = `Select ${category}`;
-        modalOptionsContainer.innerHTML = ''; // Clear previous options
-        modalOverlay.dataset.currentCategory = category; // Store which category is being edited
-
+        modalOptionsContainer.innerHTML = '';
+        modalOverlay.dataset.currentCategory = category;
         const options = gemsData[category] || [];
         const currentSelections = selectedGems[category] || [];
-
         options.forEach(option => {
             const button = document.createElement('button');
             button.className = 'gem-modal-option-button';
@@ -339,10 +328,9 @@ function initializeGuidanceGems() {
             }
             modalOptionsContainer.appendChild(button);
         });
-
-        customGemInput.value = ''; // Clear previous custom input
+        customGemInput.value = '';
         modalOverlay.classList.remove('hidden');
-        customGemInput.focus(); // Focus on the input for easy typing
+        customGemInput.focus();
     }
 
     function closeGemsModal() {
@@ -352,74 +340,95 @@ function initializeGuidanceGems() {
     function saveGemsSelection() {
         const category = modalOverlay.dataset.currentCategory;
         if (!category) return;
-
         const selectedButtons = modalOptionsContainer.querySelectorAll('.gem-modal-option-button.active');
         const newSelections = Array.from(selectedButtons).map(btn => btn.dataset.value);
-
         selectedGems[category] = newSelections;
         renderSelectedGems(category);
         closeGemsModal();
     }
 
     // --- Initial Setup ---
-
-    // MODIFICATION: Dynamically select the correct gems based on the page's element type.
     const generateButton = document.getElementById('generate-button');
-    const elementType = generateButton ? generateButton.dataset.elementType : null;
+    const elementType = generateButton ? generateButton.dataset.elementType : 'STORY';
+    gemsData = allGemsData[elementType] || allGemsData['STORY'];
 
-    // Use persona-specific gems if on PERSONA page, otherwise default to STORY gems
-    if (elementType && allGemsData[elementType]) {
-        gemsData = allGemsData[elementType];
-    } else {
-        // Fallback for elements that don't have a specific gem set (like WORLD, SCENE, etc.)
-        // This makes the system extensible.
-        gemsData = allGemsData['STORY'];
+    // MODIFIED: Instead of populating a single container, populate the new tab panes.
+    const categoryToTabIdMap = {
+        "Primary Mood": "primary-mood-guidance-tab",
+        "Sensory Focus": "sensory-focus-guidance-tab",
+        "Narrative Pacing": "narrative-pacing-guidance-tab",
+        "Dialogue Style": "dialogue-style-guidance-tab",
+        "Point of View": "point-of-view-guidance-tab"
+    };
+
+    // This logic only applies if we are on a page with the new guidance tab structure
+    if (document.querySelector('.guidance-nav')) {
+        for (const category of Object.keys(gemsData)) {
+            const tabId = categoryToTabIdMap[category];
+            if (!tabId) continue;
+
+            const tabContentElement = document.getElementById(tabId);
+            if (!tabContentElement) continue;
+
+            selectedGems[category] = []; // Initialize data store
+
+            const categoryContainer = document.createElement('div');
+            categoryContainer.className = 'gem-category-container';
+            categoryContainer.dataset.category = category;
+
+            categoryContainer.innerHTML = `
+                <button class="gem-category-button">${category}</button>
+                <div class="gem-pill-container">
+                    <span class="gem-selected-placeholder">None selected</span>
+                </div>
+            `;
+            tabContentElement.innerHTML = ''; // Clear placeholder
+            tabContentElement.appendChild(categoryContainer);
+        }
+    } else if (document.getElementById('guidance-gems-container')) {
+        // Fallback for old pages that still use the single container
+        const container = document.getElementById('guidance-gems-container');
+        container.innerHTML = ''; // Clear existing content
+        for (const category of Object.keys(gemsData)) {
+            selectedGems[category] = [];
+            const categoryContainer = document.createElement('div');
+            categoryContainer.className = 'gem-category-container';
+            categoryContainer.dataset.category = category;
+            categoryContainer.innerHTML = `
+                <button class="gem-category-button">${category}</button>
+                <div class="gem-pill-container">
+                    <span class="gem-selected-placeholder">None selected</span>
+                </div>
+            `;
+            container.appendChild(categoryContainer);
+        }
     }
 
-    container.innerHTML = ''; // Clear existing content
-    for (const category of Object.keys(gemsData)) {
-        selectedGems[category] = []; // Initialize data store
-
-        const categoryContainer = document.createElement('div');
-        categoryContainer.className = 'gem-category-container';
-        categoryContainer.dataset.category = category;
-
-        categoryContainer.innerHTML = `
-            <button class="gem-category-button">${category}</button>
-            <div class="gem-pill-container">
-                <span class="gem-selected-placeholder">None selected</span>
-            </div>
-        `;
-        container.appendChild(categoryContainer);
-    }
 
     // --- Event Listeners ---
-
-    container.addEventListener('click', e => {
-        if (e.target.matches('.gem-category-button')) {
-            const category = e.target.closest('.gem-category-container').dataset.category;
-            openGemsModal(category);
-        }
-    });
+    // MODIFIED: Attach listener to the new top-level container OR the old one.
+    const eventContainer = guidanceContainer || document.getElementById('guidance-gems-container');
+    if (eventContainer) {
+        eventContainer.addEventListener('click', e => {
+            if (e.target.matches('.gem-category-button')) {
+                const category = e.target.closest('.gem-category-container').dataset.category;
+                openGemsModal(category);
+            }
+        });
+    }
 
     modalSaveBtn.addEventListener('click', saveGemsSelection);
     modalCloseBtn.addEventListener('click', closeGemsModal);
     modalOverlay.addEventListener('click', e => {
-        if (e.target === modalOverlay) {
-            closeGemsModal();
-        }
+        if (e.target === modalOverlay) closeGemsModal();
     });
-
     modalOptionsContainer.addEventListener('click', e => {
-        if (e.target.matches('.gem-modal-option-button')) {
-            e.target.classList.toggle('active');
-        }
+        if (e.target.matches('.gem-modal-option-button')) e.target.classList.toggle('active');
     });
-
     addCustomGemBtn.addEventListener('click', addCustomGem);
     customGemInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault(); // prevent form submission
+            e.preventDefault();
             addCustomGem();
         }
     });
@@ -645,18 +654,15 @@ function initializeClearButton() {
 
 // --- Element Page Tabs ---
 function initializeElementTabs() {
-    const tabButtons = document.querySelectorAll('.element-nav-button');
-    const tabs = document.querySelectorAll('.element-tab');
+    const tabButtons = document.querySelectorAll('.element-nav:not(.guidance-nav) .element-nav-button');
+    const tabs = document.querySelectorAll('.element-tab:not([id*="-guidance-tab"])');
 
     if (!tabButtons.length || !tabs.length) return;
 
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // Deactivate all buttons and tabs
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabs.forEach(tab => tab.classList.remove('active'));
-
-            // Activate the clicked button and corresponding tab
             button.classList.add('active');
             const tabName = button.dataset.tab;
             const targetTab = document.getElementById(`${tabName}-tab`);
@@ -667,6 +673,31 @@ function initializeElementTabs() {
     });
 }
 
+// NEW: Scoped tab initializer for the new Guidance tabs
+function initializeGuidanceTabs() {
+    const guidanceContainer = document.querySelector('.guidance-container');
+    if (!guidanceContainer) return;
+
+    const tabButtons = guidanceContainer.querySelectorAll('.element-nav-button');
+    const tabs = guidanceContainer.querySelectorAll('.element-tab');
+
+    if (!tabButtons.length || !tabs.length) return;
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabs.forEach(tab => tab.classList.remove('active'));
+            button.classList.add('active');
+            const tabName = button.dataset.tab;
+            const targetTab = guidanceContainer.querySelector(`#${tabName}-tab`);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+        });
+    });
+}
+
+
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     // initializeResizableColumns(); // Intentionally disabled for stability
@@ -676,5 +707,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeGeneration();
     initializeSaveButton();
     initializeClearButton();
-    initializeElementTabs(); // Add this line
+    initializeElementTabs();
+    initializeGuidanceTabs(); // Add this line
 });
