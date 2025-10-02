@@ -72,8 +72,17 @@ def proxy():
 
         return jsonify({"error": error_message}), getattr(e.response, 'status_code', 500)
 
-@app.route('/api/chat', methods=['POST'])
+@app.route('/api/chat', methods=['POST', 'OPTIONS'])
 def chat():
+    if request.method == 'OPTIONS':
+        # Handle preflight request
+        headers = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type, X-AIME-API-Key'
+        }
+        return ('', 204, headers)
+
     data = request.get_json()
     message = data.get('message')
     context = data.get('context')
