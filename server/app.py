@@ -104,8 +104,8 @@ Please provide a helpful and context-aware response.
     if not api_key_to_use:
         return jsonify({"error": "API key not configured."}), 500
 
-    # Use the gemini-pro model for chat
-    model = "gemini-pro"
+    # Use the latest gemini-1.5-flash model for chat
+    model = "gemini-1.5-flash-latest"
     api_url = f"{AI_API_BASE_URL}{model}:generateContent"
 
     headers = {'Content-Type': 'application/json'}
