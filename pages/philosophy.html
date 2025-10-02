@@ -42,30 +42,52 @@
         </div>
         <div class="workspace-layout">
             <div class="main-column">
-                <div class="form-section glass-panel" style="padding: 1.5rem;">
-                    <h4 id="PHILOSOPHY">Philosophy Traits</h4>
-                    <h5 class="form-subheader">Core Beliefs</h5>
-                    <div class="form-group"><label for="philosophy-name">Name</label><input type="text" id="philosophy-name" class="input-field" data-field-id="name" placeholder="The official or common name of the belief system."></div>
-                    <div class="form-group"><label for="philosophy-origin">Origin & Founder(s)</label><input type="text" id="philosophy-origin" class="input-field" data-field-id="origin" placeholder="How, when, and by whom the philosophy was established."></div>
-                    <div class="form-group"><label for="philosophy-tenets">Core Tenets & Beliefs</label><textarea id="philosophy-tenets" class="input-field" data-field-id="tenets" placeholder="The foundational principles, doctrines, and worldview."></textarea></div>
-                    <div class="form-group"><label for="philosophy-cosmology">View on Creation & Cosmology</label><textarea id="philosophy-cosmology" class="input-field" data-field-id="cosmology" placeholder="Beliefs about the origin of the universe, life, and the afterlife."></textarea></div>
-                    <div class="form-group"><label for="philosophy-ethics">Moral & Ethical Code</label><textarea id="philosophy-ethics" class="input-field" data-field-id="ethics" placeholder="What is considered right and wrong, and the code of conduct for followers."></textarea></div>
-                    <div class="form-group"><label for="philosophy-texts">Sacred Texts or Figures</label><textarea id="philosophy-texts" class="input-field" data-field-id="texts" placeholder="Key written works, revered leaders, prophets, or deities."></textarea></div>
+                <div class="element-nav glass-panel">
+                    <button class="element-nav-button active" data-tab="core-beliefs">Core Beliefs</button>
+                    <button class="element-nav-button" data-tab="practices-structure">Practices & Structure</button>
+                    <button class="element-nav-button" data-tab="influence">Influence</button>
+                </div>
 
-                    <h5 class="form-subheader">Practices & Structure</h5>
-                    <div class="form-group"><label for="philosophy-rituals">Rituals & Practices</label><textarea id="philosophy-rituals" class="input-field" data-field-id="rituals" placeholder="The ceremonies, traditions, and regular activities of adherents."></textarea></div>
-                    <div class="form-group"><label for="philosophy-symbols">Symbols & Iconography</label><textarea id="philosophy-symbols" class="input-field" data-field-id="symbols" placeholder="Key images, emblems, and sacred objects."></textarea></div>
-                    <div class="form-group"><label for="philosophy-structure">Organizational Structure</label><textarea id="philosophy-structure" class="input-field" data-field-id="structure" placeholder="The hierarchy and organization (e.g., clergy, councils, decentralized cells)."></textarea></div>
-
-                    <h5 class="form-subheader">Influence</h5>
-                    <div class="form-group"><label for="philosophy-relations">Relationship with Other Philosophies</label><textarea id="philosophy-relations" class="input-field" data-field-id="relations" placeholder="How it views and interacts with other belief systems."></textarea></div>
-                    <div class="form-group"><label for="philosophy-societal-influence">Societal Influence</label><textarea id="philosophy-societal-influence" class="input-field" data-field-id="societal_influence" placeholder="Its impact on culture, laws, and social norms."></textarea></div>
-                    <div class="form-group"><label for="philosophy-political-influence">Political Influence</label><textarea id="philosophy-political-influence" class="input-field" data-field-id="political_influence" placeholder="Its role and power in government and politics."></textarea></div>
-                    <h5 class="form-subheader">Custom Notes</h5>
-                    <div class="form-group">
-                        <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, notes, or custom fields here."></textarea>
+                <!-- Core Beliefs Tab -->
+                <div id="core-beliefs-tab" class="element-tab active">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="philosophy-name">Name</label><input type="text" id="philosophy-name" class="input-field" data-field-id="name" placeholder="The official or common name of the belief system." autocomplete="off"></div>
+                        <div class="form-group"><label for="philosophy-origin">Origin & Founder(s)</label><input type="text" id="philosophy-origin" class="input-field" data-field-id="origin" placeholder="How, when, and by whom the philosophy was established." autocomplete="off"></div>
+                        <div class="form-group"><label for="philosophy-tenets">Core Tenets & Beliefs</label><textarea id="philosophy-tenets" class="input-field" data-field-id="tenets" placeholder="The foundational principles, doctrines, and worldview." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="philosophy-cosmology">View on Creation & Cosmology</label><textarea id="philosophy-cosmology" class="input-field" data-field-id="cosmology" placeholder="Beliefs about the origin of the universe, life, and the afterlife." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="philosophy-ethics">Moral & Ethical Code</label><textarea id="philosophy-ethics" class="input-field" data-field-id="ethics" placeholder="What is considered right and wrong, and the code of conduct for followers." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="philosophy-texts">Sacred Texts or Figures</label><textarea id="philosophy-texts" class="input-field" data-field-id="texts" placeholder="Key written works, revered leaders, prophets, or deities." autocomplete="off"></textarea></div>
                     </div>
                 </div>
+
+                <!-- Practices & Structure Tab -->
+                <div id="practices-structure-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="philosophy-rituals">Rituals & Practices</label><textarea id="philosophy-rituals" class="input-field" data-field-id="rituals" placeholder="The ceremonies, traditions, and regular activities of adherents." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="philosophy-worship">Worship & Prayer</label><textarea id="philosophy-worship" class="input-field" data-field-id="worship" placeholder="Details on prayer, worship services, and devotional acts." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="philosophy-places">Places of Worship & Significance</label><textarea id="philosophy-places" class="input-field" data-field-id="places" placeholder="Temples, shrines, natural landmarks, or other significant locations." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="philosophy-symbols">Symbols & Iconography</label><textarea id="philosophy-symbols" class="input-field" data-field-id="symbols" placeholder="Key images, emblems, and sacred objects." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="philosophy-structure">Organizational Structure</label><textarea id="philosophy-structure" class="input-field" data-field-id="structure" placeholder="The hierarchy and organization (e.g., clergy, councils, decentralized cells)." autocomplete="off"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Influence Tab -->
+                <div id="influence-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="philosophy-relations">Relationship with Other Philosophies</label><textarea id="philosophy-relations" class="input-field" data-field-id="relations" placeholder="How it views and interacts with other belief systems." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="philosophy-societal-influence">Societal Influence</label><textarea id="philosophy-societal-influence" class="input-field" data-field-id="societal_influence" placeholder="Its impact on culture, laws, and social norms." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="philosophy-political-influence">Political Influence</label><textarea id="philosophy-political-influence" class="input-field" data-field-id="political_influence" placeholder="Its role and power in government and politics." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="philosophy-adherence">Adherence & Conversion</label><textarea id="philosophy-adherence" class="input-field" data-field-id="adherence" placeholder="How new members are recruited or born into the philosophy, and the process of conversion." autocomplete="off"></textarea></div>
+                    </div>
+                </div>
+
+                <div class="form-section glass-panel">
+                    <h5 class="form-subheader">Custom Notes</h5>
+                    <div class="form-group">
+                        <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, notes, or custom fields here." autocomplete="off"></textarea>
+                    </div>
+                </div>
+
                 <div id="response-container" class="response-container glass-panel"></div>
             </div>
             <div class="side-column">
