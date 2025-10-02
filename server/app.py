@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+# Apply CORS to all /api/* routes, allowing all origins
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # The target URL for the AI service, allowing for dynamic model selection
 AI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/"
