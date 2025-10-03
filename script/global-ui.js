@@ -306,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeAutoExpandingTextareas();
 
     // Initialize Chatbot
-    createAimeButton();
+    // createAimeButton();
     createAimeModal();
     initializeAimeChatbot();
 });
