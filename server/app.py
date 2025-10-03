@@ -15,6 +15,10 @@ AI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/"
 
 @app.route('/api/proxy', methods=['POST', 'OPTIONS'])
 def proxy():
+    if request.method == 'OPTIONS':
+        # Handle preflight request
+        return '', 200
+
     # Get the user's API key from the request header, if it exists
     user_api_key = request.headers.get('X-AIME-API-Key')
 
@@ -74,6 +78,10 @@ def proxy():
 
 @app.route('/api/chat', methods=['POST', 'OPTIONS'])
 def chat():
+    if request.method == 'OPTIONS':
+        # Handle preflight request
+        return '', 200
+
     data = request.get_json()
     message = data.get('message')
     context = data.get('context')
