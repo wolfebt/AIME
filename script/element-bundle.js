@@ -845,6 +845,35 @@ function initializeElementTabs() {
     });
 }
 
+// --- Mobile Menu ---
+function initializeMobileMenu() {
+    const toggleButton = document.getElementById('mobile-menu-toggle');
+    const sideColumn = document.querySelector('.side-column');
+    const mainColumn = document.querySelector('.main-column');
+
+    if (!toggleButton || !sideColumn || !mainColumn) return;
+
+    toggleButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent the main column click listener from firing immediately
+        sideColumn.classList.toggle('is-open');
+    });
+
+    // Close the menu if clicking on the main content area
+    mainColumn.addEventListener('click', () => {
+        if (sideColumn.classList.contains('is-open')) {
+            sideColumn.classList.remove('is-open');
+        }
+    });
+
+    // Also close when a save/load/new button inside the menu is clicked
+    sideColumn.addEventListener('click', (e) => {
+        if (e.target.matches('.action-btn, .generate-btn-large, .save-btn-large, .import-btn')) {
+            sideColumn.classList.remove('is-open');
+        }
+    });
+}
+
+
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     // initializeResizableColumns(); // Intentionally disabled for stability
@@ -855,5 +884,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeSaveButton();
     initializeLoadButton();
     initializeNewButton();
-    initializeElementTabs(); // Add this line
+    initializeElementTabs();
+    initializeMobileMenu(); // Add this line
 });
