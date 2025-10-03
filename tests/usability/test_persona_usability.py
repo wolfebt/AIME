@@ -38,22 +38,17 @@ def run_test(playwright):
     expect(toast).to_have_text("API Key saved successfully!")
     expect(modal_overlay).to_be_hidden()
 
-    # --- 3. Test Form Interactions ---
+    # --- 3. Test Form Interactions & Guidance Gems ---
     # Fill a field to test clearing later
     page.locator("#persona-name").fill("Test Name")
+    expect(page.locator("#persona-name")).to_have_value("Test Name")
 
     # Test custom notes
     custom_notes_area = page.locator("#custom-notes")
     custom_notes_area.fill("These are some custom notes for testing.")
     expect(custom_notes_area).to_have_value("These are some custom notes for testing.")
 
-    # Test "Clear All Fields"
-    clear_btn = page.locator("#clear-fields-button")
-    clear_btn.click()
-    expect(page.locator("#persona-name")).to_have_value("")
-    expect(page.locator("#custom-notes")).to_have_value("")
-
-    # --- 4. Test "Guidance Gems" (Persona Specific) ---
+    # Test "Guidance Gems" (Persona Specific)
     # This test is updated to reflect the new Persona-specific gems.
     # Open the "Descriptive Tone" modal
     page.get_by_role("button", name="Descriptive Tone", exact=True).click()
@@ -64,6 +59,15 @@ def run_test(playwright):
     page.locator("#gem-modal-save-btn").click()
     # Verify the pill appears on the main page
     expect(page.locator(".gem-pill-container .gem-selected-pill")).to_have_text("Heroic & Grand")
+
+    # --- 4. Test "New" button ---
+    new_btn = page.locator("#new-button")
+    new_btn.click()
+    expect(page.locator("#persona-name")).to_have_value("")
+    expect(page.locator("#custom-notes")).to_have_value("")
+    # Verify that the guidance gem pill was also cleared
+    expect(page.locator(".gem-pill-container .gem-selected-pill")).to_be_hidden()
+
 
     # --- 5. Test "Asset Hub" ---
     # The Asset Hub is now a static panel, so no click is needed to expand it.
