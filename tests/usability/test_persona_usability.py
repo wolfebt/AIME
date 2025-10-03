@@ -15,10 +15,7 @@ def run_test(playwright):
 
 
     browser = playwright.chromium.launch(headless=True)
-    # Create a new browser context to ensure a clean slate (no cache)
-    context = browser.new_context(no_viewport=True)
-    page = context.new_page()
-
+    page = browser.new_page()
 
     # --- 1. Navigate to the Persona Maker page ---
     page.goto(file_url)
