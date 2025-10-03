@@ -15,7 +15,10 @@ def run_test(playwright):
 
 
     browser = playwright.chromium.launch(headless=True)
-    page = browser.new_page()
+    # Create a new browser context to ensure a clean slate (no cache)
+    context = browser.new_context(no_viewport=True)
+    page = context.new_page()
+
 
     # --- 1. Navigate to the Persona Maker page ---
     page.goto(file_url)
@@ -92,7 +95,33 @@ def run_test(playwright):
     page.locator("#persona-archetype").fill("The Tester")
     page.locator("#persona-pitch").fill("A persona designed to test the system.")
 
-    # --- 7. Take Screenshot ---
+    # --- 7. Test Generation ---
+    # Mock the API response to avoid a real API call and ensure a consistent test
+    page.route(
+        "http://127.0.0.1:5001/api/proxy",
+        lambda route: route.fulfill(
+            status=200,
+            headers={"Content-Type": "application/json"},
+            json={
+                "candidates": [{
+                    "content": {
+                        "parts": [{
+                            "text": "This is the mocked AI-generated content for the persona."
+                        }]
+                    }
+                }]
+            }
+        )
+    )
+
+    # Click the generate button
+    page.locator("#generate-button").click()
+
+    # Wait for the mocked content to appear in the custom notes field
+    expect(page.locator("#custom-notes")).to_have_value("This is the mocked AI-generated content for the persona.")
+
+
+    # --- 8. Take Screenshot ---
     page.screenshot(path=screenshot_path)
     print(f"Screenshot saved to {screenshot_path}")
 

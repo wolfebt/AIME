@@ -517,7 +517,15 @@ async function generateElementContent(button) {
         const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
 
         if (text) {
-            responseContainer.innerHTML = `<div class="response-content">${text.replace(/\n/g, '<br>')}</div>`;
+            // Find the custom notes textarea and set its value
+            const customNotesField = document.getElementById('custom-notes');
+            if (customNotesField) {
+                customNotesField.value = text;
+            } else {
+                console.error("Could not find the #custom-notes field to populate.");
+            }
+            // Clear the loading indicator
+            responseContainer.innerHTML = '';
         } else {
             console.warn("Invalid or empty response from API.", result);
             const finishReason = result.candidates?.[0]?.finishReason;

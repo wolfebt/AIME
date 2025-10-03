@@ -13,7 +13,7 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 # The target URL for the AI service, allowing for dynamic model selection
 AI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/"
 
-@app.route('/api/proxy', methods=['POST'])
+@app.route('/api/proxy', methods=['POST', 'OPTIONS'])
 def proxy():
     # Get the user's API key from the request header, if it exists
     user_api_key = request.headers.get('X-AIME-API-Key')
@@ -72,7 +72,7 @@ def proxy():
 
         return jsonify({"error": error_message}), getattr(e.response, 'status_code', 500)
 
-@app.route('/api/chat', methods=['POST'])
+@app.route('/api/chat', methods=['POST', 'OPTIONS'])
 def chat():
     data = request.get_json()
     message = data.get('message')
