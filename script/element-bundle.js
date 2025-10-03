@@ -485,7 +485,7 @@ async function generateElementContent(button) {
     const superPrompt = craftSuperPrompt(elementType);
 
     // This is the model the frontend wants to use.
-    const model = 'gemini-2.5-flash-preview-05-20';
+    const model = 'gemini-2.0-pro';
 
     const payload = {
         model: model,
