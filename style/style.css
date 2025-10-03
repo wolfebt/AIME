@@ -584,7 +584,7 @@ select.input-field {
     width: 100%;
     font-size: 1.1rem;
     margin-top: 0; /* Removed margin for grid layout */
-    text-align: right;
+    text-align: center;
 }
 .generate-btn-large {
     background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
@@ -608,14 +608,6 @@ select.input-field {
     cursor: not-allowed;
 }
 .generation-controls-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-/* Use a grid layout on the element pages, identified by the presence
-   of the .element-header, for the 2x2 button configuration. */
-.element-header + .workspace-layout .generation-controls-buttons {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
@@ -827,6 +819,22 @@ select.input-field {
     transition: all 0.2s;
 }
 .action-btn:hover { background-color: #5b21b6; }
+
+/* Make action buttons inside the generation controls match the larger buttons */
+.generation-controls-buttons .action-btn {
+    padding: 12px 24px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-align: center;
+    background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue)); /* Match large buttons */
+    box-sizing: border-box; /* Ensure padding doesn't break layout */
+    width: 100%;
+}
+
+.generation-controls-buttons .action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(30, 64, 175, 0.6);
+}
 
 .brainstorm-card {
     margin-bottom: 1.5rem;
