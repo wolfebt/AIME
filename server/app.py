@@ -7,13 +7,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-# Apply CORS to all routes
-CORS(app)
+# Apply CORS to all routes, allowing all origins for the /api/ path
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # The target URL for the AI service, allowing for dynamic model selection
 AI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/"
 
-@app.route('/api/proxy', methods=['POST', 'OPTIONS'])
+@app.route('/api/proxy', methods=['POST'])
 def proxy():
     # Get the user's API key from the request header, if it exists
     user_api_key = request.headers.get('X-AIME-API-Key')
@@ -72,7 +72,7 @@ def proxy():
 
         return jsonify({"error": error_message}), getattr(e.response, 'status_code', 500)
 
-@app.route('/api/chat', methods=['POST', 'OPTIONS'])
+@app.route('/api/chat', methods=['POST'])
 def chat():
     data = request.get_json()
     message = data.get('message')
