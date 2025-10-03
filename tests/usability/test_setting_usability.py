@@ -55,17 +55,6 @@ def run_test(playwright):
     page.locator("#setting-geography").fill("Test Geography")
     expect(page.locator("#setting-geography")).to_have_value("Test Geography")
 
-    # Test "Clear All Fields"
-    clear_btn = page.locator("#clear-fields-button")
-    clear_btn.click()
-
-    # Verify field on current tab is cleared
-    expect(page.locator("#setting-geography")).to_have_value("")
-
-    # Switch back to first tab and verify it's also cleared
-    page.get_by_role("button", name="Core Identity").click()
-    expect(page.locator("#setting-name")).to_have_value("")
-
     # --- 4. Test "Guidance Gems" (Setting Specific) ---
     # This test verifies the new Setting-specific gems.
     # Open the "Location Type" modal
@@ -84,7 +73,21 @@ def run_test(playwright):
     page.locator("#gem-modal-save-btn").click()
     expect(page.locator(".gem-pill-container .gem-selected-pill").nth(1)).to_have_text("Gothic & Ornate")
 
-    # --- 6. Take Screenshot ---
+    # --- 6. Test "New" button ---
+    new_btn = page.locator("#new-button")
+    new_btn.click()
+
+    # Verify field on a non-active tab is cleared
+    expect(page.locator("#setting-geography")).to_have_value("")
+
+    # Switch back to first tab and verify it's also cleared
+    page.get_by_role("button", name="Core Identity").click()
+    expect(page.locator("#setting-name")).to_have_value("")
+
+    # Verify that the guidance gem pills were also cleared
+    expect(page.locator(".gem-pill-container .gem-selected-pill")).to_be_hidden()
+
+    # --- 7. Take Screenshot ---
     page.screenshot(path=screenshot_path)
     print(f"Screenshot saved to {screenshot_path}")
 

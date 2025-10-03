@@ -46,12 +46,6 @@ def run_test(playwright):
     page.locator("#faction-ideology").fill("To control the solar energy market.")
     expect(page.locator("#faction-ideology")).to_have_value("To control the solar energy market.")
 
-    # Test "Clear All Fields"
-    page.locator("#clear-fields-button").click()
-    expect(page.locator("#faction-name")).to_have_value("")
-    expect(page.locator("#faction-ideology")).to_have_value("")
-
-
     # --- 4. Test "Guidance Gems" (Faction Specific) ---
     # Open the "Faction Type" modal
     page.get_by_role("button", name="Faction Type", exact=True).click()
@@ -62,7 +56,14 @@ def run_test(playwright):
     # Verify the pill appears on the main page
     expect(page.locator(".gem-pill-container .gem-selected-pill")).to_have_text("Mega-corporation")
 
-    # --- 5. Test "Asset Hub" ---
+    # --- 5. Test "New" button (formerly Clear All Fields) ---
+    page.locator("#new-button").click()
+    expect(page.locator("#faction-name")).to_have_value("")
+    expect(page.locator("#faction-ideology")).to_have_value("")
+    # Verify that the guidance gem pill was also cleared
+    expect(page.locator(".gem-pill-container .gem-selected-pill")).to_be_hidden()
+
+    # --- 6. Test "Asset Hub" ---
     # Set the files for the file chooser
     with page.expect_file_chooser() as fc_info:
         page.locator("#import-asset-btn").click()

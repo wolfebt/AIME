@@ -619,46 +619,60 @@ function saveElementAsset() {
     const generateButton = document.getElementById('generate-button');
     if (!generateButton) {
         console.error('Generate button not found, cannot determine element type.');
+        showToast('Error: Could not determine element type.', 'error');
         return;
     }
     const elementType = generateButton.dataset.elementType; // e.g., PERSONA
     const extension = elementType.toLowerCase(); // e.g., persona
 
-    const assetData = {
-        assetType: elementType,
-        timestamp: new Date().toISOString(),
-        traits: {}
-    };
+    let markdownContent = `# ${elementType.charAt(0).toUpperCase() + elementType.slice(1).toLowerCase()} Asset\n`;
+    markdownContent += `> Saved on: ${new Date().toUTCString()}\n\n`;
 
-    // Process standard trait fields
+    let assetName = 'Untitled';
+
+    // Process standard trait fields from all tabs
     const inputs = document.querySelectorAll('.form-section .input-field');
     inputs.forEach(input => {
-        if (input.id === 'custom-notes') return; // Skip the custom notes field in this loop
+        // Exclude the custom notes field from this main loop
+        if (input.id === 'custom-notes') return;
 
-        const fieldId = input.dataset.fieldId;
-        if (fieldId && input.value.trim() !== '') {
-            assetData.traits[fieldId] = input.value.trim();
+        const labelElement = input.previousElementSibling;
+        const label = labelElement ? labelElement.textContent.trim() : 'Unknown Field';
+        const value = input.value.trim();
+
+        if (value) {
+            markdownContent += `## ${label}\n${value}\n\n`;
+        }
+
+        // Check for the 'name' field to use in the filename
+        if (input.dataset.fieldId === 'name' && value) {
+            assetName = value;
         }
     });
 
-    // Process custom notes
-    const customNotes = document.getElementById('custom-notes');
-    if (customNotes && customNotes.value.trim() !== '') {
-        assetData.custom_notes = customNotes.value.trim();
+    // Process custom notes separately
+    const customNotesField = document.getElementById('custom-notes');
+    if (customNotesField && customNotesField.value.trim()) {
+        markdownContent += `## Custom Notes\n${customNotesField.value.trim()}\n\n`;
     }
 
-    // Use the 'name' field for the filename, otherwise default to 'Untitled'
-    const assetName = (assetData.traits.name && assetData.traits.name.trim()) || 'Untitled';
+    // Create filename
     const filename = `${assetName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.${extension}`;
 
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(assetData, null, 2));
+    // Create a Blob, which is better for handling non-ASCII characters
+    const blob = new Blob([markdownContent], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
 
     const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("href", url);
     downloadAnchorNode.setAttribute("download", filename);
     document.body.appendChild(downloadAnchorNode); // Required for Firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+
+    // Clean up the URL object
+    URL.revokeObjectURL(url);
+    showToast('Asset saved successfully!');
 }
 
 function initializeGeneration() {
@@ -675,10 +689,108 @@ function initializeSaveButton() {
     }
 }
 
-function initializeClearButton() {
-    const clearButton = document.getElementById('clear-fields-button');
-    if (clearButton) {
-        clearButton.addEventListener('click', () => {
+function initializeLoadButton() {
+    const loadButton = document.getElementById('load-button');
+    if (loadButton) {
+        loadButton.addEventListener('click', () => {
+            const generateButton = document.getElementById('generate-button');
+            if (!generateButton) {
+                console.error('Generate button not found, cannot determine element type for loading.');
+                return;
+            }
+            const elementType = generateButton.dataset.elementType;
+            const extension = `.${elementType.toLowerCase()}`;
+
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = extension;
+            fileInput.style.display = 'none';
+
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    loadElementAsset(file);
+                }
+            });
+
+            document.body.appendChild(fileInput);
+            fileInput.click();
+            document.body.removeChild(fileInput);
+        });
+    }
+}
+
+function loadElementAsset(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const content = e.target.result;
+        const lines = content.split('\n');
+
+        // Clear existing fields before loading new data
+        const allInputs = document.querySelectorAll('.form-section .input-field');
+        allInputs.forEach(input => input.value = '');
+
+        let currentLabel = null;
+        let currentValue = '';
+
+        lines.forEach(line => {
+            const match = line.match(/^##\s+(.+)/); // Match headers like "## Core Tenets & Beliefs"
+            if (match) {
+                // If we have a pending field, save it
+                if (currentLabel) {
+                    setFieldValue(currentLabel, currentValue.trim());
+                }
+                // Start a new field
+                currentLabel = match[1].trim();
+                currentValue = '';
+            } else if (currentLabel) {
+                // If it's not a header, it's part of the content for the current field
+                currentValue += line + '\n';
+            }
+        });
+
+        // Save the last field after the loop finishes
+        if (currentLabel) {
+            setFieldValue(currentLabel, currentValue.trim());
+        }
+        showToast('Asset loaded successfully!');
+    };
+    reader.onerror = () => {
+        console.error('Error reading file.');
+        showToast('Error: Could not read the selected file.', 'error');
+    };
+    reader.readAsText(file);
+}
+
+function setFieldValue(label, value) {
+    const labels = document.querySelectorAll('.form-group label');
+    let targetInput = null;
+
+    if (label === 'Custom Notes') {
+        const customNotesField = document.getElementById('custom-notes');
+        if (customNotesField) {
+            customNotesField.value = value;
+        }
+        return;
+    }
+
+    labels.forEach(lbl => {
+        if (lbl.textContent.trim() === label) {
+            targetInput = lbl.nextElementSibling;
+        }
+    });
+
+    if (targetInput && (targetInput.tagName === 'INPUT' || targetInput.tagName === 'TEXTAREA')) {
+        targetInput.value = value;
+    } else {
+        console.warn(`Could not find a form field for label: "${label}"`);
+    }
+}
+
+function initializeNewButton() {
+    const newButton = document.getElementById('new-button');
+    if (newButton) {
+        newButton.addEventListener('click', () => {
             // Clear all input fields and textareas
             const inputs = document.querySelectorAll('.form-section .input-field');
             inputs.forEach(input => {
@@ -688,6 +800,14 @@ function initializeClearButton() {
             // Clear the response container
             const responseContainer = document.getElementById('response-container');
             if (responseContainer) responseContainer.innerHTML = '';
+
+            // Clear loaded assets
+            loadedAssets = [];
+            renderAssetList();
+
+            // Clear selected gems and re-render the UI for them
+            selectedGems = {};
+            initializeGuidanceGems();
         });
     }
 }
@@ -724,6 +844,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeAssetImporter();
     initializeGeneration();
     initializeSaveButton();
-    initializeClearButton();
+    initializeLoadButton();
+    initializeNewButton();
     initializeElementTabs(); // Add this line
 });

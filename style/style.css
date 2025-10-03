@@ -583,7 +583,7 @@ select.input-field {
     transition: all 0.3s;
     width: 100%;
     font-size: 1.1rem;
-    margin-top: 0.5rem;
+    margin-top: 0; /* Removed margin for grid layout */
     text-align: right;
 }
 .generate-btn-large {
@@ -611,6 +611,14 @@ select.input-field {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+}
+
+/* Use a grid layout on the element pages, identified by the presence
+   of the .element-header, for the 2x2 button configuration. */
+.element-header + .workspace-layout .generation-controls-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
 }
 
 

@@ -953,65 +953,224 @@ function initializeSaveButton() {
         if (!activeTab) return;
 
         let content = '';
-        let filename = 'AIME_Story_Weaver_Export.txt';
+        let filename = '';
+        let extension = '';
+        let assetName = 'untitled';
 
         switch (activeTab) {
             case 'brainstorm':
                 const cards = document.querySelectorAll('.brainstorm-card');
                 if (cards.length === 0) {
-                    alert("Nothing to save!");
+                    showToast("Nothing to save!", "error");
                     return;
                 }
-                filename = 'AIME_Brainstorm_Concepts.txt';
-                content = "--- AIME Brainstorm Session ---\n\n";
+                extension = '.brainstorm';
+                content = "# Brainstorm Session\n\n";
                 cards.forEach((card, index) => {
-                    const title = card.querySelector('.card-title').textContent;
-                    const logline = card.querySelector('.brainstorm-logline').textContent;
-                    const concept = card.querySelector('.brainstorm-concept').textContent;
-                    content += `Concept ${index + 1}:\nTitle: ${title}\nLogline: ${logline}\n\n${concept}\n\n---\n\n`;
+                    const title = card.querySelector('.card-title').textContent.trim();
+                    if (index === 0 && title) assetName = title;
+                    const logline = card.querySelector('.brainstorm-logline').textContent.trim();
+                    const concept = card.querySelector('.brainstorm-concept').innerHTML.replace(/<br\s*\/?>/g, '\n');
+                    content += `## ${title}\n\n**Logline:** ${logline}\n\n${concept}\n\n---\n\n`;
                 });
                 break;
 
             case 'outline':
                 const outlineItems = document.querySelectorAll('.outline-item');
-                 if (outlineItems.length === 0) {
-                    alert("Nothing to save!");
+                if (outlineItems.length === 0) {
+                    showToast("Nothing to save!", "error");
                     return;
                 }
-                filename = 'AIME_Story_Outline.txt';
-                content = "--- AIME Story Outline ---\n\n";
+                extension = '.outline';
+                content = "# Story Outline\n\n";
                 outlineItems.forEach((item, index) => {
-                    const title = item.querySelector('.outline-item-title').textContent;
-                    const description = item.querySelector('.outline-item-description').textContent;
-                    content += `${index + 1}. ${title}\n   - ${description}\n\n`;
+                    const title = item.querySelector('.outline-item-title').textContent.trim();
+                    if (index === 0 && title) assetName = title;
+                    const description = item.querySelector('.outline-item-description').innerHTML.replace(/<br\s*\/?>/g, '\n');
+                    content += `## ${index + 1}. ${title}\n\n${description}\n\n`;
                 });
                 break;
 
             case 'treatment':
                 const treatmentCanvas = document.getElementById('treatment-canvas');
-                content = treatmentCanvas.innerText; // Use innerText to get clean text
-                 if (content.trim() === '' || treatmentCanvas.querySelector('.placeholder-text')) {
-                    alert("Nothing to save!");
+                content = treatmentCanvas.innerText.trim();
+                if (content === '' || treatmentCanvas.querySelector('.placeholder-text')) {
+                    showToast("Nothing to save!", "error");
                     return;
                 }
-                filename = 'AIME_Story_Draft.txt';
+                extension = '.draft';
+                assetName = content.split('\n')[0].trim() || 'draft';
                 break;
         }
 
-        downloadFile(filename, content);
+        filename = `${assetName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}${extension}`;
+
+        const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute("href", url);
+        downloadAnchorNode.setAttribute("download", filename);
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        document.body.removeChild(downloadAnchorNode);
+
+        URL.revokeObjectURL(url);
+        showToast('Content saved successfully!', 'success');
     });
 }
 
-function downloadFile(filename, text) {
-    const element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-    element.setAttribute('download', filename);
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+
+function initializeNewButton() {
+    const newButton = document.getElementById('new-button');
+    if (!newButton) return;
+
+    newButton.addEventListener('click', () => {
+        const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
+        if (!activeTab) return;
+
+        switch (activeTab) {
+            case 'brainstorm':
+                const responseArea = document.getElementById('brainstorm-response-area');
+                if (responseArea) {
+                    responseArea.innerHTML = '<p class="placeholder-text">Enter a core idea in the prompt box and click "Brainstorm Concepts" to generate story ideas.</p>';
+                }
+                break;
+            case 'outline':
+                const outlineList = document.getElementById('outline-list');
+                if (outlineList) {
+                    outlineList.innerHTML = '<p class="placeholder-text">Click "Develop Outline" on a concept card to generate an outline here.</p>';
+                }
+                break;
+            case 'treatment':
+                const treatmentCanvas = document.getElementById('treatment-canvas');
+                if (treatmentCanvas) {
+                    treatmentCanvas.innerHTML = '<p class="placeholder-text">Generate an outline, then click "Generate Treatment" to create a story treatment here.</p>';
+                }
+                break;
+        }
+        showToast('Cleared the current view.', 'success');
+    });
 }
 
+function initializeLoadButton() {
+    const loadButton = document.getElementById('load-button');
+    if (loadButton) {
+        loadButton.addEventListener('click', () => {
+            const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
+            if (!activeTab) return;
+
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+
+            const extensions = {
+                brainstorm: '.brainstorm',
+                outline: '.outline',
+                treatment: '.draft'
+            };
+            fileInput.accept = extensions[activeTab] || '.txt,.md,.brainstorm,.outline,.draft';
+
+            fileInput.style.display = 'none';
+
+            fileInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    loadFileContent(file, activeTab);
+                }
+            });
+
+            document.body.appendChild(fileInput);
+            fileInput.click();
+            document.body.removeChild(fileInput);
+        });
+    }
+}
+
+function loadFileContent(file, activeTab) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const content = e.target.result;
+        switch (activeTab) {
+            case 'brainstorm':
+                loadBrainstormContent(content);
+                break;
+            case 'outline':
+                loadOutlineContent(content);
+                break;
+            case 'treatment':
+                const treatmentCanvas = document.getElementById('treatment-canvas');
+                if (treatmentCanvas) {
+                    treatmentCanvas.innerText = content;
+                }
+                break;
+        }
+        showToast(`Loaded ${file.name} successfully!`, 'success');
+    };
+    reader.onerror = () => {
+        showToast(`Error reading file: ${file.name}`, 'error');
+    };
+    reader.readAsText(file);
+}
+
+function loadBrainstormContent(content) {
+    const responseArea = document.getElementById('brainstorm-response-area');
+    if (!responseArea) return;
+    responseArea.innerHTML = ''; // Clear current content
+
+    const concepts = [];
+    const rawConcepts = content.split('---').filter(c => c.trim().length > 5);
+
+    rawConcepts.forEach(rawConcept => {
+        const trimmedConcept = rawConcept.trim();
+        const titleMatch = trimmedConcept.match(/^##\s+(.*)/m);
+        const loglineMatch = trimmedConcept.match(/\*\*Logline:\*\*\s+(.*)/);
+        const conceptBodyMatch = trimmedConcept.match(/\*\*Logline:\*\*\s+.*\n\n([\s\S]*)/);
+
+        if (titleMatch && loglineMatch && conceptBodyMatch) {
+            concepts.push({
+                title: titleMatch[1].trim(),
+                logline: loglineMatch[1].trim(),
+                concept: conceptBodyMatch[1].trim()
+            });
+        }
+    });
+
+    if (concepts.length > 0) {
+        concepts.forEach(conceptData => {
+            const card = createBrainstormCard(conceptData);
+            responseArea.appendChild(card);
+        });
+    } else {
+        responseArea.innerHTML = `<p class="placeholder-text">${content.replace(/\n/g, '<br>')}</p>`;
+    }
+}
+
+function loadOutlineContent(content) {
+    const outlineList = document.getElementById('outline-list');
+    if (!outlineList) return;
+    outlineList.innerHTML = ''; // Clear current content
+
+    const plotPoints = [];
+    const sections = content.split(/^## \d+\.\s+/m).filter(s => s.trim());
+
+    sections.forEach(section => {
+        const lines = section.trim().split('\n');
+        const title = lines.shift().trim();
+        const description = lines.join('\n').trim();
+        if (title && description) {
+            plotPoints.push({ title, description });
+        }
+    });
+
+    if (plotPoints.length > 0) {
+        plotPoints.forEach(pointData => {
+            const li = createPlotPointListItem(pointData);
+            outlineList.appendChild(li);
+        });
+    } else {
+        outlineList.innerHTML = `<p class="placeholder-text">${content.replace(/\n/g, '<br>')}</p>`;
+    }
+}
 
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -1028,6 +1187,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeOutline();
     initializeFloatingToolbar();
     initializeSaveButton();
+    initializeNewButton();
+    initializeLoadButton();
 });
 
 
