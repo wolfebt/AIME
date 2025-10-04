@@ -39,9 +39,9 @@ function initializeResizableColumns() {
         // Clamp the percentage between 20% and 80%
         newLeftPercent = Math.max(20, Math.min(80, newLeftPercent));
 
-        // The calc() accounts for half the handle's width to center the split
-        mainColumn.style.width = `calc(${newLeftPercent}% - 1px)`;
-        sideColumn.style.width = `calc(${100 - newLeftPercent}% - 1px)`;
+        // The calc() accounts for half the handle's width (4px / 2 = 2px) to center the split
+        mainColumn.style.width = `calc(${newLeftPercent}% - 2px)`;
+        sideColumn.style.width = `calc(${100 - newLeftPercent}% - 2px)`;
     }
 }
 
