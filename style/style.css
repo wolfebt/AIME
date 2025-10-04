@@ -219,13 +219,14 @@ body {
 }
 
 .resize-handle {
-    width: 2px;
+    width: 4px;
     cursor: col-resize;
-    background-color: transparent;
+    background-color: var(--accent-purple);
     transition: background-color 0.3s ease;
+    border-radius: 2px;
 }
 .resize-handle:hover, .resize-handle.resizing {
-    background-color: var(--accent-purple);
+    filter: brightness(1.2);
 }
 
 
