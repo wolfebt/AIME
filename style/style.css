@@ -219,13 +219,13 @@ body {
 }
 
 .resize-handle {
-    width: 12px;
+    width: 2px;
     cursor: col-resize;
     background-color: transparent;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease;
 }
 .resize-handle:hover, .resize-handle.resizing {
-    background-color: rgba(139, 148, 158, 0.2);
+    background-color: var(--accent-purple);
 }
 
 
@@ -281,18 +281,13 @@ body {
     padding-bottom: 0.5rem;
 }
 
-/* Accordion Styles */
+/* Generation Controls Panel (formerly Accordion) */
 .accordion {
     border: 1px solid var(--panel-border);
     border-radius: 0.75rem;
-    overflow: hidden; /* Default to hidden */
     background-color: rgba(36, 41, 47, 0.7);
-    transition: overflow 0.4s ease-out; /* Smooth transition for overflow */
 }
 
-.accordion.open {
-    overflow: visible; /* Allow content to overflow when open */
-}
 .accordion-header {
     width: 100%;
     display: flex;
@@ -302,21 +297,17 @@ body {
     font-weight: 600;
     color: var(--light-text);
     background-color: rgba(139, 148, 158, 0.1);
-    cursor: pointer;
     border: none;
     font-size: 1.1rem;
+    border-bottom: 1px solid var(--panel-border); /* Add a separator */
 }
-.accordion-header.active .accordion-chevron {
-    transform: rotate(180deg);
-}
+
 .accordion-chevron {
-    transition: transform 0.3s ease;
+    display: none; /* Hide the chevron icon */
 }
+
 .accordion-content {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease-out, padding 0.4s ease-out;
-    padding: 0 1.5rem;
+    padding: 1.5rem; /* Always have padding */
 }
 
 /* Static Side Panel Styles (for Elements pages) */

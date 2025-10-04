@@ -94,8 +94,9 @@ def run_test(playwright):
 
     # --- 7. Test Generation ---
     # Mock the API response to avoid a real API call and ensure a consistent test
+    # Use a glob pattern to catch the call regardless of the specific model used.
     page.route(
-        "http://127.0.0.1:5001/api/proxy",
+        "https://generativelanguage.googleapis.com/v1beta/models/*:generateContent*",
         lambda route: route.fulfill(
             status=200,
             headers={"Content-Type": "application/json"},

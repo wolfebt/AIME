@@ -6,8 +6,6 @@
 
 // --- Resizable Columns ---
 function initializeResizableColumns() {
-    // This functionality is currently disabled in the initializer at the bottom
-    // to ensure stability, but the code is here for future implementation.
     const workspace = document.querySelector('.workspace-layout');
     if (!workspace) return;
 
@@ -15,9 +13,9 @@ function initializeResizableColumns() {
     const sideColumn = workspace.querySelector('.side-column');
     const resizeHandle = workspace.querySelector('.resize-handle');
 
-    let isResizing = false;
+    if (!mainColumn || !sideColumn || !resizeHandle) return;
 
-    if (!resizeHandle) return;
+    let isResizing = false;
 
     resizeHandle.addEventListener('mousedown', (e) => {
         isResizing = true;
@@ -25,8 +23,10 @@ function initializeResizableColumns() {
         document.addEventListener('mouseup', () => {
             isResizing = false;
             document.removeEventListener('mousemove', handleMouseMove);
+            document.body.style.cursor = 'default';
             resizeHandle.classList.remove('resizing');
         });
+        document.body.style.cursor = 'col-resize';
         resizeHandle.classList.add('resizing');
     });
 
@@ -35,39 +35,17 @@ function initializeResizableColumns() {
         const containerRect = workspace.getBoundingClientRect();
         const newLeftWidth = e.clientX - containerRect.left;
         let newLeftPercent = (newLeftWidth / containerRect.width) * 100;
+
+        // Clamp the percentage between 20% and 80%
         newLeftPercent = Math.max(20, Math.min(80, newLeftPercent));
-        mainColumn.style.width = `calc(${newLeftPercent}% - 6px)`;
-        sideColumn.style.width = `calc(${100 - newLeftPercent}% - 6px)`;
+
+        // The calc() accounts for half the handle's width to center the split
+        mainColumn.style.width = `calc(${newLeftPercent}% - 1px)`;
+        sideColumn.style.width = `calc(${100 - newLeftPercent}% - 1px)`;
     }
 }
 
 
-// --- Accordion Logic ---
-function initializeAccordions() {
-    const accordions = document.querySelectorAll('.accordion');
-    accordions.forEach(accordion => {
-        const header = accordion.querySelector('.accordion-header');
-        const content = accordion.querySelector('.accordion-content');
-        const chevron = header.querySelector('.accordion-chevron');
-        if (!header || !content || !chevron) return;
-
-        header.addEventListener('click', () => {
-            const isOpen = header.classList.toggle('active');
-            chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-            if (isOpen) {
-                content.style.padding = '1.5rem';
-                content.style.maxHeight = content.scrollHeight + "px";
-            } else {
-                content.style.maxHeight = null;
-                content.style.padding = '0 1.5rem';
-            }
-        });
-        if (header.classList.contains('active')) {
-            content.style.padding = '1.5rem';
-            content.style.maxHeight = content.scrollHeight + "px";
-        }
-    });
-}
 
 // --- Asset Hub Importer ---
 let loadedAssets = []; // Data store for asset content
@@ -847,8 +825,7 @@ function initializeElementTabs() {
 
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
-    // initializeResizableColumns(); // Intentionally disabled for stability
-    initializeAccordions();
+    initializeResizableColumns(); // Intentionally disabled for stability
     initializeGuidanceGems();
     initializeAssetImporter();
     initializeGeneration();
