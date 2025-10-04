@@ -299,11 +299,53 @@ function initializeAimeChatbot() {
 }
 
 
+// --- Global Mobile Menu ---
+function initializeGlobalMobileMenu() {
+    const headerLeft = document.querySelector('.main-header .header-left');
+    const sideColumn = document.querySelector('.side-column');
+    const mainColumn = document.querySelector('.main-column');
+
+    // Only run on pages that have the workspace layout
+    if (!headerLeft || !sideColumn || !mainColumn) return;
+
+    // 1. Create the button
+    const toggleButton = document.createElement('button');
+    toggleButton.id = 'mobile-menu-toggle';
+    toggleButton.className = 'mobile-menu-toggle-btn';
+    // Use a standard hamburger icon SVG
+    toggleButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
+
+    // 2. Inject the button as the first item in the header's left container
+    headerLeft.insertBefore(toggleButton, headerLeft.firstChild);
+
+    // 3. Event Listeners
+    toggleButton.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent click from bubbling to other elements
+        sideColumn.classList.toggle('is-open');
+    });
+
+    // Close menu if clicking on the main content area
+    mainColumn.addEventListener('click', () => {
+        if (sideColumn.classList.contains('is-open')) {
+            sideColumn.classList.remove('is-open');
+        }
+    });
+
+    // Close menu if a major action button is clicked within the side column for better UX
+    sideColumn.addEventListener('click', (e) => {
+        if (e.target.matches('.action-btn, .generate-btn-large, .save-btn-large, .import-btn, .gem-category-button')) {
+            sideColumn.classList.remove('is-open');
+        }
+    });
+}
+
+
 // Initialize all global UI components when the page content is loaded.
 document.addEventListener('DOMContentLoaded', () => {
     initializeSettingsModal();
     checkApiKeyStatus();
     initializeAutoExpandingTextareas();
+    initializeGlobalMobileMenu(); // Add mobile menu initialization
 
     // Initialize Chatbot
     // createAimeButton();

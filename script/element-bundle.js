@@ -845,44 +845,6 @@ function initializeElementTabs() {
     });
 }
 
-// --- Mobile Menu (Refactored) ---
-function initializeMobileMenu() {
-    const elementHeader = document.querySelector('.element-header');
-    const sideColumn = document.querySelector('.side-column');
-    const mainColumn = document.querySelector('.main-column');
-
-    // Only proceed if the necessary layout elements are present
-    if (!elementHeader || !sideColumn || !mainColumn) return;
-
-    // 1. Create the button dynamically
-    const toggleButton = document.createElement('button');
-    toggleButton.id = 'mobile-menu-toggle';
-    toggleButton.className = 'mobile-menu-toggle-btn';
-    toggleButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
-
-    // 2. Inject the button into the header
-    elementHeader.appendChild(toggleButton);
-
-    // 3. Attach event listeners
-    toggleButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        sideColumn.classList.toggle('is-open');
-    });
-
-    mainColumn.addEventListener('click', () => {
-        if (sideColumn.classList.contains('is-open')) {
-            sideColumn.classList.remove('is-open');
-        }
-    });
-
-    sideColumn.addEventListener('click', (e) => {
-        if (e.target.matches('.action-btn, .generate-btn-large, .save-btn-large, .import-btn')) {
-            sideColumn.classList.remove('is-open');
-        }
-    });
-}
-
-
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     // initializeResizableColumns(); // Intentionally disabled for stability
@@ -894,5 +856,4 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeLoadButton();
     initializeNewButton();
     initializeElementTabs();
-    initializeMobileMenu(); // Add this line
 });

@@ -58,6 +58,10 @@ body {
     align-items: center;
     padding: 1rem 1.5rem;
     border-bottom: 1px solid var(--panel-border);
+    position: sticky;
+    top: 0;
+    background-color: var(--dark-bg); /* Ensure it has a solid background when scrolling */
+    z-index: 900; /* Ensure it stays above most content */
 }
 
 .header-left {
@@ -610,17 +614,14 @@ select.input-field {
 
 /* --- Mobile Responsive Styles --- */
 .mobile-menu-toggle-btn {
-    display: none; /* Hidden by default on large screens */
+    display: none; /* Hidden by default, shown via media query */
     background: none;
     border: 1px solid var(--panel-border);
     color: var(--medium-text);
     padding: 8px;
     border-radius: 8px;
     cursor: pointer;
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    z-index: 999;
+    z-index: 999; /* Ensure it's clickable */
 }
 
 .mobile-menu-toggle-btn:hover {
@@ -633,23 +634,24 @@ select.input-field {
         flex-direction: column;
     }
 
+    /* Redefine .side-column for mobile overlay behavior */
     .side-column {
-        display: none; /* Hide side column by default on mobile */
-        width: 100%;   /* Take full width when open */
-        position: fixed; /* Use fixed positioning to cover the whole screen */
+        display: none; /* Hidden by default */
+        position: fixed;
         top: 0;
-        right: 0;
-        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         background-color: var(--dark-bg);
         z-index: 998;
         overflow-y: auto;
         padding: 1.5rem;
-        border-left: 1px solid var(--panel-border);
-        box-sizing: border-box; /* Ensure padding is included in the width */
+        box-sizing: border-box;
+        border: none; /* Remove border for full-screen overlay */
     }
 
     .side-column.is-open {
-        display: block; /* Show the side column when toggled */
+        display: block; /* Show when active */
     }
 
     .main-column {
@@ -657,12 +659,17 @@ select.input-field {
     }
 
     .mobile-menu-toggle-btn {
-        display: block; /* Show the hamburger button on mobile */
+        display: block; /* Show the toggle button */
     }
 
+    /* Hide the main navigation links and show the toggle button */
+    .main-nav {
+        display: none;
+    }
+
+    /* This rule is no longer needed as the button is in the header flow */
     .element-header {
-        position: relative;
-        padding-right: 60px; /* Make space for the button */
+        padding-right: 0;
     }
 }
 
