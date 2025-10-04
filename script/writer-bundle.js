@@ -1026,30 +1026,46 @@ function initializeNewButton() {
     if (!newButton) return;
 
     newButton.addEventListener('click', () => {
-        const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
-        if (!activeTab) return;
-
-        switch (activeTab) {
-            case 'brainstorm':
-                const responseArea = document.getElementById('brainstorm-response-area');
-                if (responseArea) {
-                    responseArea.innerHTML = '<p class="placeholder-text">Enter a core idea in the prompt box and click "Brainstorm Concepts" to generate story ideas.</p>';
-                }
-                break;
-            case 'outline':
-                const outlineList = document.getElementById('outline-list');
-                if (outlineList) {
-                    outlineList.innerHTML = '<p class="placeholder-text">Click "Develop Outline" on a concept card to generate an outline here.</p>';
-                }
-                break;
-            case 'treatment':
-                const treatmentCanvas = document.getElementById('treatment-canvas');
-                if (treatmentCanvas) {
-                    treatmentCanvas.innerHTML = '<p class="placeholder-text">Generate an outline, then click "Generate Treatment" to create a story treatment here.</p>';
-                }
-                break;
+        // 1. Clear main prompt
+        const mainPrompt = document.getElementById('main-prompt');
+        if (mainPrompt) {
+            mainPrompt.value = '';
         }
-        showToast('Cleared the current view.', 'success');
+
+        // 2. Clear loaded assets
+        loadedAssets = [];
+        renderAssetList();
+
+        // 3. Clear selected gems and re-render the UI
+        selectedGems = {};
+        initializeGuidanceGems();
+
+        // 4. Clear the content of the active tab
+        const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
+        if (activeTab) {
+            switch (activeTab) {
+                case 'brainstorm':
+                    const responseArea = document.getElementById('brainstorm-response-area');
+                    if (responseArea) {
+                        responseArea.innerHTML = '<p class="placeholder-text">Enter a core idea in the prompt box and click "Brainstorm Concepts" to generate story ideas.</p>';
+                    }
+                    break;
+                case 'outline':
+                    const outlineList = document.getElementById('outline-list');
+                    if (outlineList) {
+                        outlineList.innerHTML = '<p class="placeholder-text">Click "Develop Outline" on a concept card to generate an outline here.</p>';
+                    }
+                    break;
+                case 'treatment':
+                    const treatmentCanvas = document.getElementById('treatment-canvas');
+                    if (treatmentCanvas) {
+                        treatmentCanvas.innerHTML = '<p class="placeholder-text">Generate an outline, then click "Generate Treatment" to create a story treatment here.</p>';
+                    }
+                    break;
+            }
+        }
+
+        showToast('Workspace cleared.', 'success');
     });
 }
 
