@@ -95,10 +95,11 @@ def run_test(playwright):
     page.locator("#persona-pitch").fill("A persona designed to test the system.")
 
     # --- 7. Test Generation ---
-    # Mock the API response to avoid a real API call and ensure a consistent test
-    # The route must match the URL the frontend is calling (the backend proxy).
+    # Mock the API response to avoid a real API call and ensure a consistent test.
+    # The application calls the Google Generative AI API directly. We use a glob
+    # pattern to catch the correct URL regardless of the exact model or API key.
     page.route(
-        "http://127.0.0.1:5001/api/proxy",
+        "**/models/*:generateContent*",
         lambda route: route.fulfill(
             status=200,
             headers={"Content-Type": "application/json"},
