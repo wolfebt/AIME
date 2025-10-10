@@ -492,16 +492,18 @@ async function generateElementContent(button) {
 
     // This is the model the frontend wants to use.
     const model = 'gemini-1.5-flash-latest'; // UPDATED to cost-effective model
-    const apiUrl = '/api/proxy'; // UPDATED to use the backend proxy
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${userApiKey}`;
 
     const payload = {
-        model: model, // Pass the model to the proxy
-        contents: [{ parts: [{ text: superPrompt }] }]
+        contents: [{
+            parts: [{
+                text: superPrompt
+            }]
+        }]
     };
 
     const headers = {
-        'Content-Type': 'application/json',
-        'X-AIME-API-Key': userApiKey || '' // Send user key in header
+        'Content-Type': 'application/json'
     };
 
     try {
