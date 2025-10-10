@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF--8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI.me Pair Artist</title>
+    <meta name="author" content="Wolfe.bt@TangentLLC">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 1. Load React libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- 2. Load Babel to transpile JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- 3. Load Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
+            background-size: 25px 25px;
+            color: #e6edf3;
+        }
+
+        .glass-panel {
+            background-color: rgba(22, 27, 34, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(139, 148, 158, 0.2);
+            border-radius: 0.75rem;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .main-tab-btn {
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            color: #8b949e;
+            transition: all 0.2s;
+        }
+        .main-tab-btn.active {
+            color: #2563eb; /* Dark Blue */
+            border-bottom-color: #2563eb; /* Dark Blue */
+        }
+        .main-tab-btn:not(.active):hover {
+            color: #c9d1d9;
+            border-bottom-color: rgba(139, 148, 158, 0.3);
+        }
+        
+        .btn-primary {
+            background-color: #4c1d95; /* Dark Purple */
+            color: white;
+            border: 1px solid #2563eb; /* Thin Blue Border */
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(76, 29, 149, 0.4);
+            font-weight: 600;
+        }
+        .btn-primary:hover:not(:disabled) { 
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(76, 29, 149, 0.6);
+            background-color: #5b21b6; /* Lighter purple on hover */
+            border-color: #3b82f6; /* Brighter blue on hover */
+        }
+
+        .btn-secondary {
+            background-color: rgba(139, 148, 158, 0.15);
+            color: #c9d1d9;
+            transition: background-color 0.3s;
+            border: 1px solid rgba(139, 148, 158, 0.2);
+        }
+        .btn-secondary:hover:not(:disabled) { 
+            background-color: rgba(139, 148, 158, 0.3);
+            border-color: rgba(139, 148, 158, 0.4);
+        }
+        .editable-title {
+            outline: none;
+            border-bottom: 1px solid #2563eb; /* Thin blue bottom border */
+            color: #4c1d95; /* Dark purple text */
+            transition: border-color 0.3s;
+            padding: 0.1rem 0.25rem;
+        }
+        .editable-title:focus {
+            border-bottom-color: #3b82f6; /* Brighter blue on focus */
+        }
+        .asset-card {
+            background-color: rgba(139, 148, 158, 0.1);
+            border: 1px solid rgba(139, 148, 158, 0.2);
+            transition: all 0.2s;
+        }
+        .asset-card:hover {
+            border-color: #2563eb; /* Dark Blue */
+            background-color: rgba(37, 99, 235, 0.1);
+        }
+        .switch { position: relative; display: inline-block; width: 34px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #30363d; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: #e6edf3; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #1e3a8a; } /* Dark Blue */
+        input:checked + .slider:before { transform: translateX(14px); }
+        
+        /* Accordion Styles */
+        .accordion-section {
+            background-color: rgba(36, 41, 47, 0.7);
+            border: 1px solid rgba(139, 148, 158, 0.2);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        .accordion-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+            color: #e6edf3;
+            background-color: rgba(139, 148, 158, 0.1);
+            cursor: pointer;
+        }
+        .accordion-section.open .accordion-header span {
+            color: #2563eb; /* Dark Blue */
+        }
+        .accordion-header svg { 
+            transition: transform 0.2s;
+            color: #a78bfa;
+        }
+        .accordion-section.open .accordion-header svg { transform: rotate(180deg); }
+        .accordion-content { padding: 1.5rem; }
+
+        /* Input Field Styles */
+        .tool-input {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            color: #e6edf3;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s ease;
+            min-height: 52px; /* Uniform height for all fields */
+        }
+        .tool-input:focus {
+            outline: none;
+            border-color: #1e3a8a; /* Dark Blue */
+            box-shadow: 0 0 10px rgba(30, 58, 138, 0.3);
+        }
+        .tool-input::placeholder { color: #484f58; }
+        
+        .action-btn {
+            background-color: rgba(139, 148, 158, 0.1);
+            color: #8b949e;
+            transition: all 0.2s;
+        }
+        .action-btn:hover {
+            background-color: rgba(139, 148, 158, 0.2);
+            color: #c9d1d9;
+        }
+        
+        [contenteditable="true"]:focus {
+            outline: 2px solid #1e3a8a; /* Dark Blue */
+            box-shadow: 0 0 10px rgba(30, 58, 138, 0.3);
+            border-radius: 0.375rem;
+        }
+        @keyframes colorCycle {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes glowPulse {
+            0%, 100% { filter: blur(10px); opacity: 0; }
+            12.5% { filter: blur(12px); opacity: 0.3; }
+            25% { filter: blur(15px); opacity: 0.6; }
+            37.5% { filter: blur(20px); opacity: 0.9; }
+            50% { filter: blur(25px); opacity: 1; }
+            62.5% { filter: blur(20px); opacity: 0.9; }
+            75% { filter: blur(15px); opacity: 0.6; }
+            87.5% { filter: blur(12px); opacity: 0.3; }
+        }
+        .title-animated-gradient {
+            position: relative;
+            background: linear-gradient(90deg, #3b0764, #5b21b6, #1e3a8a, #1e293b, #1e3a8a, #5b21b6, #3b0764);
+            background-size: 400% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: colorCycle 10s ease infinite;
+        }
+        .title-animated-gradient::before {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: -1;
+            background: linear-gradient(90deg, #3b0764, #5b21b6, #1e3a8a, #1e293b, #1e3a8a, #5b21b6, #3b0764);
+            background-size: 400% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: colorCycle 10s ease infinite, glowPulse 6s ease-in-out infinite;
+        }
+        .resize-handle {
+            width: 12px;
+            cursor: col-resize;
+            background-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+         .resize-handle:hover, .resize-handle.resizing {
+             background-color: rgba(37, 99, 235, 0.2);
+         }
+        .resize-handle::before {
+            content: '⋮';
+            color: #484f58;
+            font-size: 20px;
+            line-height: 1;
+            transform: rotate(90deg);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- Custom Hooks ---
+        function useOnClickOutside(ref, handler) {
+            useEffect(() => {
+                const listener = (event) => {
+                    if (!ref.current || ref.current.contains(event.target)) {
+                        return;
+                    }
+                    handler(event);
+                };
+                document.addEventListener("mousedown", listener);
+                document.addEventListener("touchstart", listener);
+                return () => {
+                    document.removeEventListener("mousedown", listener);
+                    document.removeEventListener("touchstart", listener);
+                };
+            }, [ref, handler]);
+        }
+
+
+        // --- Resizable Columns Component ---
+        const ResizableColumns = ({ leftColumn, rightColumn, initialLeftWidth = 33.33 }) => {
+            const [leftWidth, setLeftWidth] = useState(initialLeftWidth);
+            const [isResizing, setIsResizing] = useState(false);
+            const containerRef = useRef(null);
+
+            const handleMouseDown = (e) => {
+                e.preventDefault();
+                setIsResizing(true);
+            };
+
+            const handleMouseUp = () => {
+                setIsResizing(false);
+            };
+
+            const handleMouseMove = (e) => {
+                if (!isResizing || !containerRef.current) return;
+
+                const containerRect = containerRef.current.getBoundingClientRect();
+                const newLeftWidthPx = e.clientX - containerRect.left;
+                let newLeftWidthPercent = (newLeftWidthPx / containerRect.width) * 100;
+                
+                newLeftWidthPercent = Math.max(20, Math.min(80, newLeftWidthPercent));
+
+                setLeftWidth(newLeftWidthPercent);
+            };
+
+            useEffect(() => {
+                if (isResizing) {
+                    window.addEventListener('mousemove', handleMouseMove);
+                    window.addEventListener('mouseup', handleMouseUp);
+                } else {
+                    window.removeEventListener('mousemove', handleMouseMove);
+                    window.removeEventListener('mouseup', handleMouseUp);
+                }
+
+                return () => {
+                    window.removeEventListener('mousemove', handleMouseMove);
+                    window.removeEventListener('mouseup', handleMouseUp);
+                };
+            }, [isResizing, handleMouseMove, handleMouseUp]);
+
+
+            return (
+                <div ref={containerRef} className="flex w-full h-full">
+                    <div style={{ width: `${leftWidth}%` }}>
+                        {leftColumn}
+                    </div>
+                    <div
+                        className={`resize-handle ${isResizing ? 'resizing' : ''}`}
+                        onMouseDown={handleMouseDown}
+                    >
+                    </div>
+                    <div style={{ width: `${100 - leftWidth}%`, paddingLeft: '2rem' }}>
+                         {rightColumn}
+                    </div>
+                </div>
+            );
+        };
+
+
+        // --- Reusable SVG Icon Components ---
+        const SettingsIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0l-.1.41a2 2 0 01-2.23 1.52l-.4-.1a2 2 0 00-2.2 2.2l.1.4a2 2 0 01-1.52 2.23l-.41.1c-1.56.38-1.56 2.6 0 2.98l.41.1a2 2 0 011.52 2.23l-.1.4a2 2 0 002.2 2.2l.4-.1a2 2 0 012.23 1.52l.1.41c.38 1.56 2.6 1.56 2.98 0l.1-.41a2 2 0 012.23-1.52l.4.1a2 2 0 002.2-2.2l-.1-.4a2 2 0 011.52-2.23l.41-.1c-1.56-.38-1.56-2.6 0-2.98l-.41-.1a2 2 0 01-1.52-2.23l.1-.4a2 2 0 00-2.2-2.2l-.4.1a2 2 0 01-2.23-1.52l-.1-.41zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" /></svg> );
+        const FileIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 0v12h8V4H6z" clipRule="evenodd" /></svg> );
+        const ImageIcon = () => ( <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" /></svg> );
+        const ChevronDownIcon = () => ( <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg> );
+        const FileActionIcon = () => (<svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" /></svg>);
+        const CloseIcon = () => (<svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>);
+        const PrintIcon = () => ( <svg className="w-5 h-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v6a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clipRule="evenodd" /></svg>);
+
+        // --- Reusable Style Components ---
+        const DropdownSelector = ({ title, options, selectedOption, onSelect, customValue, onCustomChange, customPlaceholder }) => {
+            const isCustom = !options.includes(selectedOption);
+
+            const handleSelectChange = (e) => {
+                onSelect(e.target.value);
+            };
+
+            return (
+                <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">{title}</label>
+                    <select
+                        value={isCustom ? 'Other...' : selectedOption}
+                        onChange={handleSelectChange}
+                        className="tool-input !min-h-0 py-2 w-full bg-[#0d1117]"
+                    >
+                        {options.map(option => (
+                            <option key={option} value={option}>
+                                {option}
+                            </option>
+                        ))}
+                         <option value="Other...">Other...</option>
+                    </select>
+                    {isCustom && (
+                        <input
+                            type="text"
+                            value={customValue}
+                            onChange={onCustomChange}
+                            className="tool-input !min-h-0 py-2 mt-2"
+                            placeholder={customPlaceholder || "Enter custom value..."}
+                        />
+                    )}
+                </div>
+            );
+        };
+
+        const ImageEditControls = () => {
+            const [editPrompt, setEditPrompt] = useState('');
+            const [activeTool, setActiveTool] = useState('brush');
+
+            return (
+                <div className="space-y-6">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-2">Editing Tools</label>
+                        <div className="flex items-center gap-2">
+                            <button 
+                                onClick={() => setActiveTool('brush')}
+                                className={`px-3 py-2 text-sm font-semibold rounded-md transition-colors w-full ${activeTool === 'brush' ? 'btn-primary' : 'btn-secondary'}`}
+                            >
+                                Brush
+                            </button>
+                            <button 
+                                onClick={() => setActiveTool('eraser')}
+                                className={`px-3 py-2 text-sm font-semibold rounded-md transition-colors w-full ${activeTool === 'eraser' ? 'btn-primary' : 'btn-secondary'}`}
+                            >
+                                Eraser
+                            </button>
+                        </div>
+                         <p className="text-xs text-gray-500 mt-2">Use the brush to select an area of the image to change.</p>
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">Edit Prompt</label>
+                        <textarea 
+                            value={editPrompt} 
+                            onChange={(e) => setEditPrompt(e.target.value)} 
+                            className="tool-input" 
+                            rows="3" 
+                            placeholder="e.g., Change hair to red, add sunglasses..."></textarea>
+                    </div>
+                    <button className="btn-primary w-full py-2 rounded-md font-semibold">Apply Edit</button>
+                </div>
+            );
+        };
+
+
+        // --- Main App Component ---
+        function App() {
+            const [notification, setNotification] = useState(null);
+            const clearNotification = () => setNotification(null);
+
+            const Notification = ({ notification, onClear }) => {
+                useEffect(() => {
+                    if (notification) {
+                        const timer = setTimeout(() => {
+                            onClear();
+                        }, 5000);
+                        return () => clearTimeout(timer);
+                    }
+                }, [notification, onClear]);
+
+                if (!notification) return null;
+
+                const bgColor = notification.type === 'error' ? 'bg-red-500/20 border-red-500/50' : 'bg-blue-800/20 border-blue-700/50';
+                const textColor = notification.type === 'error' ? 'text-red-400' : 'text-blue-300';
+
+                return (
+                    <div className={`fixed bottom-8 right-8 glass-panel p-4 rounded-lg flex items-center gap-4 z-50 ${bgColor}`} style={{animation: 'slideInUp 0.5s ease-out forwards'}}>
+                        <p className={`font-semibold ${textColor}`}>{notification.message}</p>
+                        <button onClick={onClear} className="text-gray-400 hover:text-white">
+                            <CloseIcon />
+                        </button>
+                    </div>
+                );
+            };
+
+            const Header = () => ( 
+                <header className="text-center mb-4 relative pt-4">
+                    <h1 className="inline-block text-5xl font-black tracking-wide title-animated-gradient" data-text="AI.me Pair Artist">AI.me Pair Artist</h1>
+                    <button className="absolute top-4 right-0 p-2 rounded-lg btn-secondary" title="Settings"><SettingsIcon /></button>
+                </header> 
+            );
+            
+            // --- REUSABLE UI COMPONENTS ---
+            const AccordionSection = ({ title, startOpen = false, children, titleClassName="" }) => {
+                const [isOpen, setIsOpen] = useState(startOpen);
+                const onToggle = () => setIsOpen(!isOpen);
+
+                return (
+                    <div className={`accordion-section ${isOpen ? 'open' : ''}`}>
+                        <button type="button" className="accordion-header" onClick={onToggle}>
+                            <span className={titleClassName}>{title}</span>
+                            <ChevronDownIcon />
+                        </button>
+                        {isOpen && ( <div className="accordion-content">{children}</div>)}
+                    </div>
+                );
+            };
+
+            const EditableTitleWithFileAction = ({ title, setTitle, contentType, contentData }) => {
+                const [isModalOpen, setIsModalOpen] = useState(false);
+                return (
+                    <>
+                        <div className="flex items-center gap-4">
+                            <h3 
+                                contentEditable="true"
+                                suppressContentEditableWarning={true}
+                                onInput={e => setTitle(e.currentTarget.textContent)}
+                                className="editable-title text-2xl font-bold p-1 rounded-md hover:bg-gray-700/50 cursor-pointer inline-block"
+                            >{title}</h3>
+                            <div className="flex items-center gap-2">
+                                <button onClick={() => setIsModalOpen(true)} className="action-btn p-2 rounded-md" title="File Actions"><FileActionIcon /></button>
+                            </div>
+                        </div>
+                        <FileActionModal 
+                            isOpen={isModalOpen}
+                            onClose={() => setIsModalOpen(false)}
+                            title={title}
+                            contentType={contentType}
+                            contentData={contentData}
+                        />
+                    </>
+                );
+            };
+
+
+            // --- ASSET MANAGEMENT SYSTEM ---
+            const AssetManager = ({ title }) => { 
+                const [assets, setAssets] = useState([{ id: 1, name: 'Main Character Profile.json', type: 'file', included: true },{ id: 2, name: 'Inspiration_Scenery.png', type: 'image', included: false },{ id: 3, name: 'Plot Ideas.txt', type: 'file', included: true }]); 
+                const toggleAsset = (id) => { setAssets(assets.map(asset => asset.id === id ? { ...asset, included: !asset.included } : asset ));}; 
+                
+                return ( 
+                    <AccordionSection title={title} titleClassName="text-xl font-bold">
+                        <button className="w-full py-2 px-4 rounded-lg font-semibold btn-secondary mb-4">Load Asset(s)</button>
+                        <div className="space-y-2">
+                            {assets.map(asset => ( 
+                                <div key={asset.id} className="asset-card flex items-center justify-between p-2 rounded-md">
+                                    <div className="flex items-center gap-2">
+                                        {asset.type === 'image' ? <ImageIcon /> : <FileIcon />}
+                                        <span className="text-sm text-gray-300">{asset.name}</span>
+                                    </div>
+                                    <label className="switch">
+                                        <input type="checkbox" checked={asset.included} onChange={() => toggleAsset(asset.id)} />
+                                        <span className="slider"></span>
+                                    </label>
+                                </div>
+                            ))}
+                        </div>
+                    </AccordionSection> 
+                );
+            };
+
+            const FileActionModal = ({ isOpen, onClose, title, contentType, contentData }) => {
+                const modalRef = useRef();
+                useOnClickOutside(modalRef, onClose);
+
+                if (!isOpen) return null;
+
+                const handleDownload = (format) => {
+                    console.log(`Downloading ${title} as ${format}`);
+                    onClose();
+                };
+
+                const handlePrint = () => {
+                    console.log(`Printing ${title}`);
+                    onClose();
+                }
+
+                const ImageSaveOptions = () => (
+                     <div className="flex justify-around">
+                        {['png', 'jpeg'].map(f => (
+                            <button key={f} onClick={() => handleDownload(f)} className="px-4 py-2 rounded-md font-semibold w-24 text-center btn-secondary">
+                                {f.toUpperCase()}
+                            </button>
+                        ))}
+                    </div>
+                );
+
+                return (
+                     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+                        <div className="glass-panel p-6 rounded-lg w-full max-w-md relative" ref={modalRef}>
+                            <button onClick={onClose} className="absolute top-3 right-3 text-gray-400 hover:text-white"><CloseIcon /></button>
+                            <h2 className="text-2xl font-bold mb-6">{title}</h2>
+                            
+                            <div className="space-y-6">
+                                <div>
+                                    <h3 className="text-lg font-semibold text-gray-300 mb-3 border-b border-gray-700 pb-2">Save As</h3>
+                                    <ImageSaveOptions />
+                                </div>
+                                 <div>
+                                    <h3 className="text-lg font-semibold text-gray-300 mb-3 border-b border-gray-700 pb-2">Print</h3>
+                                    <div className="space-y-2 mb-4">
+                                        <label className="flex items-center"><input type="checkbox" className="h-4 w-4 rounded bg-gray-700 border-gray-600 text-blue-600 mr-2" defaultChecked /> All Sections</label>
+                                    </div>
+                                    <button onClick={handlePrint} className="w-full py-3 px-4 rounded-lg font-semibold btn-primary flex items-center justify-center">
+                                        <PrintIcon /> Print
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )
+            }
+
+            // --- VISUALS VIEW & SUB-COMPONENTS ---
+            const VisualsView = ({ setNotification }) => {
+                const [activeTab, setActiveTab] = useState('character');
+
+                const MainTabs = ({ activeTab, setActiveTab }) => (
+                    <div className="border-b border-gray-700">
+                        <nav className="-mb-px flex space-x-6 justify-center" aria-label="Tabs">
+                            <button onClick={() => setActiveTab('character')} className={`main-tab-btn ${activeTab === 'character' ? 'active' : ''}`}>Character</button>
+                            <button onClick={() => setActiveTab('area')} className={`main-tab-btn ${activeTab === 'area' ? 'active' : ''}`}>Area</button>
+                            <button onClick={() => setActiveTab('3d')} className={`main-tab-btn ${activeTab === '3d' ? 'active' : ''}`}>3D</button>
+                            <button onClick={() => setActiveTab('storyboard')} className={`main-tab-btn ${activeTab === 'storyboard' ? 'active' : ''}`}>Storyboard</button>
+                        </nav>
+                    </div> 
+                );
+
+                const renderActiveTabContent = () => {
+                    switch (activeTab) {
+                        case 'character': return <CharacterVisuals setNotification={setNotification} />;
+                        case 'area': return <AreaVisuals setNotification={setNotification} />;
+                        case '3d': return <ThreeDVisuals setNotification={setNotification} />;
+                        case 'storyboard': return <StoryboardVisuals setNotification={setNotification} />;
+                        default: return null;
+                    }
+                };
+
+                return (
+                    <div className="glass-panel p-6">
+                        <div className="border-b border-gray-700 mb-6">
+                             <MainTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+                        </div>
+                        <div>{renderActiveTabContent()}</div>
+                    </div> 
+                );
+            };
+
+            const CharacterVisuals = ({ setNotification }) => {
+                const [title, setTitle] = useState('Untitled Character Visual');
+                const [prompt, setPrompt] = useState('');
+                const [imageUrl, setImageUrl] = useState('');
+                const [visualTraits, setVisualTraits] = useState({
+                    artStyle: 'Painting',
+                    subStyle: 'Realism',
+                    composition: 'Close-up Portrait',
+                    lighting: 'Cinematic',
+                    palette: 'Vibrant Colors',
+                    influences: ''
+                });
+
+                const handleTraitChange = (trait, value) => {
+                    setVisualTraits(prev => ({ ...prev, [trait]: value }));
+                };
+
+                const artStyleOptions = ['Painting', 'Sketch', 'Anime', 'Photorealistic', 'Comic Book'];
+                const subStyleOptions = {
+                    Painting: ['Realism', 'Impressionism', 'Abstract', 'Pop Art'],
+                    Sketch: ['Line Drawing', 'Charcoal', 'Cartoon', 'Architectural'],
+                    Anime: ['Shōnen', 'Shōjo', 'Chibi', 'Seinen'],
+                    Photorealistic: ['Hyperrealism', 'Cinematic'],
+                    'Comic Book': ['Golden Age', 'Silver Age', 'Modern Age', 'Manga']
+                };
+                const compositionOptions = ['Close-up Portrait', 'Full Body', 'Action Pose', 'Environmental'];
+                const lightingOptions = ['Cinematic', 'Film Noir', 'Soft Light', 'Rim Lighting', 'Dramatic'];
+                const paletteOptions = ['Vibrant Colors', 'Muted Earth Tones', 'Monochrome', 'Neon Noir', 'Pastel'];
+
+                const handleGenerate = () => {
+                    const url = `https://placehold.co/512x512/0d1117/e6edf3?text=${encodeURIComponent(prompt || 'Character')}`;
+                    setImageUrl(url);
+                };
+
+                return (
+                    <ResizableColumns
+                        leftColumn={
+                            <div className="space-y-8">
+                                <EditableTitleWithFileAction title={title} setTitle={setTitle} contentType="image" contentData={{ imageUrl }} />
+                                <AccordionSection title="Visual Traits" startOpen={true} titleClassName="text-xl font-bold">
+                                    <div className="space-y-6">
+                                        <DropdownSelector
+                                            title="Art Style"
+                                            options={artStyleOptions}
+                                            selectedOption={visualTraits.artStyle}
+                                            onSelect={(val) => {
+                                                if (val === 'Other...') {
+                                                    handleTraitChange('artStyle', '');
+                                                } else {
+                                                    handleTraitChange('artStyle', val);
+                                                    handleTraitChange('subStyle', subStyleOptions[val][0]);
+                                                }
+                                            }}
+                                            customValue={visualTraits.artStyle}
+                                            onCustomChange={(e) => handleTraitChange('artStyle', e.target.value)}
+                                            customPlaceholder="Enter custom art style..."
+                                        />
+                                        {subStyleOptions[visualTraits.artStyle] && (
+                                            <DropdownSelector
+                                                title="Sub-style"
+                                                options={subStyleOptions[visualTraits.artStyle]}
+                                                selectedOption={visualTraits.subStyle}
+                                                onSelect={(val) => handleTraitChange('subStyle', val === 'Other...' ? '' : val)}
+                                                customValue={visualTraits.subStyle}
+                                                onCustomChange={(e) => handleTraitChange('subStyle', e.target.value)}
+                                                customPlaceholder="Enter custom sub-style..."
+                                            />
+                                        )}
+                                        <DropdownSelector
+                                            title="Composition"
+                                            options={compositionOptions}
+                                            selectedOption={visualTraits.composition}
+                                            onSelect={(val) => handleTraitChange('composition', val === 'Other...' ? '' : val)}
+                                            customValue={visualTraits.composition}
+                                            onCustomChange={(e) => handleTraitChange('composition', e.target.value)}
+                                            customPlaceholder="Enter custom composition..."
+                                        />
+                                        <DropdownSelector
+                                            title="Lighting Style"
+                                            options={lightingOptions}
+                                            selectedOption={visualTraits.lighting}
+                                            onSelect={(val) => handleTraitChange('lighting', val === 'Other...' ? '' : val)}
+                                            customValue={visualTraits.lighting}
+                                            onCustomChange={(e) => handleTraitChange('lighting', e.target.value)}
+                                            customPlaceholder="Enter custom lighting..."
+                                        />
+                                        <DropdownSelector
+                                            title="Color Palette"
+                                            options={paletteOptions}
+                                            selectedOption={visualTraits.palette}
+                                            onSelect={(val) => handleTraitChange('palette', val === 'Other...' ? '' : val)}
+                                            customValue={visualTraits.palette}
+                                            onCustomChange={(e) => handleTraitChange('palette', e.target.value)}
+                                            customPlaceholder="Enter custom palette..."
+                                        />
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-1">Artist Influences</label>
+                                            <input type="text" value={visualTraits.influences} onChange={(e) => handleTraitChange('influences', e.target.value)} className="tool-input !min-h-0 py-2" placeholder="e.g., in the style of..." />
+                                        </div>
+                                    </div>
+                                </AccordionSection>
+                                <AccordionSection title="Edit" titleClassName="text-xl font-bold">
+                                    <ImageEditControls />
+                                </AccordionSection>
+                                <AssetManager title="Character Visual Assets" />
+                            </div>
+                        }
+                        rightColumn={
+                            <div className="space-y-8">
+                                <div>
+                                    <h2 className="text-xl font-bold mb-4 text-blue-500">Generation Controls</h2>
+                                    <div className="glass-panel p-4 space-y-4">
+                                        <textarea value={prompt} onChange={e => setPrompt(e.target.value)} placeholder="e.g., A cinematic portrait of a rogue..." className="tool-input w-full" rows="4" />
+                                        <button onClick={handleGenerate} className="btn-primary w-full py-2 rounded-md font-semibold">Generate Character</button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold mb-4 text-blue-500">Generated Visual</h2>
+                                    <div className="w-full aspect-square bg-gray-900 rounded-md flex items-center justify-center border border-gray-700">
+                                        {imageUrl ? <img src={imageUrl} alt={title} className="w-full h-full object-contain rounded-md" /> : <span className="text-gray-500">Your generated character will appear here.</span>}
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    />
+                );
+            };
+            
+            const AreaVisuals = ({ setNotification }) => {
+                 const [title, setTitle] = useState('Untitled Area Visual');
+                 const [prompt, setPrompt] = useState('');
+                 const [imageUrl, setImageUrl] = useState('');
+                 const [visualTraits, setVisualTraits] = useState({
+                    artStyle: 'Painting',
+                    subStyle: 'Realism',
+                    composition: 'Establishing Shot',
+                    lighting: 'Golden Hour',
+                    palette: 'Natural Tones',
+                    influences: ''
+                });
+
+                const handleTraitChange = (trait, value) => {
+                    setVisualTraits(prev => ({ ...prev, [trait]: value }));
+                };
+
+                const artStyleOptions = ['Painting', 'Sketch', 'Anime', 'Photorealistic', 'Matte Painting'];
+                const subStyleOptions = {
+                    Painting: ['Realism', 'Impressionism', 'Expressionism', 'Fantasy'],
+                    Sketch: ['Architectural', 'Line Drawing', 'Concept Art'],
+                    Anime: ['Ghibli-esque', 'Cyberpunk Cityscape', 'Pastoral'],
+                    Photorealistic: ['Cinematic', 'Documentary Style', 'Drone Shot'],
+                    'Matte Painting': ['Classic Hollywood', 'Modern Sci-Fi', 'Fantasy Epic']
+                };
+                const compositionOptions = ['Establishing Shot', 'Wide Angle', 'Detailed Close-up', 'Top-down View'];
+                const lightingOptions = ['Golden Hour', 'Overcast', 'Midday Sun', 'Moonlit', 'Stormy'];
+                const paletteOptions = ['Natural Tones', 'Vibrant Neons', 'Sepia', 'Desaturated', 'High Contrast'];
+
+                const handleGenerate = () => {
+                    const url = `https://placehold.co/512x512/0d1117/e6edf3?text=${encodeURIComponent(prompt || 'Area')}`;
+                    setImageUrl(url);
+                };
+                
+                return (
+                    <ResizableColumns
+                        leftColumn={
+                            <div className="space-y-8">
+                                <EditableTitleWithFileAction title={title} setTitle={setTitle} contentType="image" contentData={{ imageUrl }} />
+                                 <AccordionSection title="Visual Traits" startOpen={true} titleClassName="text-xl font-bold">
+                                   <div className="space-y-6">
+                                        <DropdownSelector
+                                            title="Art Style"
+                                            options={artStyleOptions}
+                                            selectedOption={visualTraits.artStyle}
+                                            onSelect={(val) => {
+                                                if (val === 'Other...') {
+                                                    handleTraitChange('artStyle', '');
+                                                } else {
+                                                    handleTraitChange('artStyle', val);
+                                                    handleTraitChange('subStyle', subStyleOptions[val][0]);
+                                                }
+                                            }}
+                                            customValue={visualTraits.artStyle}
+                                            onCustomChange={(e) => handleTraitChange('artStyle', e.target.value)}
+                                            customPlaceholder="Enter custom art style..."
+                                        />
+                                        {subStyleOptions[visualTraits.artStyle] && (
+                                            <DropdownSelector
+                                                title="Sub-style"
+                                                options={subStyleOptions[visualTraits.artStyle]}
+                                                selectedOption={visualTraits.subStyle}
+                                                onSelect={(val) => handleTraitChange('subStyle', val === 'Other...' ? '' : val)}
+                                                customValue={visualTraits.subStyle}
+                                                onCustomChange={(e) => handleTraitChange('subStyle', e.target.value)}
+                                                customPlaceholder="Enter custom sub-style..."
+                                            />
+                                        )}
+                                        <DropdownSelector
+                                            title="Composition"
+                                            options={compositionOptions}
+                                            selectedOption={visualTraits.composition}
+                                            onSelect={(val) => handleTraitChange('composition', val === 'Other...' ? '' : val)}
+                                            customValue={visualTraits.composition}
+                                            onCustomChange={(e) => handleTraitChange('composition', e.target.value)}
+                                            customPlaceholder="Enter custom composition..."
+                                        />
+                                         <DropdownSelector
+                                            title="Lighting Style"
+                                            options={lightingOptions}
+                                            selectedOption={visualTraits.lighting}
+                                            onSelect={(val) => handleTraitChange('lighting', val === 'Other...' ? '' : val)}
+                                            customValue={visualTraits.lighting}
+                                            onCustomChange={(e) => handleTraitChange('lighting', e.target.value)}
+                                            customPlaceholder="Enter custom lighting..."
+                                        />
+                                        <DropdownSelector
+                                            title="Color Palette"
+                                            options={paletteOptions}
+                                            selectedOption={visualTraits.palette}
+                                            onSelect={(val) => handleTraitChange('palette', val === 'Other...' ? '' : val)}
+                                            customValue={visualTraits.palette}
+                                            onCustomChange={(e) => handleTraitChange('palette', e.target.value)}
+                                            customPlaceholder="Enter custom palette..."
+                                        />
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-1">Artist Influences</label>
+                                            <input type="text" value={visualTraits.influences} onChange={(e) => handleTraitChange('influences', e.target.value)} className="tool-input !min-h-0 py-2" placeholder="e.g., in the style of..." />
+                                        </div>
+                                    </div>
+                                </AccordionSection>
+                                 <AccordionSection title="Edit" titleClassName="text-xl font-bold">
+                                    <ImageEditControls />
+                                </AccordionSection>
+                                <AssetManager title="Area Visual Assets" />
+                            </div>
+                        }
+                        rightColumn={
+                             <div className="space-y-8">
+                                 <div>
+                                    <h2 className="text-xl font-bold mb-4 text-blue-500">Generation Controls</h2>
+                                    <div className="glass-panel p-4 space-y-4">
+                                        <textarea value={prompt} onChange={e => setPrompt(e.target.value)} placeholder="e.g., A sprawling cyberpunk cityscape at night..." className="tool-input w-full" rows="4" />
+                                        <button onClick={handleGenerate} className="btn-primary w-full py-2 rounded-md font-semibold">Generate Area</button>
+                                    </div>
+                                </div>
+                                 <div>
+                                    <h2 className="text-xl font-bold mb-4 text-blue-500">Generated Visual</h2>
+                                    <div className="w-full aspect-square bg-gray-900 rounded-md flex items-center justify-center border border-gray-700">
+                                         {imageUrl ? <img src={imageUrl} alt={title} className="w-full h-full object-contain rounded-md" /> : <span className="text-gray-500">Your generated area will appear here.</span>}
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    />
+                );
+            };
+
+            const ThreeDVisuals = ({ setNotification }) => {
+                const [title, setTitle] = useState('Untitled 3D Scene');
+                const [prompt, setPrompt] = useState('');
+                const [sceneUrl, setSceneUrl] = useState('');
+                const [visualTraits, setVisualTraits] = useState({
+                    modelingStyle: 'Low-poly',
+                    texturingStyle: 'Hand-painted',
+                    renderingStyle: 'Clay Render',
+                    environmentType: 'Studio',
+                    atmosphere: '',
+                    lightingStyle: 'Three-Point',
+                    timeOfDay: 'Midday',
+                    cameraAngle: 'Eye-level',
+                    focalLength: 'Standard (50mm)'
+                });
+
+                const handleTraitChange = (trait, value) => {
+                    setVisualTraits(prev => ({ ...prev, [trait]: value }));
+                };
+
+                const modelingOptions = ['Low-poly', 'High-poly', 'Voxel', 'Photogrammetry', 'Hard-surface'];
+                const texturingOptions = ['Hand-painted', 'Photorealistic PBR', 'Cel-shaded', 'Untextured'];
+                const renderingOptions = ['Clay Render', 'Wireframe', 'Toon Shader', 'Realistic Path Tracing'];
+                const environmentOptions = ['Studio', 'Indoor', 'Outdoor', 'Abstract Gradient'];
+                const lightingOptions = ['Three-Point', 'Dramatic High-Contrast', 'Natural Sunlight', 'Studio Softbox', 'Ambient Occlusion'];
+                const timeOfDayOptions = ['Midday', 'Golden Hour', 'Blue Hour', 'Night'];
+                const cameraAngleOptions = ['Eye-level', 'High-angle', 'Low-angle (Worm\'s-eye view)', 'Dutch angle'];
+                const focalLengthOptions = ['Wide-angle (24mm)', 'Standard (50mm)', 'Telephoto (85mm)', 'Macro (Close-up)'];
+
+                const handleGenerate = () => {
+                    setSceneUrl(`https://placehold.co/512x512/0d1117/e6edf3?text=3D+Scene`);
+                };
+                
+                return (
+                    <ResizableColumns
+                        leftColumn={
+                            <div className="space-y-8">
+                                <EditableTitleWithFileAction title={title} setTitle={setTitle} contentType="3d" contentData={{ sceneUrl }} />
+                                    <AccordionSection title="3D Scene Properties" startOpen={true} titleClassName="text-xl font-bold">
+                                    <div className="space-y-6">
+                                        <h4 className="font-semibold text-lg text-blue-500 border-b border-gray-700 pb-2">Modeling & Rendering</h4>
+                                        <DropdownSelector
+                                            title="Modeling Style"
+                                            options={modelingOptions}
+                                            selectedOption={visualTraits.modelingStyle}
+                                            onSelect={(val) => handleTraitChange('modelingStyle', val === 'Other...' ? '' : val)}
+                                            customValue={visualTraits.modelingStyle}
+                                            onCustomChange={(e) => handleTraitChange('modelingStyle', e.target.value)}
+                                        />
+                                        <DropdownSelector
+                                            title="Texturing Style"
+                                            options={texturingOptions}
+                                            selectedOption={visualTraits.texturingStyle}
+                                            onSelect={(val) => handleTraitChange('texturingStyle', val === 'Other...' ? '' : val)}
+                                            customValue={visualTraits.texturingStyle}
+                                        />
+                                        <DropdownSelector
+                                            title="Rendering Style"
+                                            options={renderingOptions}
+                                            selectedOption={visualTraits.renderingStyle}
+                                            onSelect={(val) => handleTraitChange('renderingStyle', val === 'Other...' ? '' : val)}
+                                            customValue={visualTraits.renderingStyle}
+                                        />
+
+                                        <h4 className="font-semibold text-lg text-blue-500 border-b border-gray-700 pb-2 pt-4">Environment</h4>
+                                        <DropdownSelector
+                                            title="Environment Type"
+                                            options={environmentOptions}
+                                            selectedOption={visualTraits.environmentType}
+                                            onSelect={(val) => handleTraitChange('environmentType', val === 'Other...' ? '' : val)}
+                                            customValue={visualTraits.environmentType}
+                                        />
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-1">Atmosphere & Effects</label>
+                                            <input type="text" value={visualTraits.atmosphere} onChange={(e) => handleTraitChange('atmosphere', e.target.value)} className="tool-input !min-h-0 py-2" placeholder="e.g., Heavy fog, god rays..." />
+                                        </div>
+
+                                        <h4 className="font-semibold text-lg text-blue-500 border-b border-gray-700 pb-2 pt-4">Lighting</h4>
+                                            <DropdownSelector
+                                            title="Lighting Style"
+                                            options={lightingOptions}
+                                            selectedOption={visualTraits.lightingStyle}
+                                            onSelect={(val) => handleTraitChange('lightingStyle', val === 'Other...' ? '' : val)}
+                                            customValue={visualTraits.lightingStyle}
+                                        />
+                                        <DropdownSelector
+                                            title="Time of Day"
+                                            options={timeOfDayOptions}
+                                            selectedOption={visualTraits.timeOfDay}
+                                            onSelect={(val) => handleTraitChange('timeOfDay', val === 'Other...' ? '' : val)}
+                                            customValue={visualTraits.timeOfDay}
+                                        />
+
+                                        <h4 className="font-semibold text-lg text-blue-500 border-b border-gray-700 pb-2 pt-4">Camera</h4>
+                                            <DropdownSelector
+                                            title="Camera Angle"
+                                            options={cameraAngleOptions}
+                                            selectedOption={visualTraits.cameraAngle}
+                                            onSelect={(val) => handleTraitChange('cameraAngle', val === 'Other...' ? '' : val)}
+                                            customValue={visualTraits.cameraAngle}
+                                        />
+                                        <DropdownSelector
+                                            title="Focal Length (Lens)"
+                                            options={focalLengthOptions}
+                                            selectedOption={visualTraits.focalLength}
+                                            onSelect={(val) => handleTraitChange('focalLength', val === 'Other...' ? '' : val)}
+                                            customValue={visualTraits.focalLength}
+                                        />
+                                    </div>
+                                </AccordionSection>
+                                <AssetManager title="3D Assets" />
+                            </div>
+                        }
+                        rightColumn={
+                                <div className="space-y-8">
+                                        <div>
+                                    <h2 className="text-xl font-bold mb-4 text-blue-500">Generation Controls</h2>
+                                    <div className="glass-panel p-4 space-y-4">
+                                        <textarea value={prompt} onChange={e => setPrompt(e.target.value)} placeholder="e.g., A low-poly model of a sci-fi shuttle..." className="tool-input w-full" rows="4" />
+                                        <button onClick={handleGenerate} className="btn-primary w-full py-2 rounded-md font-semibold">Generate 3D Scene</button>
+                                    </div>
+                                </div>
+                                        <div>
+                                    <h2 className="text-xl font-bold mb-4 text-blue-500">Generated 3D Viewport</h2>
+                                    <div className="w-full aspect-square bg-gray-900 rounded-md flex items-center justify-center border border-gray-700">
+                                            {sceneUrl ? <img src={sceneUrl} alt={title} className="w-full h-full object-contain rounded-md" /> : <span className="text-gray-500">Your generated 3D scene will appear here.</span>}
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    />
+                );
+            };
+
+            const StoryboardVisuals = () => {
+                const [title, setTitle] = useState('Untitled Storyboard');
+                const [prompt, setPrompt] = useState('');
+                const [numPanels, setNumPanels] = useState(4);
+                const [panels, setPanels] = useState([]);
+                const [visualTraits, setVisualTraits] = useState({
+                    artStyle: 'Sketch',
+                    subStyle: 'Line Drawing',
+                    colorGrade: 'Black and White',
+                    cameraLens: '35mm'
+                });
+
+                const handleTraitChange = (trait, value) => {
+                    setVisualTraits(prev => ({ ...prev, [trait]: value }));
+                };
+
+                const artStyleOptions = ['Sketch', 'Comic Book', 'Cinematic', 'Anime'];
+                 const subStyleOptions = {
+                    Sketch: ['Line Drawing', 'Rough Sketch', 'Storyboard Pro'],
+                    'Comic Book': ['Modern Age', 'Manga', 'Indie'],
+                    Cinematic: ['Film Noir', 'Widescreen', 'Found Footage'],
+                    Anime: ['Action Sequence', 'Slice of Life', 'Mecha']
+                };
+
+                const handleGenerate = () => {
+                    const newPanels = Array.from({ length: numPanels }, (_, i) => ({
+                        id: i,
+                        imageUrl: `https://placehold.co/512x512/0d1117/e6edf3?text=Panel+${i + 1}`,
+                        description: `Description for panel ${i + 1} of the scene: "${prompt || 'Untitled Scene'}"`
+                    }));
+                    setPanels(newPanels);
+                };
+                
+                return (
+                    <ResizableColumns
+                        leftColumn={
+                            <div className="space-y-8">
+                                <EditableTitleWithFileAction title={title} setTitle={setTitle} contentType="image" contentData={{ panels }} />
+                                 <AccordionSection title="Storyboard Style" startOpen={true} titleClassName="text-xl font-bold">
+                                    <div className="space-y-6">
+                                        <DropdownSelector
+                                            title="Overall Art Style"
+                                            options={artStyleOptions}
+                                            selectedOption={visualTraits.artStyle}
+                                            onSelect={(val) => {
+                                                if (val === 'Other...') {
+                                                    handleTraitChange('artStyle', '');
+                                                } else {
+                                                    handleTraitChange('artStyle', val);
+                                                    handleTraitChange('subStyle', subStyleOptions[val][0]);
+                                                }
+                                            }}
+                                            customValue={visualTraits.artStyle}
+                                            onCustomChange={(e) => handleTraitChange('artStyle', e.target.value)}
+                                            customPlaceholder="Enter custom art style..."
+                                        />
+                                        {subStyleOptions[visualTraits.artStyle] && (
+                                            <DropdownSelector
+                                                title="Sub-style"
+                                                options={subStyleOptions[visualTraits.artStyle]}
+                                                selectedOption={visualTraits.subStyle}
+                                                onSelect={(val) => handleTraitChange('subStyle', val === 'Other...' ? '' : val)}
+                                                customValue={visualTraits.subStyle}
+                                                onCustomChange={(e) => handleTraitChange('subStyle', e.target.value)}
+                                                customPlaceholder="Enter custom sub-style..."
+                                            />
+                                        )}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-1">Consistent Color Grade</label>
+                                            <input type="text" value={visualTraits.colorGrade} onChange={(e) => handleTraitChange('colorGrade', e.target.value)} className="tool-input !min-h-0 py-2" placeholder="e.g., Cool blue tones, Sepia..." />
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-1">Camera Lens</label>
+                                            <input type="text" value={visualTraits.cameraLens} onChange={(e) => handleTraitChange('cameraLens', e.target.value)} className="tool-input !min-h-0 py-2" placeholder="e.g., 35mm lens, Fisheye..." />
+                                        </div>
+                                    </div>
+                                </AccordionSection>
+                                <AccordionSection title="Edit" titleClassName="text-xl font-bold">
+                                    <p className="text-xs text-gray-400 mb-4">Editing applies to the selected storyboard panel.</p>
+                                    <ImageEditControls />
+                                </AccordionSection>
+                                <AssetManager title="Storyboard Assets" />
+                            </div>
+                        }
+                        rightColumn={
+                             <div className="space-y-8">
+                                 <div>
+                                    <h2 className="text-xl font-bold mb-4 text-blue-500">Generation Controls</h2>
+                                    <div className="glass-panel p-4 space-y-4">
+                                        <textarea value={prompt} onChange={e => setPrompt(e.target.value)} placeholder="e.g., A hero confronts a dragon in a cavern..." className="tool-input w-full" rows="4" />
+                                        <div>
+                                            <label htmlFor="num-panels" className="block text-sm font-medium text-gray-300 mb-2">Number of Panels</label>
+                                            <input 
+                                                type="number" 
+                                                id="num-panels"
+                                                value={numPanels}
+                                                onChange={e => setNumPanels(Math.max(1, Math.min(30, parseInt(e.target.value) || 1)))}
+                                                className="tool-input w-full" 
+                                                min="1" 
+                                                max="30"
+                                            />
+                                        </div>
+                                        <button onClick={handleGenerate} className="btn-primary w-full py-2 rounded-md font-semibold">Generate Storyboard</button>
+                                    </div>
+                                </div>
+                                 <div>
+                                    <h2 className="text-xl font-bold mb-4 text-blue-500">Generated Storyboard</h2>
+                                    {panels.length > 0 ? (
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                            {panels.map(panel => (
+                                                <div key={panel.id} className="glass-panel p-2 space-y-2 rounded-lg">
+                                                    <img src={panel.imageUrl} alt={`Storyboard panel ${panel.id + 1}`} className="w-full aspect-square object-contain rounded" />
+                                                    <p className="text-xs text-gray-400 p-1">{panel.description}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="w-full aspect-video bg-gray-900 rounded-md flex items-center justify-center border border-gray-700">
+                                            <span className="text-gray-500">Your generated storyboard will appear here.</span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        }
+                    />
+                );
+            };
+            
+            const Footer = () => ( <footer className="text-center mt-auto py-8"><p className="text-sm text-gray-500">AI.me Pair Artist by Wolfe.BT@TangentLLC</p></footer> );
+
+            return (
+                <div className="flex flex-col h-screen">
+                    <div className="flex-shrink-0 z-20">
+                       <div className="container mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
+                            <Header />
+                        </div>
+                    </div>
+                    
+                    <div className="flex-grow overflow-y-auto">
+                        <div className="container mx-auto max-w-screen-xl p-4 sm:p-6 lg:p-8">
+                            <main>
+                                <VisualsView setNotification={setNotification} />
+                            </main>
+                            <Footer />
+                        </div>
+                    </div>
+
+                    <Notification notification={notification} onClear={clearNotification} />
+                </div>
+            );
+        }
+
+        const container = document.getElementById('root');
+        const root = ReactDOM.createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+</html>

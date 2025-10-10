@@ -1,0 +1,86 @@
+<!--
+    File: world.html
+    Reference: World Anvil
+    Creator: Wolfe.BT, TangentLLC
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIME - World Anvil</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../script/global-ui.js"></script>
+    <script src="../script/element-bundle.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-left">
+            <a href="../index.html" class="logo-title animated-gradient">AIME</a>
+            <button id="settings-btn" class="settings-btn" title="API Key Settings">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
+        <nav class="main-nav">
+            <a href="writer.html">Writer</a>
+            <a href="elements.html" class="active">Elements</a>
+            <a href="imaging.html">Imaging</a>
+            <a href="audio.html">Audio</a>
+            <a href="3d.html">3D</a>
+            <a href="video.html">Video</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- ... rest of world.html content ... -->
+        <div class="element-header">
+            <h2 class="element-title animated-gradient">World Anvil</h2>
+            <div class="header-actions">
+                <p class="element-subtitle">Forge the foundational laws and history of your universe.</p>
+                <button id="clear-fields-button" class="clear-btn">Clear All Fields</button>
+            </div>
+        </div>
+        <div class="workspace-layout">
+            <div class="main-column">
+                <div class="form-section glass-panel" style="padding: 1.5rem;">
+                    <h4 id="WORLD">World Traits</h4>
+                    <div class="form-group"><label for="world-name">World Name</label><input type="text" id="world-name" class="input-field" data-field-id="name" placeholder="The foundational identifier for your creation."></div>
+                    <div class="form-group"><label for="world-premise">Core Premise / High Concept</label><textarea id="world-premise" class="input-field" data-field-id="premise" placeholder="A one-sentence summary that encapsulates the world's central idea or hook."></textarea></div>
+                    <div class="form-group"><label for="world-factions">Major Factions & Powers</label><textarea id="world-factions" class="input-field" data-field-id="factions" placeholder="The significant organized groups (guilds, kingdoms, corporations, etc.) that shape the world."></textarea></div>
+                    <div class="form-group"><label for="world-lore">History & Lore Timeline</label><textarea id="world-lore" class="input-field" data-field-id="lore" placeholder="The chronological sequence of significant events that have shaped your world."></textarea></div>
+                    <div class="form-group"><label for="world-physics">Cosmology & Unique Physics</label><textarea id="world-physics" class="input-field" data-field-id="physics" placeholder="The fundamental rules of your world, including magic systems and laws of nature."></textarea></div>
+                </div>
+                <div id="response-container" class="response-container glass-panel"></div>
+            </div>
+            <div class="side-column">
+                <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div class="generation-controls-buttons"><button id="generate-button" data-element-type="WORLD" class="generate-btn-large">Generate</button><button id="save-asset-button" class="save-btn-large">Save World</button></div></div></div>
+                <div class="accordion glass-panel active" style="margin-top: 1.5rem;"><button class="accordion-header active"><span>Guidance Gems</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div id="guidance-gems-container"></div></div></div>
+                <div class="accordion glass-panel" style="margin-top: 1.5rem;"><button class="accordion-header"><span>Asset Hub</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content asset-hub-container"><p class="asset-hub-subtitle">Import Philosophies, Species, etc. that define this World.</p><div class="asset-import-area"><input type="file" id="asset-upload" multiple="" style="display: none;"><button id="import-asset-btn" class="import-btn">Import Asset(s)</button></div><div id="asset-list" class="asset-list"></div></div></div>
+            </div>
+        </div>
+    </main>
+    <!-- Settings Modal -->
+    <div id="settings-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>API Key Settings</h3>
+                <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Please enter your Gemini API key below. This key will be stored securely in your browser's local storage.</p>
+                <div class="form-group">
+                    <label for="api-key-input">Gemini API Key</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="api-key-input" class="input-field" placeholder="Enter your API key">
+                        <button id="view-api-key" class="view-api-key-btn" title="Show/Hide Key">👁</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-save-btn" class="generate-btn-large">Save Key</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

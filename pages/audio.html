@@ -1,0 +1,76 @@
+<!--
+    File: audio.html
+    Reference: Audio Lab
+    Creator: Wolfe.BT, TangentLLC
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIME - Audio Lab</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../script/global-ui.js"></script>
+    <script src="../script/audio-bundle.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-left">
+            <a href="../index.html" class="logo-title animated-gradient">AIME</a>
+            <button id="settings-btn" class="settings-btn" title="API Key Settings">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
+        <nav class="main-nav">
+            <a href="elements.html">Elements</a>
+            <a href="writer.html">Writer</a>
+            <a href="imaging.html">Imaging</a>
+            <a href="audio.html" class="active">Audio</a>
+            <!-- <a href="3d.html">3D</a> -->
+            <!-- <a href="video.html">Video</a> -->
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- ... rest of audio.html content ... -->
+        <div class="workspace-layout">
+            <div class="main-column">
+                <div class="audio-player glass-panel"><h3 id="player-title" class="player-title">No Clip Loaded</h3><div class="waveform-placeholder"></div><div class="player-controls"><button id="play-pause-btn" class="player-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></button><span id="time-display" class="time-display">0:00 / 0:00</span></div><div id="player-toolbar" class="player-toolbar hidden"><button class="toolbar-btn" title="Generate Variation"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg></button><button class="toolbar-btn" title="Download Clip"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg></button><button class="toolbar-btn" title="Delete Clip"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button></div></div>
+                <div class="timeline-editor-container glass-panel" style="margin-top: 1rem;"><h3 class="timeline-title">Timeline Editor</h3><div id="timeline-ruler" class="timeline-ruler"></div><div class="timeline-tracks-container"><div id="playhead" class="playhead"></div><div class="timeline-track" data-track-type="audio"><span class="track-label">Audio 1</span></div><div class="timeline-track" data-track-type="audio"><span class="track-label">Audio 2</span></div></div></div>
+            </div>
+            <div class="side-column">
+                <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><textarea id="audio-prompt" class="input-field" placeholder="Describe the sound, dialogue, or music..."></textarea><button id="generate-audio-btn" class="generate-btn-large">Generate Audio</button></div></div>
+                <div class="accordion glass-panel active" style="margin-top: 1.5rem;"><button class="accordion-header active"><span>Guidance</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div class="form-group"><label for="audio-type">Audio Type:</label><select id="audio-type" class="input-field"><option value="music">Music</option><option value="sfx">Sound Effect</option><option value="dialogue">Dialogue</option></select></div><div id="music-properties" class="advanced-properties"><label>Instrumentation:</label> <input type="text" class="input-field" placeholder="e.g., Orchestra, Piano, Synthesizer"><label>Tempo (BPM):</label> <input type="number" class="input-field" value="120"><label>Key:</label> <input type="text" class="input-field" placeholder="e.g., C Major"></div><div id="sfx-properties" class="advanced-properties" style="display: none;"><label>Primary Material:</label> <input type="text" class="input-field" placeholder="e.g., Metal, Wood, Water"><label>Action/Event:</label> <input type="text" class="input-field" placeholder="e.g., Impact, Whoosh, Explosion"><label>Environment:</label> <input type="text" class="input-field" placeholder="e.g., Indoors, Cave, Forest"></div><div id="dialogue-properties" class="advanced-properties" style="display: none;"><label>Voice:</label> <select class="input-field"><option>Male Adult</option><option>Female Adult</option></select><label>Emotion:</label> <select class="input-field"><option>Neutral</option><option>Happy</option><option>Sad</option><option>Angry</option></select><label>Delivery:</label> <select class="input-field"><option>Normal</option><option>Whispering</option><option>Shouting</option></select></div></div></div>
+                <div class="accordion glass-panel" style="margin-top: 1.5rem;"><button class="accordion-header"><span>Media Bin</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div id="media-bin-list" class="media-bin-list"><p class="placeholder-text">Generated audio clips will appear here.</p></div></div></div>
+                <div class="accordion glass-panel" style="margin-top: 1.5rem;"><button class="accordion-header"><span>Asset Hub</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content asset-hub-container"><p class="asset-hub-subtitle">Import Persona files for dialogue or Scene files for atmosphere.</p><div class="asset-import-area"><input type="file" id="asset-upload" multiple="" style="display: none;"><button id="import-asset-btn" class="import-btn">Import Asset(s)</button></div><div id="asset-list" class="asset-list"></div></div></div>
+            </div>
+        </div>
+    </main>
+    <!-- Settings Modal -->
+    <div id="settings-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>API Key Settings</h3>
+                <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Please enter your Gemini API key below. This key will be stored securely in your browser's local storage.</p>
+                <div class="form-group">
+                    <label for="api-key-input">Gemini API Key</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="api-key-input" class="input-field" placeholder="Enter your API key">
+                        <button id="view-api-key" class="view-api-key-btn" title="Show/Hide Key">👁</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-save-btn" class="generate-btn-large">Save Key</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+

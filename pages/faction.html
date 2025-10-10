@@ -1,0 +1,197 @@
+<!--
+    File: faction.html
+    Reference: Faction Shaper
+    Creator: Wolfe.BT, TangentLLC
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIME - Faction Shaper</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../script/global-ui.js"></script>
+    <script src="../script/element-bundle.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-left">
+            <a href="../index.html" class="logo-title animated-gradient">AIME</a>
+            <button id="settings-btn" class="settings-btn" title="API Key Settings">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
+        <nav class="main-nav">
+            <a href="elements.html" class="active">Elements</a>
+            <a href="writer.html">Writer</a>
+            <a href="imaging.html">Imaging</a>
+            <!-- <a href="audio.html">Audio</a> -->
+            <!-- <a href="3d.html">3D</a> -->
+            <!-- <a href="video.html">Video</a> -->
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="element-header">
+            <h2 class="element-title animated-gradient">Faction Shaper</h2>
+            <div class="header-actions">
+                <p class="element-subtitle">Define the organizations that drive conflict and cooperation in your world.</p>
+            </div>
+        </div>
+        <div class="workspace-layout">
+            <div class="main-column">
+                <div class="element-nav glass-panel">
+                    <button class="element-nav-button active" data-tab="identity">Core Identity</button>
+                    <button class="element-nav-button" data-tab="ideology">Ideology & Goals</button>
+                    <button class="element-nav-button" data-tab="structure">Structure & Hierarchy</button>
+                    <button class="element-nav-button" data-tab="resources">Resources & Influence</button>
+                    <button class="element-nav-button" data-tab="relations">Relations</button>
+                </div>
+
+                <!-- Core Identity Tab -->
+                <div id="identity-tab" class="element-tab active">
+                    <div class="form-section glass-panel">
+                        <h5 class="form-subheader">Core Identity</h5>
+                        <div class="form-group"><label for="faction-name">Faction Name</label><input type="text" id="faction-name" class="input-field" data-field-id="name" placeholder="The official or common name of the organization." autocomplete="off"></div>
+                        <div class="form-group"><label for="faction-type">Faction Type</label><input type="text" id="faction-type" class="input-field" data-field-id="type" placeholder="e.g., 'Mega-corporation,' 'Rebel Alliance,' 'Research Guild.'" autocomplete="off"></div>
+                        <div class="form-group"><label for="faction-mandate">Core Mandate</label><textarea id="faction-mandate" class="input-field" data-field-id="mandate" placeholder="The primary purpose or mission statement of the faction." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="faction-slogan">Motto / Slogan</label><input type="text" id="faction-slogan" class="input-field" data-field-id="slogan" placeholder="A short, memorable phrase that encapsulates their spirit." autocomplete="off"></div>
+                        <div class="form-group"><label for="faction-reputation">Public Reputation</label><textarea id="faction-reputation" class="input-field" data-field-id="reputation" placeholder="How is the faction generally perceived by outsiders?" autocomplete="off"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Ideology & Goals Tab -->
+                <div id="ideology-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <h5 class="form-subheader">Ideology & Goals</h5>
+                        <div class="form-group"><label for="faction-ideology">Core Ideology</label><textarea id="faction-ideology" class="input-field" data-field-id="ideology" placeholder="The guiding principles, beliefs, and philosophy of the faction." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="faction-alignment">Moral & Ethical Alignment</label><input type="text" id="faction-alignment" class="input-field" data-field-id="alignment" placeholder="e.g., 'Lawful Good,' 'Chaotic Evil,' 'True Neutral.'" autocomplete="off"></div>
+                        <div class="form-group"><label for="faction-short-term">Short-Term Objectives</label><textarea id="faction-short-term" class="input-field" data-field-id="short_term_goals" placeholder="Immediate goals the faction is trying to achieve." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="faction-long-term">Long-Term Ambitions</label><textarea id="faction-long-term" class="input-field" data-field-id="long_term_goals" placeholder="The ultimate vision or end-goal for the faction." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="faction-agenda">Public vs. Secret Agenda</label><textarea id="faction-agenda" class="input-field" data-field-id="agenda" placeholder="Discrepancies between what they claim to want and what they truly desire." autocomplete="off"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Structure & Hierarchy Tab -->
+                <div id="structure-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <h5 class="form-subheader">Structure & Hierarchy</h5>
+                        <div class="form-group"><label for="faction-leadership">Leadership & Key Figures</label><textarea id="faction-leadership" class="input-field" data-field-id="leadership" placeholder="The individuals or groups in command and other influential members." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="faction-org-structure">Organizational Structure</label><textarea id="faction-org-structure" class="input-field" data-field-id="org_structure" placeholder="e.g., 'Rigid Hierarchy,' 'Democratic Council,' 'Decentralized Cells.'" autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="faction-ranks">Membership & Ranks</label><textarea id="faction-ranks" class="input-field" data-field-id="ranks" placeholder="The different levels of membership and their roles/responsibilities." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="faction-code">Code of Conduct</label><textarea id="faction-code" class="input-field" data-field-id="code_of_conduct" placeholder="The internal rules and laws that members must follow." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="faction-symbols">Symbols & Iconography</label><textarea id="faction-symbols" class="input-field" data-field-id="symbols" placeholder="The logos, crests, or symbols that represent the faction." autocomplete="off"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Resources & Influence Tab -->
+                <div id="resources-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <h5 class="form-subheader">Resources & Influence</h5>
+                        <div class="form-group"><label for="faction-territory">Territory & Headquarters</label><textarea id="faction-territory" class="input-field" data-field-id="territory" placeholder="The physical space the faction controls or operates from." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="faction-assets">Assets & Economic Power</label><textarea id="faction-assets" class="input-field" data-field-id="assets" placeholder="Wealth, property, businesses, and other economic resources." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="faction-military">Military & Security Strength</label><textarea id="faction-military" class="input-field" data-field-id="military" placeholder="The faction's armed forces, security personnel, and defensive capabilities." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="faction-political">Political & Social Clout</label><textarea id="faction-political" class="input-field" data-field-id="clout" placeholder="The faction's influence over governments, laws, and public opinion." autocomplete="off"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Relations Tab -->
+                <div id="relations-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <h5 class="form-subheader">Relations</h5>
+                        <div class="form-group"><label for="faction-allies">Allies</label><textarea id="faction-allies" class="input-field" data-field-id="allies" placeholder="Other factions, organizations, or individuals they work with." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="faction-enemies">Enemies & Rivals</label><textarea id="faction-enemies" class="input-field" data-field-id="enemies" placeholder="Opposing forces that seek to undermine or destroy the faction." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="faction-gov-relations">Relationship with Governing Powers</label><textarea id="faction-gov-relations" class="input-field" data-field-id="gov_relations" placeholder="How the faction interacts with the ruling governments of its territory." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="faction-recruitment">Recruitment Methods</label><textarea id="faction-recruitment" class="input-field" data-field-id="recruitment" placeholder="How the faction attracts and indoctrinates new members." autocomplete="off"></textarea></div>
+                    </div>
+                </div>
+
+                <div class="form-section glass-panel">
+                    <h5 class="form-subheader">Custom Notes</h5>
+                    <div class="form-group">
+                        <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, notes, or custom fields here." autocomplete="off"></textarea>
+                    </div>
+                </div>
+
+                <div id="response-container" class="response-container glass-panel"></div>
+            </div>
+            <div class="resize-handle"></div>
+            <div class="side-column">
+                <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div class="generation-controls-buttons"><button id="new-button" class="action-btn">New</button><button id="generate-button" data-element-type="FACTION" class="generate-btn-large">Generate</button><button id="load-button" class="action-btn">Load</button><button id="save-asset-button" class="save-btn-large">Save Faction</button></div></div></div>
+                <div class="side-panel-container">
+                    <div class="accordion glass-panel">
+                        <button class="accordion-header">
+                            <span>Guidance</span>
+                            <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="accordion-content">
+                            <div id="guidance-gems-container"></div>
+                        </div>
+                    </div>
+                    <div class="asset-hub-panel glass-panel">
+                        <h3 class="side-panel-title">Asset Hub</h3>
+                        <div class="asset-hub-container">
+                            <p class="asset-hub-subtitle">Import Personas, Worlds, etc. that give context to this Faction.</p>
+                            <div class="asset-import-area">
+                                <input type="file" id="asset-upload" multiple="" style="display: none;">
+                                <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
+                            </div>
+                            <div id="asset-list" class="asset-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>API Key Settings</h3>
+                <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Please enter your Gemini API key below. This key will be stored securely in your browser's local storage.</p>
+                <div class="form-group">
+                    <label for="api-key-input">Gemini API Key</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="api-key-input" class="input-field" placeholder="Enter your API key">
+                        <button id="view-api-key" class="view-api-key-btn" title="Show/Hide Key">👁</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-save-btn" class="generate-btn-large">Save Key</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guidance Selection Modal -->
+    <div id="gem-selection-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3 id="gem-modal-title">Select Options</h3>
+                <button id="gem-modal-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div id="gem-modal-options-container" class="modal-body">
+                <!-- Clickable option buttons will be dynamically inserted here -->
+            </div>
+            <div class="gem-modal-custom-input-area">
+                <input type="text" id="custom-gem-input" class="input-field" placeholder="Add a custom option...">
+                <button id="add-custom-gem-btn" class="action-btn">Add</button>
+            </div>
+            <div class="modal-footer">
+                <button id="gem-modal-save-btn" class="generate-btn-large">Save Selections</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+

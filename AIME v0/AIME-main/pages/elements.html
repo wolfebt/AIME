@@ -1,0 +1,75 @@
+<!--
+    File: elements.html
+    Reference: Element Forge
+    Creator: Wolfe.BT, TangentLLC
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIME - Element Forge</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../script/global-ui.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-left">
+            <a href="../index.html" class="logo-title animated-gradient">AIME</a>
+            <button id="settings-btn" class="settings-btn" title="API Key Settings">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
+        <nav class="main-nav">
+            <a href="writer.html">Writer</a>
+            <a href="elements.html" class="active">Elements</a>
+            <a href="imaging.html">Imaging</a>
+            <a href="audio.html">Audio</a>
+            <a href="3d.html">3D</a>
+            <a href="video.html">Video</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- ... rest of elements.html content ... -->
+        <div class="hub-header">
+            <h2 class="hub-title animated-gradient">Element Forge</h2>
+            <p class="hub-subtitle">Forge the building blocks of your universe. Each Element is a reusable Asset.</p>
+        </div>
+        <div class="hub-grid">
+            <a href="universe.html" class="hub-card glass-panel"><h3 class="card-title">Universe Crucible</h3><p class="card-description">Establish the high-level framework: genres, themes, and the fundamental laws of your world.</p></a>
+            <a href="world.html" class="hub-card glass-panel"><h3 class="card-title">World Anvil</h3><p class="card-description">Build a specific planet or realm with its own history, cultures, and societies.</p></a>
+            <a href="setting.html" class="hub-card glass-panel"><h3 class="card-title">Setting Architect</h3><p class="card-description">Design a detailed location within a world, such as a city, a building, or a specific environment.</p></a>
+            <a href="scene.html" class="hub-card glass-panel"><h3 class="card-title">Scene Builder</h3><p class="card-description">Construct individual narrative scenes with specific moods, settings, and sensory details.</p></a>
+            <a href="persona.html" class="hub-card glass-panel"><h3 class="card-title">Persona Maker</h3><p class="card-description">Craft detailed characters with unique personalities, backstories, and motivations.</p></a>
+            <a href="species.html" class="hub-card glass-panel"><h3 class="card-title">Species Creator</h3><p class="card-description">Design the biology, culture, and abilities of the various species that inhabit your world.</p></a>
+            <a href="philosophy.html" class="hub-card glass-panel"><h3 class="card-title">Philosophy Scribe</h3><p class="card-description">Define the religions, belief systems, and societal creeds that shape your cultures.</p></a>
+            <a href="technology.html" class="hub-card glass-panel"><h3 class="card-title">Technology Forge</h3><p class="card-description">Create specific technologies, from magical artifacts to advanced AI, and define their impact.</p></a>
+        </div>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>API Key Settings</h3>
+                <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Please enter your Gemini API key below. This key will be stored securely in your browser's local storage.</p>
+                <div class="form-group">
+                    <label for="api-key-input">Gemini API Key</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="api-key-input" class="input-field" placeholder="Enter your API key">
+                        <button id="view-api-key" class="view-api-key-btn" title="Show/Hide Key">👁</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-save-btn" class="generate-btn-large">Save Key</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

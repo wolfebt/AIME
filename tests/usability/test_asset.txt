@@ -1,0 +1,2 @@
+This is a test text asset for the usability test.
+It contains multiple lines to verify correct handling.

@@ -1,0 +1,72 @@
+<!--
+    File: video.html
+    Reference: Director's Suite
+    Creator: Wolfe.BT, TangentLLC
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIME - Director's Suite</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../script/global-ui.js"></script>
+    <script src="../script/video-bundle.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-left">
+            <a href="../index.html" class="logo-title animated-gradient">AIME</a>
+            <button id="settings-btn" class="settings-btn" title="API Key Settings">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
+        <nav class="main-nav">
+            <a href="writer.html">Writer</a>
+            <a href="elements.html">Elements</a>
+            <a href="imaging.html">Imaging</a>
+            <a href="audio.html">Audio</a>
+            <a href="3d.html">3D</a>
+            <a href="video.html" class="active">Video</a>
+        </nav>
+    </header>
+    <main class="container">
+        <!-- ... rest of video.html content ... -->
+        <div class="workspace-layout">
+            <div class="main-column">
+                <div class="video-player-container glass-panel"><h3 class="player-title">Sequence Preview</h3><div class="video-placeholder" style="background: #000; height: 300px; display:flex; align-items:center; justify-content:center; border-radius: 8px;"><p class="placeholder-text">Video preview will appear here.</p></div><div class="player-controls"><button class="player-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></button><span class="time-display">0:00 / 0:00</span></div></div>
+                <div class="timeline-editor-container glass-panel" style="margin-top: 1rem;"><h3 class="timeline-title">Timeline Editor</h3><div id="timeline-ruler" class="timeline-ruler"></div><div class="timeline-tracks-container"><div id="playhead" class="playhead"></div><div class="timeline-track" data-track-type="video"><span class="track-label">Video</span></div><div class="timeline-track" data-track-type="audio"><span class="track-label">Audio 1</span></div><div class="timeline-track" data-track-type="audio"><span class="track-label">Audio 2</span></div></div></div>
+            </div>
+            <div class="side-column">
+                <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><textarea id="shot-prompt" class="input-field" placeholder="Describe the shot or sequence..."></textarea><button id="generate-shot-btn" class="generate-btn-large">Generate Shot</button></div></div>
+                <div class="accordion glass-panel active" style="margin-top: 1.5rem;"><button class="accordion-header active"><span>Shot Properties</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div id="guidance-gems-container"></div></div></div>
+                <div class="accordion glass-panel" style="margin-top: 1.5rem;"><button class="accordion-header"><span>Media Bin</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div id="media-bin-list" class="media-bin-list"><p class="placeholder-text">Generated video, image, and audio clips will appear here.</p></div></div></div>
+                <div class="accordion glass-panel" style="margin-top: 1.5rem;"><button class="accordion-header"><span>Asset Hub</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content asset-hub-container"><p class="asset-hub-subtitle">Import Scene, Persona, and Audio files to build your video.</p><div class="asset-import-area"><input type="file" id="asset-upload" multiple="" style="display: none;"><button id="import-asset-btn" class="import-btn">Import Asset(s)</button></div><div id="asset-list" class="asset-list"></div></div></div>
+            </div>
+        </div>
+    </main>
+    <!-- Settings Modal -->
+    <div id="settings-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>API Key Settings</h3>
+                <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Please enter your Gemini API key below. This key will be stored securely in your browser's local storage.</p>
+                <div class="form-group">
+                    <label for="api-key-input">Gemini API Key</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="api-key-input" class="input-field" placeholder="Enter your API key">
+                        <button id="view-api-key" class="view-api-key-btn" title="Show/Hide Key">👁</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-save-btn" class="generate-btn-large">Save Key</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

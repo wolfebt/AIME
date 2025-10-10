@@ -1,0 +1,106 @@
+<!--
+    File: index.html
+    Reference: Creative Hub
+    Creator: Wolfe.BT, TangentLLC
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIME - Main Hub</title>
+    <link rel="stylesheet" href="style/style.css">
+    <script src="script/global-ui.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-left">
+            <a href="index.html" class="logo-title animated-gradient">AIME</a>
+            <button id="settings-btn" class="settings-btn" title="API Key Settings">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
+        <nav class="main-nav">
+            <a href="pages/elements.html">Elements</a>
+            <a href="pages/writer.html">Writer</a>
+            <a href="pages/imaging.html">Imaging</a>
+            <!-- <a href="pages/audio.html">Audio</a> -->
+            <!-- <a href="pages/3d.html">3D</a> -->
+            <!-- <a href="pages/video.html">Video</a> -->
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="hub-header">
+            <h2 class="hub-title animated-gradient">Creative Hub</h2>
+            <p class="hub-subtitle">Select a module to begin your creative process.</p>
+        </div>
+
+        <div class="hub-grid">
+            <a href="pages/elements.html" class="hub-card glass-panel">
+                <h3 class="card-title">Element Forge</h3>
+                <p class="card-description">
+                    Forge the building blocks of your universe. Define the characters, worlds, and rules that make your story unique.
+                </p>
+            </a>
+            <a href="pages/writer.html" class="hub-card glass-panel">
+                <h3 class="card-title">Story Weaver</h3>
+                <p class="card-description">
+                    A comprehensive four-stage environment to guide your narrative from brainstorm to final draft.
+                </p>
+            </a>
+            <a href="pages/imaging.html" class="hub-card glass-panel">
+                <h3 class="card-title">Imaging Studio</h3>
+                <p class="card-description">
+                    Bring your world to life. Generate concept art, character portraits, and landscapes based on your created Elements.
+                </p>
+            </a>
+            <!-- <a href="pages/3d.html" class="hub-card glass-panel">
+                <h3 class="card-title">3D Workshop</h3>
+                <p class="card-description">
+                    Step into the next dimension. Create 3D models of your characters, props, and environments from your narrative components.
+                </p>
+            </a> -->
+            <!-- <a href="pages/audio.html" class="hub-card glass-panel">
+                <h3 class="card-title">Audio Lab</h3>
+                <p class="card-description">
+                    Set the soundscape for your story. Generate dialogue, immersive sound effects, and musical scores to enhance the atmosphere.
+                </p>
+            </a> -->
+            <!-- <a href="pages/video.html" class="hub-card glass-panel">
+                <h3 class="card-title">Director's Suite</h3>
+                <p class="card-description">
+                    Become the director. Animate your world by combining your characters, settings, and scenes into dynamic video sequences.
+                </p>
+            </a> -->
+        </div>
+    </main>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>API Key Settings</h3>
+                <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Please enter your Gemini API key below. This key will be stored securely in your browser's local storage.</p>
+                <div class="form-group">
+                    <label for="api-key-input">Gemini API Key</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="api-key-input" class="input-field" placeholder="Enter your API key">
+                        <button id="view-api-key" class="view-api-key-btn" title="Show/Hide Key">👁</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-save-btn" class="generate-btn-large">Save Key</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+

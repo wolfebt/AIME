@@ -1,0 +1,179 @@
+<!--
+    File: species.html
+    Reference: Species Creator
+    Creator: Wolfe.BT, TangentLLC
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIME - Species Creator</title>
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../script/global-ui.js"></script>
+    <script src="../script/element-bundle.js"></script>
+</head>
+<body>
+    <header class="main-header">
+        <div class="header-left">
+            <a href="../index.html" class="logo-title animated-gradient">AIME</a>
+            <button id="settings-btn" class="settings-btn" title="API Key Settings">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
+        <nav class="main-nav">
+            <a href="elements.html" class="active">Elements</a>
+            <a href="writer.html">Writer</a>
+            <a href="imaging.html">Imaging</a>
+            <!-- <a href="audio.html">Audio</a> -->
+            <!-- <a href="3d.html">3D</a> -->
+            <!-- <a href="video.html">Video</a> -->
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- ... rest of species.html content ... -->
+        <div class="element-header">
+            <h2 class="element-title animated-gradient">Species Creator</h2>
+            <div class="header-actions">
+                <p class="element-subtitle">Design the biology and culture of a new species.</p>
+            </div>
+        </div>
+        <div class="workspace-layout">
+            <div class="main-column">
+                <div class="element-nav glass-panel">
+                    <button class="element-nav-button active" data-tab="core-identity">Core Identity</button>
+                    <button class="element-nav-button" data-tab="biology">Biology & Physiology</button>
+                    <button class="element-nav-button" data-tab="behavior">Behavior & Ecology</button>
+                    <button class="element-nav-button" data-tab="culture">Culture & Relations</button>
+                </div>
+
+                <!-- Core Identity Tab -->
+                <div id="core-identity-tab" class="element-tab active">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="species-name">Species Name</label><input type="text" id="species-name" class="input-field" data-field-id="name" placeholder="The formal or common name of the species." autocomplete="off"></div>
+                        <div class="form-group"><label for="species-classification">Classification</label><input type="text" id="species-classification" class="input-field" data-field-id="classification" placeholder="e.g., 'Sentient Mammal,' 'Silicon-based Flora,' 'Avian Predator.'" autocomplete="off"></div>
+                        <div class="form-group"><label for="species-origin">Origin</label><input type="text" id="species-origin" class="input-field" data-field-id="origin" placeholder="The native star system, planet, or dimension." autocomplete="off"></div>
+                    </div>
+                </div>
+
+                <!-- Biology & Physiology Tab -->
+                <div id="biology-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="species-anatomy">Physical Anatomy & Appearance</label><textarea id="species-anatomy" class="input-field" data-field-id="anatomy" placeholder="Size, shape, coloration, key features, and general appearance." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="species-biology">Biological Systems & Life Cycle</label><textarea id="species-biology" class="input-field" data-field-id="biology" placeholder="Internal systems, metabolism, reproduction, and lifespan." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="species-senses">Sensory Capabilities</label><textarea id="species-senses" class="input-field" data-field-id="senses" placeholder="Unique senses like echolocation, thermal vision, or psionic awareness." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="species-abilities">Abilities & Powers</label><textarea id="species-abilities" class="input-field" data-field-id="abilities" placeholder="Special traits, unique skills, or natural defenses." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="species-communication">Communication Methods</label><textarea id="species-communication" class="input-field" data-field-id="communication" placeholder="How they communicate: spoken language, telepathy, pheromones, etc." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="species-vulnerabilities">Biological Vulnerabilities</label><textarea id="species-vulnerabilities" class="input-field" data-field-id="vulnerabilities" placeholder="Weaknesses, environmental intolerance, or specific susceptibilities." autocomplete="off"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Behavior & Ecology Tab -->
+                <div id="behavior-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="species-behavior">Behavior & Social Structure</label><textarea id="species-behavior" class="input-field" data-field-id="behavior" placeholder="Social hierarchies, temperament, and communal habits." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="species-diet">Diet & Trophic Level</label><textarea id="species-diet" class="input-field" data-field-id="diet" placeholder="What they eat and their position in the food chain." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="species-habitat">Habitat & Planetary Origin</label><textarea id="species-habitat" class="input-field" data-field-id="habitat" placeholder="Native environment and home world." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="species-evolution">Evolutionary History</label><textarea id="species-evolution" class="input-field" data-field-id="evolution" placeholder="Ancestral forms and key evolutionary milestones." autocomplete="off"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Culture & Relations Tab -->
+                <div id="culture-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="species-culture">Cultural Traits & Technology Level</label><textarea id="species-culture" class="input-field" data-field-id="culture" placeholder="Art, rituals, societal norms, and technological sophistication." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="species-role">Ecological Role</label><textarea id="species-role" class="input-field" data-field-id="role" placeholder="Their impact on the ecosystem (e.g., keystone species, apex predator)." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="species-relations">Inter-species Relations</label><textarea id="species-relations" class="input-field" data-field-id="relations" placeholder="How they interact with other species (e.g., symbiotic, parasitic, hostile)." autocomplete="off"></textarea></div>
+                    </div>
+                </div>
+
+                <div class="form-section glass-panel">
+                    <h5 class="form-subheader">Custom Notes</h5>
+                    <div class="form-group">
+                        <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, notes, or custom fields here." autocomplete="off"></textarea>
+                    </div>
+                </div>
+
+                <div id="response-container" class="response-container glass-panel"></div>
+            </div>
+            <div class="resize-handle"></div>
+            <div class="side-column">
+                <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div class="generation-controls-buttons"><button id="new-button" class="action-btn">New</button><button id="generate-button" data-element-type="SPECIES" class="generate-btn-large">Generate</button><button id="load-button" class="action-btn">Load</button><button id="save-asset-button" class="save-btn-large">Save Species</button></div></div></div>
+                <div class="side-panel-container">
+                    <div class="accordion glass-panel">
+                        <button class="accordion-header">
+                            <span>Guidance</span>
+                            <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+                        <div class="accordion-content">
+                            <div id="guidance-gems-container"></div>
+                        </div>
+                    </div>
+                    <div class="asset-hub-panel glass-panel">
+                        <h3 class="side-panel-title">Asset Hub</h3>
+                        <div class="asset-hub-container">
+                            <p class="asset-hub-subtitle">Import files to provide contextual reference for this Species.</p>
+                            <div class="asset-import-area">
+                                <input type="file" id="asset-upload" multiple="" style="display: none;">
+                                <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
+                            </div>
+                            <div id="asset-list" class="asset-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>API Key Settings</h3>
+                <button id="modal-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Please enter your Gemini API key below. This key will be stored securely in your browser's local storage.</p>
+                <div class="form-group">
+                    <label for="api-key-input">Gemini API Key</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="api-key-input" class="input-field" placeholder="Enter your API key">
+                        <button id="view-api-key" class="view-api-key-btn" title="Show/Hide Key">👁</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-save-btn" class="generate-btn-large">Save Key</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guidance Selection Modal -->
+    <div id="gem-selection-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3 id="gem-modal-title">Select Options</h3>
+                <button id="gem-modal-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div id="gem-modal-options-container" class="modal-body">
+                <!-- Clickable option buttons will be dynamically inserted here -->
+            </div>
+            <div class="gem-modal-custom-input-area">
+                <input type="text" id="custom-gem-input" class="input-field" placeholder="Add a custom option...">
+                <button id="add-custom-gem-btn" class="action-btn">Add</button>
+            </div>
+            <div class="modal-footer">
+                <button id="gem-modal-save-btn" class="generate-btn-large">Save Selections</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
