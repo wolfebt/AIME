@@ -491,7 +491,7 @@ async function generateElementContent(button) {
     const superPrompt = craftSuperPrompt(elementType);
 
     // This is the model the frontend wants to use.
-    const model = 'gemini-1.5-flash-latest'; // UPDATED to cost-effective model
+    const model = 'gemini-2.5-flash-lite'; // UPDATED to cost-effective model
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${userApiKey}`;
 
     const payload = {
