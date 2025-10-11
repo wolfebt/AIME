@@ -1156,27 +1156,20 @@ function loadBrainstormContent(content) {
     responseArea.innerHTML = ''; // Clear current content
 
     const concepts = [];
-    // Split by the '---' separator, which is more reliable than complex regex.
     const rawConcepts = content.split('---').filter(c => c.trim().length > 5);
 
     rawConcepts.forEach(rawConcept => {
-        const lines = rawConcept.trim().split('\n').filter(line => line.trim() !== '');
-        if (lines.length < 3) return;
+        const trimmedConcept = rawConcept.trim();
+        const titleMatch = trimmedConcept.match(/^##\s+(.*)/m);
+        const loglineMatch = trimmedConcept.match(/\*\*Logline:\*\*\s+(.*)/);
+        const conceptBodyMatch = trimmedConcept.match(/\*\*Logline:\*\*\s+.*(?:\r\n|\r|\n){1,2}([\s\S]*)/);
 
-        const titleLine = lines.find(l => l.startsWith('## '));
-        const loglineLine = lines.find(l => l.startsWith('**Logline:**'));
-
-        if (titleLine && loglineLine) {
-            const title = titleLine.replace('## ', '').trim();
-            const logline = loglineLine.replace('**Logline:**', '').trim();
-
-            // The rest of the lines constitute the concept.
-            const loglineIndex = lines.indexOf(loglineLine);
-            const concept = lines.slice(loglineIndex + 1).join('\n').trim();
-
-            if (concept) {
-                 concepts.push({ title, logline, concept });
-            }
+        if (titleMatch && loglineMatch && conceptBodyMatch) {
+            concepts.push({
+                title: titleMatch[1].trim(),
+                logline: loglineMatch[1].trim(),
+                concept: conceptBodyMatch[1].trim()
+            });
         }
     });
 
@@ -1186,7 +1179,6 @@ function loadBrainstormContent(content) {
             responseArea.appendChild(card);
         });
     } else {
-        // Fallback for content that doesn't match the expected format
         responseArea.innerHTML = `<p class="placeholder-text">${content.replace(/\n/g, '<br>')}</p>`;
     }
 }

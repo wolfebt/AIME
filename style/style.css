@@ -1058,13 +1058,13 @@ select.input-field {
 .writer-tab.active { display: block; animation: fadeInTab 0.5s ease-in-out forwards; }
 
 /* Element Page Specific Tab Styles */
-.template-nav, .element-nav {
+.element-nav {
     display: flex;
     justify-content: center;
     gap: 12px;
     margin-bottom: 1rem; /* Reduced margin for a tighter layout */
 }
-.template-nav-button, .element-nav-button {
+.element-nav-button {
     background: none;
     border: 1px solid var(--panel-border);
     color: var(--medium-text);
@@ -1074,19 +1074,19 @@ select.input-field {
     font-weight: 500;
     transition: all 0.3s;
 }
-.template-nav-button:hover, .element-nav-button:hover {
+.element-nav-button:hover {
     background-color: rgba(139, 148, 158, 0.1);
 }
-.template-nav-button.active, .element-nav-button.active {
+.element-nav-button.active {
     background-color: var(--accent-blue);
     color: white;
     font-weight: 600;
     border-color: transparent;
 }
-.template-content, .element-tab {
+.element-tab {
     display: none;
 }
-.template-content.active, .element-tab.active {
+.element-tab.active {
     display: block;
     animation: fadeInTab 0.5s ease-in-out forwards;
 }
