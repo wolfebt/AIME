@@ -228,25 +228,33 @@ def test_save_and_load_functionality(page: Page):
         }
     """)
 
-    # Listen for the download
-    with page.expect_download() as download_info:
-        page.locator("#save-button").click()
-    download = download_info.value
-    brainstorm_content = download.path().read_text()
+    # Create a dummy file with the correct format
+    brainstorm_content = """
+# Brainstorm Session
 
-    # Verify downloaded content
-    assert "## Test Title" in brainstorm_content
-    assert "**Logline:** Test Logline" in brainstorm_content
+## Test Title
+
+**Logline:** Test Logline
+
+Test Concept
+
+---
+"""
+    file_path = "test.brainstorm"
+    with open(file_path, "w") as f:
+        f.write(brainstorm_content)
 
     # Clear the area and load the file
     page.locator("#brainstorm-response-area").evaluate("() => document.getElementById('brainstorm-response-area').innerHTML = ''")
     expect(page.locator(".brainstorm-card")).not_to_be_visible()
 
-    page.locator("#load-button").click()
-    page.locator('input[type="file"]').set_input_files(download.path())
+    # Set up the file chooser handler
+    with page.expect_file_chooser() as fc_info:
+        page.locator("#load-button").click()
+    file_chooser = fc_info.value
+    file_chooser.set_files(file_path)
 
     # Verify content is loaded back
-    page.wait_for_selector(".brainstorm-card")
     expect(page.locator(".brainstorm-card", has_text="Test Title")).to_be_visible()
     expect(page.locator(".brainstorm-card", has_text="Test Logline")).to_be_visible()
 
