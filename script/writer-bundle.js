@@ -444,21 +444,16 @@ function initializeTabs() {
 
 async function generateContent(prompt) {
     const userApiKey = localStorage.getItem('AIME_API_KEY');
-    const model = 'gemini-1.5-flash-latest'; // UPDATED to cost-effective model
-    const apiUrl = `/api/proxy`; // UPDATED to use the backend proxy
+    const model = 'gemini-1.5-flash-latest';
 
-    // The backend proxy will handle the ultimate key logic,
-    // but we can check here for immediate user feedback.
     if (!userApiKey) {
-        // Using alert for simplicity, but a custom modal is better UX.
-        const proceed = confirm("API key not found in settings. The application will attempt to use a server-configured key if available. Do you want to continue?");
-        if (!proceed) {
-            return "Error: Generation cancelled by user.";
-        }
+        alert("API key not found. Please set it in the settings modal (the gear icon).");
+        return "Error: API key not found.";
     }
 
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${userApiKey}`;
+
     const payload = {
-        model: model, // Send the desired model to the proxy
         contents: [{
             parts: [{
                 text: prompt
@@ -471,7 +466,6 @@ async function generateContent(prompt) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-AIME-API-Key': userApiKey || '' // Send user's key to backend
             },
             body: JSON.stringify(payload)
         });
