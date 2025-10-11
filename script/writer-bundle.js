@@ -998,7 +998,7 @@ function initializeSaveButton() {
                     const title = card.querySelector('.card-title').textContent.trim();
                     if (index === 0 && title) assetName = title;
                     const logline = card.querySelector('.brainstorm-logline').textContent.trim();
-                    const concept = card.querySelector('.brainstorm-concept').innerHTML.replace(/<br\s*\/?>/g, '\n');
+                    const concept = card.querySelector('.brainstorm-concept').innerText.trim(); // Use innerText to preserve paragraph breaks
                     content += `## ${title}\n\n**Logline:** ${logline}\n\n${concept}\n\n---\n\n`;
                 });
                 break;
@@ -1014,7 +1014,7 @@ function initializeSaveButton() {
                 outlineItems.forEach((item, index) => {
                     const title = item.querySelector('.outline-item-title').textContent.trim();
                     if (index === 0 && title) assetName = title;
-                    const description = item.querySelector('.outline-item-description').innerHTML.replace(/<br\s*\/?>/g, '\n');
+                    const description = item.querySelector('.outline-item-description').innerText.trim();
                     content += `## ${index + 1}. ${title}\n\n${description}\n\n`;
                 });
                 break;
@@ -1168,7 +1168,7 @@ function loadBrainstormContent(content) {
         const trimmedConcept = rawConcept.trim();
         const titleMatch = trimmedConcept.match(/^##\s+(.*)/m);
         const loglineMatch = trimmedConcept.match(/\*\*Logline:\*\*\s+(.*)/);
-        const conceptBodyMatch = trimmedConcept.match(/\*\*Logline:\*\*\s+.*\n\n([\s\S]*)/);
+        const conceptBodyMatch = trimmedConcept.match(/\*\*Logline:\*\*\s+.*(?:\r\n|\r|\n){1,2}([\s\S]*)/);
 
         if (titleMatch && loglineMatch && conceptBodyMatch) {
             concepts.push({
