@@ -468,6 +468,20 @@ function initializeGuidanceGems() {
     });
 }
 
+// --- Formatted Content Display ---
+function displayFormattedContent(container, text) {
+    // A simple markdown-to-HTML converter. It handles headings, bold, italic, and newlines.
+    let html = text
+        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+        .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+        .replace(/\n/g, '<br />');
+
+    container.innerHTML = `<div class="generated-content-wrapper">${html}</div>`;
+}
+
 // --- Element Generation Logic ---
 async function generateElementContent(button) {
     const elementType = button.dataset.elementType;
@@ -524,15 +538,9 @@ async function generateElementContent(button) {
         const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
 
         if (text) {
-            // Find the custom notes textarea and set its value
-            const customNotesField = document.getElementById('custom-notes');
-            if (customNotesField) {
-                customNotesField.value = text;
-            } else {
-                console.error("Could not find the #custom-notes field to populate.");
-            }
-            // Clear the loading indicator
+            // Display the formatted text in the response container
             responseContainer.innerHTML = '';
+            displayFormattedContent(responseContainer, text);
         } else {
             console.warn("Invalid or empty response from API.", result);
             const finishReason = result.candidates?.[0]?.finishReason;
@@ -623,7 +631,7 @@ function craftSuperPrompt(elementType) {
         });
     }
 
-    prompt += `\n--- TASK ---\nGenerate the content for the primary "${elementType}" Element. Use the Guidance Gems for style. Critically, use the Contextual Assets for lore, background, and specific direction, paying close attention to their specified Importance and Director's Notes. Be descriptive, imaginative, and ensure the output is consistent with all provided data. Format the output clearly with headings.`;
+    prompt += `\n--- TASK ---\nGenerate extensive and highly detailed content for the primary "${elementType}" Element. Use the Guidance Gems for style and the Contextual Assets for lore. Produce a comprehensive document with clear, well-structured headings and detailed paragraphs. The output should be rich, imaginative, and consistent with all provided data.`;
 
     console.log("Super Prompt:", prompt);
     return prompt;
