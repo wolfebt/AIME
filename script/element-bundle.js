@@ -565,13 +565,9 @@ function craftSuperPrompt(elementType) {
 
     // --- 1. Current Element's Traits ---
     prompt += "--- PRIMARY ELEMENT: " + elementType + " ---\n";
-    const activeTemplate = document.querySelector('.template-content.active');
-    const inputs = activeTemplate.querySelectorAll('.input-field');
+    const inputs = document.querySelectorAll('.element-tab .input-field');
     let hasPrimaryTraits = false;
     inputs.forEach(input => {
-        // Exclude the new custom notes field from this main loop
-        if (input.id === 'custom-notes') return;
-
         const label = input.previousElementSibling ? input.previousElementSibling.textContent : input.id;
         if (input.value.trim()) {
             prompt += `${label}: ${input.value.trim()}\n`;
@@ -654,9 +650,8 @@ function saveElementAsset() {
 
     let assetName = 'Untitled';
 
-    // Process standard trait fields from the active template
-    const activeTemplate = document.querySelector('.template-content.active');
-    const inputs = activeTemplate.querySelectorAll('.input-field');
+    // Process standard trait fields from all tabs
+    const inputs = document.querySelectorAll('.element-tab .input-field');
     inputs.forEach(input => {
         const labelElement = input.previousElementSibling;
         const label = labelElement ? labelElement.textContent.trim() : 'Unknown Field';
@@ -667,7 +662,7 @@ function saveElementAsset() {
         }
 
         // Check for the 'name' field to use in the filename
-        if ((input.dataset.fieldId === 'name' || input.dataset.fieldId === 'snapshot_name') && value) {
+        if (input.dataset.fieldId === 'name' && value) {
             assetName = value;
         }
     });
@@ -785,17 +780,8 @@ function loadElementAsset(file) {
 }
 
 function setFieldValue(label, value) {
-    // This function now searches across all templates for a matching label.
-    const labels = document.querySelectorAll('.template-content .form-group label');
+    const labels = document.querySelectorAll('.element-tab .form-group label');
     let targetInput = null;
-
-    if (label === 'Custom Notes') {
-        const customNotesField = document.getElementById('custom-notes');
-        if (customNotesField) {
-            customNotesField.value = value;
-        }
-        return;
-    }
 
     labels.forEach(lbl => {
         if (lbl.textContent.trim() === label) {
@@ -859,10 +845,10 @@ function initializeElementTabs() {
     });
 }
 
-// --- Template Switching Logic ---
-function initializeTemplateSwitcher() {
-    const tabButtons = document.querySelectorAll('.template-nav-button');
-    const tabs = document.querySelectorAll('.template-content');
+// --- Element Page Tabs ---
+function initializeElementTabs() {
+    const tabButtons = document.querySelectorAll('.element-nav-button');
+    const tabs = document.querySelectorAll('.element-tab');
 
     if (!tabButtons.length || !tabs.length) return;
 
@@ -874,8 +860,8 @@ function initializeTemplateSwitcher() {
 
             // Activate the clicked button and corresponding tab
             button.classList.add('active');
-            const tabName = button.dataset.template;
-            const targetTab = document.getElementById(`${tabName}-template`);
+            const tabName = button.dataset.tab;
+            const targetTab = document.getElementById(`${tabName}-tab`);
             if (targetTab) {
                 targetTab.classList.add('active');
             }
@@ -894,7 +880,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeLoadButton();
     initializeNewButton();
     initializeElementTabs();
-    initializeTemplateSwitcher();
 });
 
 
