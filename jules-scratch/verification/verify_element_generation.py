@@ -14,16 +14,16 @@ def test_element_generation(page: Page):
             "content": {
                 "parts": [{
                     "text": """
-# Character Concept: Arion the Sun-Forged
+# Arion the Sun-Forged
 
 ## Core Identity
-Arion is a stoic guardian, the last of an ancient order sworn to protect the Sunstone, a relic of immense power.
+A stoic guardian, the last of an ancient order.
 
 ## Appearance & Mannerisms
-He is tall and powerfully built, with sun-bleached hair and eyes the color of the sky. His movements are deliberate and precise, a testament to his rigorous training.
+Tall and powerfully built, with sun-bleached hair.
 
 ## Narrative Profile
-Haunted by the memory of his fallen comrades, Arion is driven by a deep sense of duty. He is a skilled warrior, but his greatest strength lies in his unwavering resolve.
+Driven by a deep sense of duty.
 """
                 }]
             }
@@ -35,9 +35,8 @@ Haunted by the memory of his fallen comrades, Arion is driven by a deep sense of
     page.locator("#generate-button").click()
 
     # 4. Verify the response is rendered correctly
-    page.wait_for_timeout(1000)
     expect(page.locator("#response-container")).to_contain_text("Arion the Sun-Forged")
-    expect(page.locator("#response-container h1")).to_have_text("Character Concept: Arion the Sun-Forged")
+    expect(page.locator("#response-container h1")).to_have_text("Arion the Sun-Forged")
     expect(page.locator("#response-container h2")).to_have_count(3)
 
     # 5. Take a screenshot
