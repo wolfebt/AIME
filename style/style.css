@@ -1058,13 +1058,13 @@ select.input-field {
 .writer-tab.active { display: block; animation: fadeInTab 0.5s ease-in-out forwards; }
 
 /* Element Page Specific Tab Styles */
-.template-nav, .element-nav {
+.element-nav {
     display: flex;
     justify-content: center;
     gap: 12px;
     margin-bottom: 1rem; /* Reduced margin for a tighter layout */
 }
-.template-nav-button, .element-nav-button {
+.element-nav-button {
     background: none;
     border: 1px solid var(--panel-border);
     color: var(--medium-text);
@@ -1074,21 +1074,53 @@ select.input-field {
     font-weight: 500;
     transition: all 0.3s;
 }
-.template-nav-button:hover, .element-nav-button:hover {
+.element-nav-button:hover {
     background-color: rgba(139, 148, 158, 0.1);
 }
-.template-nav-button.active, .element-nav-button.active {
+.element-nav-button.active {
     background-color: var(--accent-blue);
     color: white;
     font-weight: 600;
     border-color: transparent;
 }
-.template-content, .element-tab {
+.element-tab {
     display: none;
 }
-.template-content.active, .element-tab.active {
+.element-tab.active {
     display: block;
     animation: fadeInTab 0.5s ease-in-out forwards;
+}
+.sub-nav {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 12px;
+    background: rgba(20, 22, 28, 0.6);
+}
+.sub-nav-button {
+    flex-grow: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background-color: transparent;
+    color: var(--medium-text);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+.sub-nav-button.active {
+    background-color: rgba(30, 64, 175, 0.3);
+    color: var(--light-text);
+    font-weight: 600;
+}
+.sub-tab-content {
+    display: none;
+}
+.sub-tab-content.active {
+    display: block;
 }
 .element-tab .form-section {
     margin-top: 0; /* Remove top margin from the form section inside a tab */
