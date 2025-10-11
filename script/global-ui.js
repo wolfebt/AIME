@@ -271,6 +271,7 @@ function createAimeButton() {
 function createAimeModal() {
     const modalHtml = `
         <div id="aime-chat-modal" class="aime-chat-modal hidden">
+            <div class="under-construction-banner">UNDER CONSTRUCTION</div>
             <div id="aime-chat-header" class="aime-chat-header">
                 <span class="aime-chat-title">AIME Co-Author</span>
                 <button id="aime-chat-close-btn" class="aime-chat-close-btn">&times;</button>
