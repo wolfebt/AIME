@@ -631,7 +631,7 @@ function craftSuperPrompt(elementType) {
         });
     }
 
-    prompt += `\n--- TASK ---\nGenerate extensive and highly detailed content for the primary "${elementType}" Element. Use the Guidance Gems for style and the Contextual Assets for lore. Produce a comprehensive document with clear, well-structured headings and detailed paragraphs. The output should be rich, imaginative, and consistent with all provided data.`;
+    prompt += `\n--- TASK ---\nGenerate a detailed character profile for a single "${elementType}" Element based *only* on the traits, notes, and assets provided. Do NOT define or explain what a "${elementType}" is. Instead, flesh out the provided details into a rich, narrative description of the character. Use clear headings for each section. The output should be a creative and comprehensive profile of one individual.`;
 
     console.log("Super Prompt:", prompt);
     return prompt;
