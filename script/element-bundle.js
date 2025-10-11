@@ -565,7 +565,8 @@ function craftSuperPrompt(elementType) {
 
     // --- 1. Current Element's Traits ---
     prompt += "--- PRIMARY ELEMENT: " + elementType + " ---\n";
-    const inputs = document.querySelectorAll('.form-section .input-field');
+    const activeTemplate = document.querySelector('.template-content.active');
+    const inputs = activeTemplate.querySelectorAll('.input-field');
     let hasPrimaryTraits = false;
     inputs.forEach(input => {
         // Exclude the new custom notes field from this main loop
@@ -653,12 +654,10 @@ function saveElementAsset() {
 
     let assetName = 'Untitled';
 
-    // Process standard trait fields from all tabs
-    const inputs = document.querySelectorAll('.form-section .input-field');
+    // Process standard trait fields from the active template
+    const activeTemplate = document.querySelector('.template-content.active');
+    const inputs = activeTemplate.querySelectorAll('.input-field');
     inputs.forEach(input => {
-        // Exclude the custom notes field from this main loop
-        if (input.id === 'custom-notes') return;
-
         const labelElement = input.previousElementSibling;
         const label = labelElement ? labelElement.textContent.trim() : 'Unknown Field';
         const value = input.value.trim();
@@ -668,7 +667,7 @@ function saveElementAsset() {
         }
 
         // Check for the 'name' field to use in the filename
-        if (input.dataset.fieldId === 'name' && value) {
+        if ((input.dataset.fieldId === 'name' || input.dataset.fieldId === 'snapshot_name') && value) {
             assetName = value;
         }
     });
@@ -786,7 +785,8 @@ function loadElementAsset(file) {
 }
 
 function setFieldValue(label, value) {
-    const labels = document.querySelectorAll('.form-group label');
+    // This function now searches across all templates for a matching label.
+    const labels = document.querySelectorAll('.template-content .form-group label');
     let targetInput = null;
 
     if (label === 'Custom Notes') {
@@ -859,6 +859,30 @@ function initializeElementTabs() {
     });
 }
 
+// --- Template Switching Logic ---
+function initializeTemplateSwitcher() {
+    const tabButtons = document.querySelectorAll('.template-nav-button');
+    const tabs = document.querySelectorAll('.template-content');
+
+    if (!tabButtons.length || !tabs.length) return;
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Deactivate all buttons and tabs
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Activate the clicked button and corresponding tab
+            button.classList.add('active');
+            const tabName = button.dataset.template;
+            const targetTab = document.getElementById(`${tabName}-template`);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+        });
+    });
+}
+
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     initializeResizableColumns(); // Intentionally disabled for stability
@@ -870,6 +894,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeLoadButton();
     initializeNewButton();
     initializeElementTabs();
+    initializeTemplateSwitcher();
 });
 
 
