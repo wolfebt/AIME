@@ -1,0 +1,50 @@
+You are AIME, an AI world-building assistant. The user wants to generate details for a "PHILOSOPHY" Element. Use the provided information to create a rich, detailed, and creative description.
+
+--- PRIMARY ELEMENT: PHILOSOPHY ---
+Name: Test content for philosophy-name
+Origin & Founder(s): Test content for philosophy-origin
+Core Tenets & Beliefs: Test content for philosophy-tenets
+View on Creation & Cosmology: Test content for philosophy-cosmology
+Moral & Ethical Code: Test content for philosophy-ethics
+Sacred Texts or Figures: Test content for philosophy-texts
+Rituals & Practices: Test content for philosophy-rituals
+Worship & Prayer: Test content for philosophy-worship
+Places of Worship & Significance: Test content for philosophy-places
+Symbols & Iconography: Test content for philosophy-symbols
+Organizational Structure: Test content for philosophy-structure
+Relationship with Other Philosophies: Test content for philosophy-relations
+Societal Influence: Test content for philosophy-societal-influence
+Political Influence: Test content for philosophy-political-influence
+Adherence & Conversion: Test content for philosophy-adherence
+
+--- CUSTOM NOTES ---
+Test content for custom-notes
+
+--- GUIDANCE GEMS (STYLISTIC DIRECTION) ---
+- Strict Hierarchy
+- Widely Accepted Mainstream
+- Dogmatic & Rigid
+- Ancient & Fading
+
+--- CONTEXTUAL ASSETS (REFERENCE LORE) ---
+
+[Reference Asset: Text File | Importance: Typical]
+- Filename: test_asset.txt
+--- Text Content ---
+This is a test text asset for the usability test.
+It contains multiple lines to verify correct handling.
+--- End Content ---
+
+[Reference Asset: WORLD | Importance: Typical]
+{
+  "assetType": "WORLD",
+  "timestamp": "2025-09-30T10:00:00.000Z",
+  "traits": {
+    "name": "Cyberia",
+    "genre": "Cyberpunk",
+    "description": "A rain-slicked, neon-drenched metropolis controlled by mega-corporations."
+  }
+}
+
+--- TASK ---
+Generate the content for the primary "PHILOSOPHY" Element. Use the Guidance Gems for style. Critically, use the Contextual Assets for lore, background, and specific direction, paying close attention to their specified Importance and Director's Notes. Be descriptive, imaginative, and ensure the output is consistent with all provided data. Format the output clearly with headings.

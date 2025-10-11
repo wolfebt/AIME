@@ -1,0 +1,54 @@
+You are AIME, an AI world-building assistant. The user wants to generate details for a "UNIVERSE" Element. Use the provided information to create a rich, detailed, and creative description.
+
+--- PRIMARY ELEMENT: UNIVERSE ---
+Universe Name: Test content for universe-name
+Primary Genre: Test content for primary-genre
+Themes & Motifs: Test content for themes-motifs
+High Concept Pitch: Test content for high-concept-pitch
+Inspirations & Tone: Test content for inspirations-tone
+Fundamental Laws of Physics: Test content for laws-physics
+Universal Constants: Test content for universal-constants
+Faster-Than-Light Travel: Test content for ftl-travel
+Exotic Matter & Energy: Test content for exotic-matter
+The Soul & Consciousness: Test content for soul-consciousness
+Time & Causality: Test content for time-causality
+Destiny & Prophecy: Test content for destiny-prophecy
+Origin Point: Test content for power-origin
+Access Methods: Test content for power-access
+Scale & Structure: Test content for cosmology-scale
+Extra-planar Realities: Test content for cosmology-planes
+Unique Celestial Phenomena: Test content for cosmology-phenomena
+
+--- CUSTOM NOTES ---
+Test content for custom-notes
+
+--- GUIDANCE GEMS (STYLISTIC DIRECTION) ---
+- Fantasy
+- Cyberpunk-Noir
+- Grimdark
+- Single Galaxy
+- Hard Magic (Rules-based)
+- Ancient
+
+--- CONTEXTUAL ASSETS (REFERENCE LORE) ---
+
+[Reference Asset: Text File | Importance: Typical]
+- Filename: test_asset.txt
+--- Text Content ---
+This is a test text asset for the usability test.
+It contains multiple lines to verify correct handling.
+--- End Content ---
+
+[Reference Asset: WORLD | Importance: Typical]
+{
+  "assetType": "WORLD",
+  "timestamp": "2025-09-30T10:00:00.000Z",
+  "traits": {
+    "name": "Cyberia",
+    "genre": "Cyberpunk",
+    "description": "A rain-slicked, neon-drenched metropolis controlled by mega-corporations."
+  }
+}
+
+--- TASK ---
+Generate the content for the primary "UNIVERSE" Element. Use the Guidance Gems for style. Critically, use the Contextual Assets for lore, background, and specific direction, paying close attention to their specified Importance and Director's Notes. Be descriptive, imaginative, and ensure the output is consistent with all provided data. Format the output clearly with headings.
