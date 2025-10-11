@@ -105,6 +105,9 @@ def test_full_ai_workflow_e2e(page: Page):
     """
     page.goto(BASE_URL)
 
+    # Set a dummy API key in local storage to simulate a user-provided key
+    page.evaluate("() => localStorage.setItem('AIME_API_KEY', 'DUMMY_KEY')")
+
     # --- Mock API Responses ---
     mock_brainstorm_response = {
         "candidates": [{
@@ -158,13 +161,12 @@ def test_full_ai_workflow_e2e(page: Page):
     }
 
     # --- Setup Routes ---
-    page.route("**/api/proxy", lambda route: route.fulfill(status=200, json=mock_brainstorm_response))
-    page.on("dialog", lambda dialog: dialog.accept())
+    page.route("https://generativelanguage.googleapis.com/**", lambda route: route.fulfill(status=200, json=mock_brainstorm_response))
 
     # --- 1. Brainstorm ---
     page.locator("#main-prompt").fill("A lost city of crystals")
 
-    with page.expect_response("**/api/proxy"):
+    with page.expect_response("https://generativelanguage.googleapis.com/**"):
         page.locator("#generate-button").click()
 
     # Verify brainstorm cards are rendered
@@ -175,11 +177,11 @@ def test_full_ai_workflow_e2e(page: Page):
 
     # --- 2. Outline ---
     # Update route for the next API call
-    page.unroute("**/api/proxy")
-    page.route("**/api/proxy", lambda route: route.fulfill(status=200, json=mock_outline_response))
+    page.unroute("https://generativelanguage.googleapis.com/**")
+    page.route("https://generativelanguage.googleapis.com/**", lambda route: route.fulfill(status=200, json=mock_outline_response))
 
     # Click "Develop Outline" on the first card
-    with page.expect_response("**/api/proxy"):
+    with page.expect_response("https://generativelanguage.googleapis.com/**"):
         page.locator(".brainstorm-card", has_text="The Crystal City").locator(".develop-outline-btn").click()
 
     # Verify tab switch and outline rendering
@@ -191,11 +193,11 @@ def test_full_ai_workflow_e2e(page: Page):
 
     # --- 3. Draft ---
     # Update route for the final API call
-    page.unroute("**/api/proxy")
-    page.route("**/api/proxy", lambda route: route.fulfill(status=200, json=mock_draft_response))
+    page.unroute("https://generativelanguage.googleapis.com/**")
+    page.route("https://generativelanguage.googleapis.com/**", lambda route: route.fulfill(status=200, json=mock_draft_response))
 
     # Click "Create Treatment"
-    with page.expect_response("**/api/proxy"):
+    with page.expect_response("https://generativelanguage.googleapis.com/**"):
         page.locator("#create-treatment-from-outline-btn").click()
 
     # Verify tab switch and draft content
