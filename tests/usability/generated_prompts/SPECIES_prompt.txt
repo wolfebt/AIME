@@ -1,0 +1,52 @@
+You are AIME, an AI world-building assistant. The user wants to generate details for a "SPECIES" Element. Use the provided information to create a rich, detailed, and creative description.
+
+--- PRIMARY ELEMENT: SPECIES ---
+Species Name: Test content for species-name
+Classification: Test content for species-classification
+Origin: Test content for species-origin
+Physical Anatomy & Appearance: Test content for species-anatomy
+Biological Systems & Life Cycle: Test content for species-biology
+Sensory Capabilities: Test content for species-senses
+Abilities & Powers: Test content for species-abilities
+Communication Methods: Test content for species-communication
+Biological Vulnerabilities: Test content for species-vulnerabilities
+Behavior & Social Structure: Test content for species-behavior
+Diet & Trophic Level: Test content for species-diet
+Habitat & Planetary Origin: Test content for species-habitat
+Evolutionary History: Test content for species-evolution
+Cultural Traits & Technology Level: Test content for species-culture
+Ecological Role: Test content for species-role
+Inter-species Relations: Test content for species-relations
+
+--- CUSTOM NOTES ---
+Test content for custom-notes
+
+--- GUIDANCE GEMS (STYLISTIC DIRECTION) ---
+- Natural Evolution
+- Apex Predator
+- Hive-Mind/Collective
+- Technologically Advanced
+- Aggressive & Territorial
+
+--- CONTEXTUAL ASSETS (REFERENCE LORE) ---
+
+[Reference Asset: Text File | Importance: Typical]
+- Filename: test_asset.txt
+--- Text Content ---
+This is a test text asset for the usability test.
+It contains multiple lines to verify correct handling.
+--- End Content ---
+
+[Reference Asset: WORLD | Importance: Typical]
+{
+  "assetType": "WORLD",
+  "timestamp": "2025-09-30T10:00:00.000Z",
+  "traits": {
+    "name": "Cyberia",
+    "genre": "Cyberpunk",
+    "description": "A rain-slicked, neon-drenched metropolis controlled by mega-corporations."
+  }
+}
+
+--- TASK ---
+Generate the content for the primary "SPECIES" Element. Use the Guidance Gems for style. Critically, use the Contextual Assets for lore, background, and specific direction, paying close attention to their specified Importance and Director's Notes. Be descriptive, imaginative, and ensure the output is consistent with all provided data. Format the output clearly with headings.

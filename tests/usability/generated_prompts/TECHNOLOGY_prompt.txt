@@ -1,0 +1,49 @@
+You are AIME, an AI world-building assistant. The user wants to generate details for a "TECHNOLOGY" Element. Use the provided information to create a rich, detailed, and creative description.
+
+--- PRIMARY ELEMENT: TECHNOLOGY ---
+Technology Name: Test content for tech-name
+Category / Type: Test content for tech-category
+Tech Level: Test content for tech-level
+Function & Purpose: Test content for tech-purpose
+Aesthetics & Design: Test content for tech-aesthetics
+Operating Mechanism: Test content for tech-mechanism
+Power Source & Efficiency: Test content for tech-power
+Materials & Manufacturing: Test content for tech-materials
+Limitations & Drawbacks: Test content for tech-drawbacks
+Counter-Measures & Vulnerabilities: Test content for tech-vulnerabilities
+Social & Cultural Impact: Test content for tech-social-impact
+Economic & Political Impact: Test content for tech-eco-impact
+Historical Development: Test content for tech-history
+Adoption & Proliferation: Test content for tech-proliferation
+
+--- CUSTOM NOTES ---
+Test content for custom-notes
+
+--- GUIDANCE GEMS (STYLISTIC DIRECTION) ---
+- Sleek & Minimalist
+- Formal Technical Manual
+- Flawless & Dependable
+- Highly Intuitive
+
+--- CONTEXTUAL ASSETS (REFERENCE LORE) ---
+
+[Reference Asset: Text File | Importance: Typical]
+- Filename: test_asset.txt
+--- Text Content ---
+This is a test text asset for the usability test.
+It contains multiple lines to verify correct handling.
+--- End Content ---
+
+[Reference Asset: WORLD | Importance: Typical]
+{
+  "assetType": "WORLD",
+  "timestamp": "2025-09-30T10:00:00.000Z",
+  "traits": {
+    "name": "Cyberia",
+    "genre": "Cyberpunk",
+    "description": "A rain-slicked, neon-drenched metropolis controlled by mega-corporations."
+  }
+}
+
+--- TASK ---
+Generate the content for the primary "TECHNOLOGY" Element. Use the Guidance Gems for style. Critically, use the Contextual Assets for lore, background, and specific direction, paying close attention to their specified Importance and Director's Notes. Be descriptive, imaginative, and ensure the output is consistent with all provided data. Format the output clearly with headings.

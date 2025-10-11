@@ -1,0 +1,50 @@
+You are AIME, an AI world-building assistant. The user wants to generate details for a "WORLD" Element. Use the provided information to create a rich, detailed, and creative description.
+
+--- PRIMARY ELEMENT: WORLD ---
+World Name: Test content for world-name
+Core Premise / High Concept: Test content for world-premise
+Overall Tone & Mood: Test content for world-mood
+Cosmology & Unique Physics: Test content for world-physics
+Magic & Power Systems: Test content for world-magic
+Technological Level: Test content for world-tech-level
+Physical Characteristics: Test content for world-characteristics
+Geography & Climate Zones: Test content for world-geography
+Dominant Species & Cultures: Test content for world-species
+Resources & Materials: Test content for world-resources
+Major Factions & Powers: Test content for world-factions
+History & Lore Timeline: Test content for world-lore
+Major Historical Conflicts: Test content for world-conflicts
+Archaeology & Lost Civilizations: Test content for world-archaeology
+
+--- CUSTOM NOTES ---
+Test content for custom-notes
+
+--- GUIDANCE GEMS (STYLISTIC DIRECTION) ---
+- Volcanic & Harsh
+- Feudal Kingdoms
+- Widespread War
+- Ancient & Mysterious
+- Nomadic & Tribal
+
+--- CONTEXTUAL ASSETS (REFERENCE LORE) ---
+
+[Reference Asset: Text File | Importance: Typical]
+- Filename: test_asset.txt
+--- Text Content ---
+This is a test text asset for the usability test.
+It contains multiple lines to verify correct handling.
+--- End Content ---
+
+[Reference Asset: WORLD | Importance: Typical]
+{
+  "assetType": "WORLD",
+  "timestamp": "2025-09-30T10:00:00.000Z",
+  "traits": {
+    "name": "Cyberia",
+    "genre": "Cyberpunk",
+    "description": "A rain-slicked, neon-drenched metropolis controlled by mega-corporations."
+  }
+}
+
+--- TASK ---
+Generate the content for the primary "WORLD" Element. Use the Guidance Gems for style. Critically, use the Contextual Assets for lore, background, and specific direction, paying close attention to their specified Importance and Director's Notes. Be descriptive, imaginative, and ensure the output is consistent with all provided data. Format the output clearly with headings.

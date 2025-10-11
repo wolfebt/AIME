@@ -1,0 +1,57 @@
+You are AIME, an AI world-building assistant. The user wants to generate details for a "PERSONA" Element. Use the provided information to create a rich, detailed, and creative description.
+
+--- PRIMARY ELEMENT: PERSONA ---
+Name: Test content for persona-name
+Aliases & Nicknames: Test content for persona-aliases
+Gender & Pronouns: Test content for persona-pronouns
+Archetype: Test content for persona-archetype
+One-Line Pitch: Test content for persona-pitch
+Physical Description: Test content for persona-description
+Distinguishing Features: Test content for persona-features
+Ethnic & Cultural Traits: Test content for ethnic-traits
+Fashion & Style: Test content for fashion-style
+Signature Items: Test content for signature-items
+Voice & Speech Patterns: Test content for voice-patterns
+Personality Traits: Test content for personality-traits
+Quirks & Habits: Test content for quirks-habits
+Personality Coding: Test content for personality-coding
+Goals & Motivations: Test content for persona-goals
+Strengths & Skills: Test content for strengths-skills
+Flaws & Fears: Test content for flaws-fears
+Background & History: Test content for persona-history
+Role in Story: Test content for persona-role
+Relationships: Test content for persona-relationships
+Secrets: Test content for secrets
+
+--- CUSTOM NOTES ---
+Test content for custom-notes
+
+--- GUIDANCE GEMS (STYLISTIC DIRECTION) ---
+- Heroic & Grand
+- Morally Ambiguous
+- Eloquent & Articulate
+- Emphasize Strength/Power
+- Emotionally Reserved
+
+--- CONTEXTUAL ASSETS (REFERENCE LORE) ---
+
+[Reference Asset: Text File | Importance: Typical]
+- Filename: test_asset.txt
+--- Text Content ---
+This is a test text asset for the usability test.
+It contains multiple lines to verify correct handling.
+--- End Content ---
+
+[Reference Asset: WORLD | Importance: Typical]
+{
+  "assetType": "WORLD",
+  "timestamp": "2025-09-30T10:00:00.000Z",
+  "traits": {
+    "name": "Cyberia",
+    "genre": "Cyberpunk",
+    "description": "A rain-slicked, neon-drenched metropolis controlled by mega-corporations."
+  }
+}
+
+--- TASK ---
+Generate the content for the primary "PERSONA" Element. Use the Guidance Gems for style. Critically, use the Contextual Assets for lore, background, and specific direction, paying close attention to their specified Importance and Director's Notes. Be descriptive, imaginative, and ensure the output is consistent with all provided data. Format the output clearly with headings.
