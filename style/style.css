@@ -632,6 +632,25 @@ select.input-field {
     cursor: not-allowed;
 }
 
+/* Under Construction Banner */
+.under-construction-banner {
+    background: repeating-linear-gradient(
+        45deg,
+        #ff0000,
+        #ff0000 10px,
+        #000000 10px,
+        #000000 20px
+    );
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    z-index: 1200; /* High z-index to be on top of other elements */
+}
+
 /* --- Asset Hub Styles (Shared) --- */
 .asset-hub-subtitle {
     font-size: 0.9rem;
