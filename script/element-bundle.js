@@ -468,6 +468,20 @@ function initializeGuidanceGems() {
     });
 }
 
+// --- Formatted Content Display ---
+function displayFormattedContent(container, text) {
+    // A simple markdown-to-HTML converter. It handles headings, bold, italic, and newlines.
+    let html = text
+        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+        .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/gim, '<em>$1</em>')
+        .replace(/\n/g, '<br />');
+
+    container.innerHTML = `<div class="generated-content-wrapper">${html}</div>`;
+}
+
 // --- Element Generation Logic ---
 async function generateElementContent(button) {
     const elementType = button.dataset.elementType;
@@ -524,15 +538,9 @@ async function generateElementContent(button) {
         const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
 
         if (text) {
-            // Find the custom notes textarea and set its value
-            const customNotesField = document.getElementById('custom-notes');
-            if (customNotesField) {
-                customNotesField.value = text;
-            } else {
-                console.error("Could not find the #custom-notes field to populate.");
-            }
-            // Clear the loading indicator
+            // Display the formatted text in the response container
             responseContainer.innerHTML = '';
+            displayFormattedContent(responseContainer, text);
         } else {
             console.warn("Invalid or empty response from API.", result);
             const finishReason = result.candidates?.[0]?.finishReason;
@@ -557,12 +565,9 @@ function craftSuperPrompt(elementType) {
 
     // --- 1. Current Element's Traits ---
     prompt += "--- PRIMARY ELEMENT: " + elementType + " ---\n";
-    const inputs = document.querySelectorAll('.form-section .input-field');
+    const inputs = document.querySelectorAll('.element-tab .input-field');
     let hasPrimaryTraits = false;
     inputs.forEach(input => {
-        // Exclude the new custom notes field from this main loop
-        if (input.id === 'custom-notes') return;
-
         const label = input.previousElementSibling ? input.previousElementSibling.textContent : input.id;
         if (input.value.trim()) {
             prompt += `${label}: ${input.value.trim()}\n`;
@@ -623,7 +628,7 @@ function craftSuperPrompt(elementType) {
         });
     }
 
-    prompt += `\n--- TASK ---\nGenerate the content for the primary "${elementType}" Element. Use the Guidance Gems for style. Critically, use the Contextual Assets for lore, background, and specific direction, paying close attention to their specified Importance and Director's Notes. Be descriptive, imaginative, and ensure the output is consistent with all provided data. Format the output clearly with headings.`;
+    prompt += `\n--- TASK ---\nGenerate a detailed character profile for a single "${elementType}" Element based *only* on the traits, notes, and assets provided. Do NOT define or explain what a "${elementType}" is. Instead, flesh out the provided details into a rich, narrative description of the character. Use clear headings for each section. The output should be a creative and comprehensive profile of one individual.`;
 
     console.log("Super Prompt:", prompt);
     return prompt;
@@ -646,11 +651,8 @@ function saveElementAsset() {
     let assetName = 'Untitled';
 
     // Process standard trait fields from all tabs
-    const inputs = document.querySelectorAll('.form-section .input-field');
+    const inputs = document.querySelectorAll('.element-tab .input-field');
     inputs.forEach(input => {
-        // Exclude the custom notes field from this main loop
-        if (input.id === 'custom-notes') return;
-
         const labelElement = input.previousElementSibling;
         const label = labelElement ? labelElement.textContent.trim() : 'Unknown Field';
         const value = input.value.trim();
@@ -778,16 +780,8 @@ function loadElementAsset(file) {
 }
 
 function setFieldValue(label, value) {
-    const labels = document.querySelectorAll('.form-group label');
+    const labels = document.querySelectorAll('.element-tab .form-group label');
     let targetInput = null;
-
-    if (label === 'Custom Notes') {
-        const customNotesField = document.getElementById('custom-notes');
-        if (customNotesField) {
-            customNotesField.value = value;
-        }
-        return;
-    }
 
     labels.forEach(lbl => {
         if (lbl.textContent.trim() === label) {
@@ -851,6 +845,57 @@ function initializeElementTabs() {
     });
 }
 
+// --- Element Page Tabs ---
+function initializeElementTabs() {
+    const tabButtons = document.querySelectorAll('.element-nav-button');
+    const tabs = document.querySelectorAll('.element-tab');
+
+    if (!tabButtons.length || !tabs.length) return;
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Deactivate all buttons and tabs
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Activate the clicked button and corresponding tab
+            button.classList.add('active');
+            const tabName = button.dataset.tab;
+            const targetTab = document.getElementById(`${tabName}-tab`);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+        });
+    });
+}
+
+// --- Sub-Tab Logic ---
+function initializeSubTabs() {
+    const containers = document.querySelectorAll('.sub-tab-container');
+    containers.forEach(container => {
+        const subTabButtons = container.querySelectorAll('.sub-nav-button');
+        const subTabs = container.querySelectorAll('.sub-tab-content');
+
+        if (!subTabButtons.length || !subTabs.length) return;
+
+        subTabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Deactivate all buttons and tabs within this container
+                subTabButtons.forEach(btn => btn.classList.remove('active'));
+                subTabs.forEach(tab => tab.classList.remove('active'));
+
+                // Activate the clicked button and corresponding tab
+                button.classList.add('active');
+                const subTabName = button.dataset.subTab;
+                const targetSubTab = container.querySelector(`#${subTabName}-sub-tab`);
+                if (targetSubTab) {
+                    targetSubTab.classList.add('active');
+                }
+            });
+        });
+    });
+}
+
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     initializeResizableColumns(); // Intentionally disabled for stability
@@ -862,6 +907,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeLoadButton();
     initializeNewButton();
     initializeElementTabs();
+    initializeSubTabs();
 });
 
 
