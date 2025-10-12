@@ -632,6 +632,86 @@ select.input-field {
     cursor: not-allowed;
 }
 
+/* --- Edit Mode Toggle Switch --- */
+.edit-toggle-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.edit-toggle-label {
+    font-size: 0.9rem;
+    color: var(--medium-text);
+    font-weight: 500;
+}
+
+.edit-toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+}
+
+.edit-toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.edit-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #30363d;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.edit-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .edit-toggle-slider {
+    background-color: var(--accent-blue);
+}
+
+input:focus + .edit-toggle-slider {
+    box-shadow: 0 0 1px var(--accent-blue);
+}
+
+input:checked + .edit-toggle-slider:before {
+    transform: translateX(20px);
+}
+
+/* --- Visual Indicator for Editable Content --- */
+.editable-area.is-editable {
+    outline: 2px solid var(--accent-blue) !important;
+    box-shadow: 0 0 15px rgba(30, 64, 175, 0.3);
+    border-radius: 8px; /* Ensure the outline follows the container's shape */
+}
+
+/* Ensure the textarea for notes also gets the editable style */
+#custom-notes.is-editable {
+    outline: 2px solid var(--accent-blue);
+    box-shadow: 0 0 15px rgba(30, 64, 175, 0.3);
+}
+
+/* Make the placeholder text disappear when editable */
+.is-editable .placeholder-text {
+    display: none;
+}
+
 /* Under Construction Banner */
 .under-construction-banner {
     background: repeating-linear-gradient(

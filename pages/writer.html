@@ -43,6 +43,13 @@
                 <div id="brainstorm-tab" class="writer-tab active">
                     <div class="tab-controls glass-panel">
                         <h3 class="tab-title">Brainstorm Concepts</h3>
+                        <div class="edit-toggle-container">
+                            <span class="edit-toggle-label">Edit</span>
+                            <label class="edit-toggle-switch">
+                                <input type="checkbox" class="edit-toggle" data-target="brainstorm-response-area">
+                                <span class="edit-toggle-slider"></span>
+                            </label>
+                        </div>
                     </div>
                     <div id="brainstorm-response-area" class="response-area-cards">
                         <p class="placeholder-text">Enter a core idea in the prompt box and click "Brainstorm Concepts" to generate story ideas.</p>
@@ -52,6 +59,13 @@
                 <div id="outline-tab" class="writer-tab">
                     <div class="tab-controls glass-panel">
                         <h3 class="tab-title">Build Your Outline</h3>
+                        <div class="edit-toggle-container">
+                            <span class="edit-toggle-label">Edit</span>
+                            <label class="edit-toggle-switch">
+                                <input type="checkbox" class="edit-toggle" data-target="outline-list">
+                                <span class="edit-toggle-slider"></span>
+                            </label>
+                        </div>
                         <button id="create-treatment-from-outline-btn" class="action-btn">Create Treatment</button>
                     </div>
                     <ul id="outline-list" class="outline-list">
@@ -62,6 +76,13 @@
                 <div id="treatment-tab" class="writer-tab">
                     <div class="tab-controls glass-panel">
                         <h3 class="tab-title">Draft Your Story</h3>
+                        <div class="edit-toggle-container">
+                            <span class="edit-toggle-label">Edit</span>
+                            <label class="edit-toggle-switch">
+                                <input type="checkbox" class="edit-toggle" data-target="treatment-canvas">
+                                <span class="edit-toggle-slider"></span>
+                            </label>
+                        </div>
                     </div>
                     <div id="treatment-canvas" class="writing-canvas glass-panel" contenteditable="true">
                          <p class="placeholder-text">Generate an outline, then click "Generate Treatment" to create a story treatment here.</p>

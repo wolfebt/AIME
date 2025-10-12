@@ -621,7 +621,7 @@ function initializeGeneration() {
                 break;
             case 'outline':
                 const outlineList = document.getElementById('outline-list');
-                const existingText = outlineList.innerText;
+                const existingText = outlineList.innerText; // Use innerText to get the current, potentially edited content
                 generatePlotPoint(existingText);
                 break;
             case 'treatment':
@@ -798,9 +798,9 @@ function initializeWorkflowButtons() {
             const card = e.target.closest('.brainstorm-card');
             if (!card) return;
 
-            const title = card.querySelector('.card-title').textContent;
-            const logline = card.querySelector('.brainstorm-logline').textContent;
-            const concept = card.querySelector('.brainstorm-concept').textContent;
+            const title = card.querySelector('.card-title').innerText;
+            const logline = card.querySelector('.brainstorm-logline').innerText;
+            const concept = card.querySelector('.brainstorm-concept').innerText;
             const fullConcept = `Title: ${title}\nLogline: ${logline}\nConcept: ${concept}`;
 
             const outlineTabButton = document.querySelector('.writer-nav-button[data-tab="outline"]');
@@ -849,8 +849,8 @@ async function generateTreatment() {
 
     let fullOutline = "Please write a detailed story treatment based on the following ordered plot points:\n\n";
     outlineItems.forEach((item, index) => {
-        const title = item.querySelector('.outline-item-title').textContent;
-        const description = item.querySelector('.outline-item-description').textContent;
+        const title = item.querySelector('.outline-item-title').innerText;
+        const description = item.querySelector('.outline-item-description').innerText;
         fullOutline += `${index + 1}. ${title}: ${description}\n`;
     });
 
@@ -1218,6 +1218,50 @@ function loadOutlineContent(content) {
     }
 }
 
+// --- Edit Mode Toggles ---
+function initializeEditToggles() {
+    const toggles = document.querySelectorAll('.edit-toggle');
+    toggles.forEach(toggle => {
+        const targetId = toggle.dataset.target;
+        const targetElement = document.getElementById(targetId);
+
+        if (targetElement) {
+            // Add the editable-area class for styling
+            targetElement.classList.add('editable-area');
+
+            // Set initial state
+            const isChecked = toggle.checked;
+            targetElement.contentEditable = isChecked;
+            if (isChecked) {
+                targetElement.classList.add('is-editable');
+            } else {
+                targetElement.classList.remove('is-editable');
+            }
+
+            const childEditables = targetElement.querySelectorAll('.editable-content');
+            childEditables.forEach(child => {
+                child.contentEditable = isChecked;
+            });
+
+            toggle.addEventListener('change', (e) => {
+                const isEditable = e.target.checked;
+                targetElement.contentEditable = isEditable;
+
+                if (isEditable) {
+                    targetElement.classList.add('is-editable');
+                } else {
+                    targetElement.classList.remove('is-editable');
+                }
+
+                const childEditables = targetElement.querySelectorAll('.editable-content');
+                childEditables.forEach(child => {
+                    child.contentEditable = isEditable;
+                });
+            });
+        }
+    });
+}
+
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     // Core UI Initializers
@@ -1226,6 +1270,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeGuidanceGems();
     initializeAssetImporter();
     initializeTabs();
+    initializeEditToggles();
 
     // Workflow and Generation Initializers
     initializeGeneration();
