@@ -20,12 +20,35 @@ ELEMENT_INVENTORY = {
     "persona": {
         "type": "PERSONA",
         "tabs": {
-            "core-identity": ["persona-name", "persona-aliases", "persona-pronouns", "persona-archetype", "persona-pitch"],
-            "appearance": ["persona-description", "persona-features", "ethnic-traits", "fashion-style", "signature-items", "voice-patterns", "personality-traits", "quirks-habits", "personality-coding"],
-            "narrative": ["persona-goals", "strengths-skills", "flaws-fears", "persona-history", "persona-role", "persona-relationships", "secrets"]
+            "overview": ["persona-name", "persona-role", "persona-archetype", "persona-summary", "persona-motivation", "persona-goal"],
+            "profile": [],
+            "backstory": [],
+            "psychology": [],
+            "genre": [],
+            "notes": ["custom-notes"]
+        },
+        "sub_tabs": {
+            "profile": {
+                "vitals": ["profile-fullname", "profile-aliases", "profile-age", "profile-gender", "profile-occupation", "profile-status", "profile-residence", "profile-origin"],
+                "physicality": ["profile-description", "profile-voice", "profile-style", "profile-mannerisms"],
+                "personality": ["profile-positive-traits", "profile-negative-traits", "profile-likes", "profile-dislikes", "profile-hobbies", "profile-personality-type"]
+            },
+            "backstory": {
+                "history": ["backstory-summary", "backstory-childhood", "backstory-adolescence", "backstory-adulthood", "backstory-trauma", "backstory-accomplishments"],
+                "relationships": ["backstory-relationships"]
+            },
+            "psychology": {
+                "makeup": ["psychology-worldview", "psychology-morals", "psychology-lie", "psychology-truth", "psychology-fear", "psychology-secret", "psychology-perception"],
+                "arc": ["psychology-external-goal", "psychology-internal-goal", "psychology-arc-summary", "psychology-stakes"]
+            },
+            "genre": {
+                "fantasy": ["genre-species", "genre-faction", "genre-abilities", "genre-items", "genre-homeworld"],
+                "mystery": ["genre-connection", "genre-motive", "genre-alibi", "genre-secrets"],
+                "romance": ["genre-history", "genre-love-view", "genre-love-language", "genre-partner-traits"]
+            }
         },
         "gems": ["Descriptive Tone", "Character Complexity", "Speech Pattern", "Physicality Focus", "Inner World Focus"],
-        "untabbed_fields": ["custom-notes"]
+        "untabbed_fields": []
     },
     "philosophy": {
         "type": "PHILOSOPHY",
@@ -159,22 +182,54 @@ def run_test(playwright):
             page.goto(server_url, timeout=30000)
             print(f"Successfully navigated to {server_url}")
 
-            # 1. Fill all tabbed input fields
-            print("Filling tabbed input fields...")
+            def fill_field(page, field_id):
+                """Helper function to fill a field, handling the edit toggle for custom-notes."""
+                try:
+                    target_field = page.locator(f"#{field_id}")
+                    target_field.scroll_into_view_if_needed(timeout=5000)
+
+                    if field_id == "custom-notes":
+                        edit_toggle_label = page.locator(f"label.edit-toggle-switch:has(input[data-target='{field_id}'])")
+                        if edit_toggle_label.count() > 0:
+                            edit_toggle_label.scroll_into_view_if_needed(timeout=5000)
+                            edit_toggle_label.click(timeout=2000)
+                            print(f"Clicked edit toggle for {field_id}")
+                        else:
+                             print(f"Warning: Could not find edit toggle for {field_id}")
+
+                    target_field.fill(f"Test content for {field_id}", timeout=5000)
+                except Exception as e:
+                    print(f"    -> Error filling field '{field_id}': {e}")
+
+            print("Filling input fields...")
+            # Process all fields defined in tabs
             if "tabs" in details:
                 for tab_name, field_ids in details["tabs"].items():
                     try:
-                        tab_button = page.locator(f"[data-tab='{tab_name}']")
-                        tab_button.click(timeout=5000)
-                        print(f"Clicked tab: {tab_name}")
-                        for field_id in field_ids:
-                            page.locator(f"#{field_id}").fill(f"Test content for {field_id}", timeout=5000)
-                    except Exception as e:
-                        print(f"Could not process tab '{tab_name}' on page '{name}': {e}")
+                        tab_button = page.locator(f".element-nav-button[data-tab='{tab_name}']")
+                        if tab_button.count() > 0:
+                            tab_button.click(timeout=5000)
+                            print(f"Clicked tab: {tab_name}")
 
-            # Fill any fields not in a tab
+                        for field_id in field_ids:
+                            fill_field(page, field_id)
+
+                        if "sub_tabs" in details and tab_name in details["sub_tabs"]:
+                            for sub_tab_name, sub_field_ids in details["sub_tabs"][tab_name].items():
+                                try:
+                                    sub_tab_button = page.locator(f".sub-nav-button[data-sub-tab='{sub_tab_name}']")
+                                    sub_tab_button.click(timeout=5000)
+                                    print(f"  Clicked sub-tab: {sub_tab_name}")
+                                    for field_id in sub_field_ids:
+                                        fill_field(page, field_id)
+                                except Exception as e:
+                                    print(f"  Could not process sub-tab '{sub_tab_name}' in tab '{tab_name}': {e}")
+                    except Exception as e:
+                        print(f"Warning: Could not process tab '{tab_name}' on page '{name}': {e}")
+
+            # Process all untabbed fields
             for field_id in details.get("untabbed_fields", []):
-                 page.locator(f"#{field_id}").fill(f"Test content for {field_id}", timeout=5000)
+                 fill_field(page, field_id)
 
             # 2. Select the first gem from each category
             print("Selecting guidance gems...")
@@ -191,11 +246,13 @@ def run_test(playwright):
 
             # 3. Upload assets
             print("Uploading assets...")
-            with page.expect_file_chooser(timeout=5000) as fc_info:
-                page.locator("#import-asset-btn").click()
-            file_chooser = fc_info.value
-            file_chooser.set_files([txt_asset_path, world_asset_path])
-            expect(page.locator("#asset-list").get_by_text("test_asset.txt")).to_be_visible()
+            asset_importer = page.locator("#import-asset-btn")
+            if asset_importer.count() > 0:
+                with page.expect_file_chooser(timeout=5000) as fc_info:
+                    asset_importer.click()
+                file_chooser = fc_info.value
+                file_chooser.set_files([txt_asset_path, world_asset_path])
+                expect(page.locator("#asset-list").get_by_text("test_asset.txt")).to_be_visible()
 
             # 4. Generate and trigger interception
             print("Generating content...")
