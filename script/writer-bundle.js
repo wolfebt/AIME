@@ -444,7 +444,7 @@ function initializeTabs() {
 
 async function generateContent(prompt) {
     const userApiKey = localStorage.getItem('AIME_API_KEY');
-    const model = 'gemini-1.5-flash-latest';
+    const model = 'gemini-2.5-flash-lite';
 
     if (!userApiKey) {
         alert("API key not found. Please set it in the settings modal (the gear icon).");
