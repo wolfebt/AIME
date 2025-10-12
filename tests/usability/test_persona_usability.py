@@ -42,16 +42,40 @@ def test_persona_usability(playwright):
     page.locator("#persona-name").fill("Test Name")
     expect(page.locator("#persona-name")).to_have_value("Test Name")
 
-    # Test custom notes
-    # First, switch to the "Notes" tab
+    # Test Notes & Gallery
+    # First, switch to the "Notes & Gallery" tab
     page.locator(".element-nav-button[data-tab='notes']").click()
-    # Then, find the visible label for the toggle and click it
-    edit_toggle_label = page.locator("label.edit-toggle-switch:has(input[data-target='custom-notes'])")
-    edit_toggle_label.click()
-    custom_notes_area = page.locator("#custom-notes")
-    expect(custom_notes_area).to_be_editable()
-    custom_notes_area.fill("These are some custom notes for testing.")
-    expect(custom_notes_area).to_have_value("These are some custom notes for testing.")
+
+    # Test General Notes
+    general_notes_field = page.locator("#custom-notes")
+    expect(general_notes_field).to_be_editable()
+    general_notes_field.fill("These are some general notes.")
+    expect(general_notes_field).to_have_value("These are some general notes.")
+
+    # Switch to Inspiration Gallery and test
+    page.locator(".sub-nav-button[data-sub-tab='notes-gallery']").click()
+    gallery_field = page.locator("#persona-gallery")
+    expect(gallery_field).to_be_editable()
+    gallery_field.fill("This is a gallery of inspiration.")
+    expect(gallery_field).to_have_value("This is a gallery of inspiration.")
+
+    # Test "Relationships" Tab
+    page.locator(".element-nav-button[data-tab='backstory']").click()
+    page.locator(".sub-nav-button[data-sub-tab='relationships']").click()
+    page.locator("#relationship-name").fill("Test Character")
+    expect(page.locator("#relationship-name")).to_have_value("Test Character")
+    page.locator("#relationship-type").fill("Rival")
+    expect(page.locator("#relationship-type")).to_have_value("Rival")
+    page.locator("#relationship-dynamic").fill("A heated rivalry.")
+    expect(page.locator("#relationship-dynamic")).to_have_value("A heated rivalry.")
+
+    # Test "Psychology & Arc" Tab
+    page.locator(".element-nav-button[data-tab='psychology']").click()
+    page.locator("#psychology-worldview").fill("A dark and gritty world.")
+    expect(page.locator("#psychology-worldview")).to_have_value("A dark and gritty world.")
+    page.locator(".sub-nav-button[data-sub-tab='arc']").click()
+    page.locator("#psychology-external-goal").fill("Defeat the rival.")
+    expect(page.locator("#psychology-external-goal")).to_have_value("Defeat the rival.")
 
     # Test "Guidance Gems" (Persona Specific)
     # This test is updated to reflect the new Persona-specific gems.
