@@ -917,6 +917,169 @@ function initializeEditToggles() {
     });
 }
 
+async function generateContent(prompt) {
+    const userApiKey = localStorage.getItem('AIME_API_KEY');
+    const model = 'gemini-2.5-flash-lite';
+
+    if (!userApiKey) {
+        alert("API key not found. Please set it in the settings modal (the gear icon).");
+        return "Error: API key not found.";
+    }
+
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${userApiKey}`;
+
+    const payload = {
+        contents: [{
+            parts: [{
+                text: prompt
+            }]
+        }],
+    };
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            const errorDetails = result.error || { message: `API request failed with status ${response.status}` };
+            console.error("API Error Response:", errorDetails);
+            throw new Error(`API Error: ${errorDetails.message} (Code: ${errorDetails.code || 'N/A'})`);
+        }
+
+        const candidate = result.candidates?.[0];
+        if (candidate && candidate.content?.parts?.[0]?.text) {
+            return candidate.content.parts[0].text;
+        } else {
+            console.warn("Invalid or empty response from API.", result);
+            const finishReason = candidate?.finishReason || 'N/A';
+            const safetyRatings = candidate?.safetyRatings ? JSON.stringify(candidate.safetyRatings, null, 2) : 'N/A';
+            return `Error: The AI model returned an empty response. This may be due to the safety filter. Finish Reason: ${finishReason}. Safety Ratings: ${safetyRatings}`;
+        }
+    } catch (error) {
+        console.error("Error generating content:", error);
+        if (error instanceof TypeError) { // Network or CORS errors
+            return "Error: A network error occurred. Please check your internet connection and ensure you can access the Google API.";
+        }
+        return `Error: ${error.message}`;
+    }
+}
+
+async function handleTextTool(action, selection, customPrompt = '') {
+    const selectedText = selection.toString().trim();
+    if (selectedText === '') {
+        alert("Please select some text to modify.");
+        return;
+    }
+
+    const toolbar = document.getElementById('text-toolbar');
+    toolbar.classList.add('hidden'); // Hide toolbar during processing
+
+    let prompt = '';
+    switch (action) {
+        case 'rephrase':
+            prompt = `Rephrase the following text to be clearer and more engaging, while maintaining the original meaning:\n\n"${selectedText}"`;
+            break;
+        case 'shorten':
+            prompt = `Shorten the following text, keeping the core meaning concise:\n\n"${selectedText}"`;
+            break;
+        case 'expand':
+            prompt = `Expand upon the following text, adding more detail and description:\n\n"${selectedText}"`;
+            break;
+        case 'custom':
+            if (customPrompt.trim() === '') {
+                alert("Please enter a custom instruction.");
+                return;
+            }
+            prompt = `Apply the following instruction to the text below:\n\nInstruction: "${customPrompt}"\n\nText: "${selectedText}"`;
+            break;
+        default:
+             return;
+    }
+
+    const aiResponse = await generateContent(prompt);
+
+    if (aiResponse.startsWith("Error:")) {
+        alert(aiResponse);
+    } else {
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(document.createTextNode(aiResponse));
+    }
+}
+
+function initializeFloatingToolbar() {
+    const toolbar = document.getElementById('text-toolbar');
+    const customPromptContainer = document.getElementById('custom-prompt-container');
+    const customPromptInput = document.getElementById('custom-prompt-input');
+
+    if (!toolbar || !customPromptContainer || !customPromptInput) return;
+
+    let currentSelection = null;
+
+    // Show/hide toolbar on text selection
+    document.addEventListener('mouseup', (e) => {
+        // A brief delay allows click events on the toolbar to register before it's hidden
+        setTimeout(() => {
+            const selection = window.getSelection();
+
+            if (selection && !selection.isCollapsed) {
+                const node = selection.anchorNode;
+                // Find the closest ancestor (or self) that is editable. This makes the toolbar work for any editable area.
+                const editableElement = (node.nodeType === Node.TEXT_NODE ? node.parentElement : node).closest('[contenteditable="true"]');
+
+                if (editableElement) {
+                    currentSelection = selection;
+                    const range = selection.getRangeAt(0);
+                    const rect = range.getBoundingClientRect();
+
+                    // Position the toolbar above the selection
+                    toolbar.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (toolbar.offsetWidth / 2)}px`;
+                    toolbar.style.top = `${rect.top + window.scrollY - toolbar.offsetHeight - 10}px`;
+                    toolbar.classList.remove('hidden');
+                    return; // Exit early since we found an editable area
+                }
+            }
+
+            // If no selection or not in an editable area, hide the toolbar
+            // (unless the user is clicking inside the toolbar itself)
+            if (!toolbar.contains(e.target)) {
+                toolbar.classList.add('hidden');
+                customPromptContainer.classList.add('hidden');
+            }
+        }, 100);
+    });
+
+    toolbar.addEventListener('click', (e) => {
+        const button = e.target.closest('button');
+        if (!button) return;
+
+        const action = button.dataset.action;
+
+        if (action === 'custom') {
+            customPromptContainer.classList.toggle('hidden');
+            if (!customPromptContainer.classList.contains('hidden')) {
+                customPromptInput.focus();
+            }
+            return;
+        }
+
+        if (currentSelection) {
+            if (button.id === 'custom-prompt-submit') {
+                handleTextTool('custom', currentSelection, customPromptInput.value);
+            } else if (action) {
+                handleTextTool(action, currentSelection);
+            }
+        }
+    });
+}
+
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     initializeResizableColumns(); // Intentionally disabled for stability
@@ -930,6 +1093,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeElementTabs();
     initializeSubTabs();
     initializeEditToggles();
+    initializeFloatingToolbar();
 });
 
 

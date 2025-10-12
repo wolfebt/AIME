@@ -43,7 +43,13 @@ def run_test(playwright):
     expect(page.locator("#persona-name")).to_have_value("Test Name")
 
     # Test custom notes
+    # First, switch to the "Notes" tab
+    page.locator(".element-nav-button[data-tab='notes']").click()
+    # Then, find the visible label for the toggle and click it
+    edit_toggle_label = page.locator("label.edit-toggle-switch:has(input[data-target='custom-notes'])")
+    edit_toggle_label.click()
     custom_notes_area = page.locator("#custom-notes")
+    expect(custom_notes_area).to_be_editable()
     custom_notes_area.fill("These are some custom notes for testing.")
     expect(custom_notes_area).to_have_value("These are some custom notes for testing.")
 
@@ -87,12 +93,13 @@ def run_test(playwright):
     expect(asset_list.locator(".asset-icon-aime")).to_have_text("WORL")
 
     # --- 6. Test File-Naming Bug Fix ---
+    # Switch back to the overview tab to access the name field
+    page.locator(".element-nav-button[data-tab='overview']").click()
     # Enter a name with only whitespace
     page.locator("#persona-name").fill("    ")
 
     # Add some other data for context
     page.locator("#persona-archetype").fill("The Tester")
-    page.locator("#persona-pitch").fill("A persona designed to test the system.")
 
     # --- 7. Test Generation ---
     # Mock the API response to avoid a real API call and ensure a consistent test.
@@ -118,8 +125,9 @@ def run_test(playwright):
     # Click the generate button
     page.locator("#generate-button").click()
 
-    # Wait for the mocked content to appear in the custom notes field
-    expect(page.locator("#custom-notes")).to_have_value("This is the mocked AI-generated content for the persona.")
+    # Wait for the mocked content to appear in the response container
+    response_container = page.locator("#response-container")
+    expect(response_container).to_have_text("This is the mocked AI-generated content for the persona.")
 
 
     # --- 8. Take Screenshot ---
