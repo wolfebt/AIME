@@ -524,9 +524,20 @@ async function generateElementContent(button) {
         const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
 
         if (text) {
-            // The AI response should go into the main canvas, not the notes field.
-            // Using a simple text assignment for now. If markdown parsing is needed, this is where it would go.
-            responseContainer.textContent = text;
+            try {
+                if (typeof marked === 'undefined') {
+                    throw new Error('marked.js library is not loaded.');
+                }
+                responseContainer.innerHTML = marked.parse(text);
+
+                const iterationControls = document.getElementById('iteration-controls');
+                if (iterationControls) {
+                    iterationControls.classList.remove('hidden');
+                }
+            } catch (e) {
+                console.error("Error parsing markdown:", e);
+                responseContainer.innerHTML = `<p class="error-text">Error rendering content: ${e.message}</p>`;
+            }
         } else {
             console.warn("Invalid or empty response from API.", result);
             const finishReason = result.candidates?.[0]?.finishReason;
@@ -546,8 +557,7 @@ async function generateElementContent(button) {
     }
 }
 
-function craftSuperPrompt(elementType) {
-    // System of specific, creative instructions for each element type
+function craftSuperPrompt(elementType, iterationData = null) {
     const creativeInstructions = {
         'PERSONA': `Write a compelling character persona. Focus on bringing the character to life through vivid descriptions of their personality, appearance, and backstory. The goal is to create a believable and engaging individual for a story.`,
         'WORLD': `Describe a unique and imaginative world. Focus on its core concept, history, and the societies that inhabit it. Create a rich tapestry of lore that feels both expansive and detailed.`,
@@ -561,37 +571,44 @@ function craftSuperPrompt(elementType) {
         'DEFAULT': `Generate rich, detailed, and creative content for the specified element, using all provided context to inform the output.`
     };
 
-    const instruction = creativeInstructions[elementType] || creativeInstructions['DEFAULT'];
-    let prompt = `You are AIME, an AI world-building assistant. Your task is to act as a creative partner and generate content based on the user's request.\n\n--- YOUR TASK ---\n${instruction}\n\nDo not describe the element itself in a meta way; instead, create the content *for* the element. Use the following information to guide your writing:\n\n`;
+    let instruction;
+    let prompt;
 
-    // --- 1. Current Element's Traits ---
-    prompt += "--- PRIMARY ELEMENT: " + elementType + " ---\n";
-    const inputs = document.querySelectorAll('.form-section .input-field');
-    let hasPrimaryTraits = false;
-    inputs.forEach(input => {
-        // Exclude the new custom notes field from this main loop
-        if (input.id === 'custom-notes') return;
+    if (iterationData) {
+        instruction = `Your task is to revise and improve the following content based *only* on the new instructions provided. Do not repeat the old content unless it is being modified. Focus on integrating the changes smoothly.`;
+        prompt = `You are AIME, an AI world-building assistant. You are in an iteration loop.\n\n--- YOUR TASK ---\n${instruction}\n\n`;
+        prompt += `--- PREVIOUS CONTENT ---\n${iterationData.existingContent}\n\n`;
+        prompt += `--- USER'S UPDATE INSTRUCTIONS ---\n${iterationData.updateInstructions}\n\n`;
+    } else {
+        instruction = creativeInstructions[elementType] || creativeInstructions['DEFAULT'];
+        prompt = `You are AIME, an AI world-building assistant. Your task is to act as a creative partner and generate content based on the user's request.\n\n--- YOUR TASK ---\n${instruction}\n\nDo not describe the element itself in a meta way; instead, create the content *for* the element. Use the following information to guide your writing:\n\n`;
 
-        const label = input.previousElementSibling ? input.previousElementSibling.textContent : input.id;
-        if (input.value.trim()) {
-            prompt += `${label}: ${input.value.trim()}\n`;
-            hasPrimaryTraits = true;
+        // --- 1. Current Element's Traits ---
+        prompt += "--- PRIMARY ELEMENT: " + elementType + " ---\n";
+        const inputs = document.querySelectorAll('.form-section .input-field');
+        let hasPrimaryTraits = false;
+        inputs.forEach(input => {
+            if (input.id === 'custom-notes') return;
+            const label = input.previousElementSibling ? input.previousElementSibling.textContent : input.id;
+            if (input.value.trim()) {
+                prompt += `${label}: ${input.value.trim()}\n`;
+                hasPrimaryTraits = true;
+            }
+        });
+        if (!hasPrimaryTraits) {
+            prompt += "No specific traits provided for this element. Please generate creatively.\n";
         }
-    });
-    if (!hasPrimaryTraits) {
-        prompt += "No specific traits provided for this element. Please generate creatively.\n";
+
+        // --- 1.5. Custom Notes ---
+        const customNotes = document.getElementById('custom-notes');
+        if (customNotes && customNotes.value.trim()) {
+            prompt += "\n--- CUSTOM NOTES ---\n";
+            prompt += customNotes.value.trim() + '\n';
+        }
     }
 
-    // --- 1.5. Custom Notes ---
-    const customNotes = document.getElementById('custom-notes');
-    if (customNotes && customNotes.value.trim()) {
-        prompt += "\n--- CUSTOM NOTES ---\n";
-        prompt += customNotes.value.trim() + '\n';
-    }
-
-    // --- 2. Guidance Gems ---
+    // --- 2. Guidance Gems (Applied in both initial and iteration) ---
     let guidancePrompt = "";
-    // Flatten all selected gems from the global object into a single list for the prompt.
     Object.values(selectedGems).forEach(gemsArray => {
         gemsArray.forEach(gem => {
             guidancePrompt += `- ${gem}\n`;
@@ -603,12 +620,12 @@ function craftSuperPrompt(elementType) {
         prompt += guidancePrompt;
     }
 
-    // --- 3. Contextual Assets (from loadedAssets array) ---
+    // --- 3. Contextual Assets (Applied in both initial and iteration for context) ---
     const contextualAssets = loadedAssets.filter(asset => asset.type === 'text' || asset.type === 'json');
     if (contextualAssets.length > 0) {
         prompt += "\n--- CONTEXTUAL ASSETS (REFERENCE LORE) ---\n";
         contextualAssets.forEach(asset => {
-            if (asset.importance === 'Non-Informative') return; // Skip non-informative assets
+            if (asset.importance === 'Non-Informative') return;
 
             let assetEntry = '';
             if (asset.type === 'json') {
@@ -620,9 +637,9 @@ function craftSuperPrompt(elementType) {
                     assetEntry += JSON.stringify(parsedContent, null, 2) + '\n';
                 } catch (e) {
                     console.error(`Skipping malformed JSON asset ${asset.fileName} in super prompt:`, e);
-                    return; // Skip this asset if it's invalid
+                    return;
                 }
-            } else { // Plain text asset
+            } else {
                 assetEntry += `\n[Reference Asset: Text File | Importance: ${asset.importance}]\n`;
                 assetEntry += `- Filename: ${asset.fileName}\n`;
                 if (asset.annotation) assetEntry += `  - Director's Note: ${asset.annotation}\n`;
@@ -632,7 +649,7 @@ function craftSuperPrompt(elementType) {
         });
     }
 
-    prompt += `\n--- TASK ---\nGenerate the content for the primary "${elementType}" Element. Use the Guidance Gems for style. Critically, use the Contextual Assets for lore, background, and specific direction, paying close attention to their specified Importance and Director's Notes. Be descriptive, imaginative, and ensure the output is consistent with all provided data. Format the output clearly with headings.`;
+    prompt += `\n--- FINAL INSTRUCTION ---\nGenerate the content as requested. The output MUST be well-structured Markdown. Use headings (#), subheadings (##), bold text (**text**), italics (*text*), and lists (- item) to organize the information for clarity and readability.`;
 
     console.log("Super Prompt:", prompt);
     return prompt;
@@ -811,27 +828,133 @@ function setFieldValue(label, value) {
     }
 }
 
+async function iterateElementContent(button) {
+    const elementType = document.getElementById('generate-button').dataset.elementType;
+    const responseContainer = document.getElementById('response-container');
+    const updateInstructions = document.getElementById('update-instructions');
+    const userApiKey = localStorage.getItem('AIME_API_KEY');
+
+    if (!userApiKey) {
+        alert("API key not found. Please set it in the settings modal.");
+        return;
+    }
+
+    if (updateInstructions.value.trim() === '') {
+        alert("Please provide update instructions.");
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Iterating...';
+    // Add a subtle loading overlay to the response container
+    responseContainer.style.opacity = '0.5';
+
+    const iterationData = {
+        existingContent: responseContainer.innerHTML, // Send the current HTML content
+        updateInstructions: updateInstructions.value
+    };
+
+    const superPrompt = craftSuperPrompt(elementType, iterationData);
+    const model = 'gemini-2.5-flash-lite';
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${userApiKey}`;
+
+    const payload = {
+        contents: [{ parts: [{ text: superPrompt }] }]
+    };
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            const errorDetails = result.error || { message: `API request failed with status ${response.status}` };
+            throw new Error(`API Error: ${errorDetails.message}`);
+        }
+
+        const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (text) {
+            try {
+                if (typeof marked === 'undefined') {
+                    throw new Error('marked.js library is not loaded.');
+                }
+                responseContainer.innerHTML = marked.parse(text);
+                updateInstructions.value = ''; // Clear the instructions field
+            } catch (e) {
+                console.error("Error parsing markdown during iteration:", e);
+                responseContainer.innerHTML += `<p class="error-text">Error rendering iterated content: ${e.message}</p>`;
+            }
+        } else {
+            console.warn("Invalid or empty response from API during iteration.", result);
+            showToast('Iteration failed: The AI returned an empty response.', 'error');
+        }
+    } catch (error) {
+        console.error('Error iterating content:', error);
+        responseContainer.innerHTML += `<p class="error-text">An error occurred during iteration: ${error.message}</p>`;
+    } finally {
+        button.disabled = false;
+        button.textContent = 'Iterate';
+        responseContainer.style.opacity = '1';
+    }
+}
+
+
 function initializeNewButton() {
     const newButton = document.getElementById('new-button');
     if (newButton) {
         newButton.addEventListener('click', () => {
-            // Clear all input fields and textareas
             const inputs = document.querySelectorAll('.form-section .input-field');
+            const responseContainer = document.getElementById('response-container');
+            let hasContent = false;
+
+            // Check if any input field has a value
+            inputs.forEach(input => {
+                if (input.value.trim() !== '') {
+                    hasContent = true;
+                }
+            });
+
+            // Check if the response container has more than just whitespace
+            if (responseContainer && responseContainer.textContent.trim() !== '') {
+                hasContent = true;
+            }
+
+            // If there's content, ask for confirmation
+            if (hasContent) {
+                if (!confirm('You have unsaved changes. Are you sure you want to start a new element and clear the workspace?')) {
+                    return; // Stop if the user cancels
+                }
+            }
+
+            // Proceed with clearing everything
             inputs.forEach(input => {
                 input.value = '';
             });
 
-            // Clear the response container
-            const responseContainer = document.getElementById('response-container');
-            if (responseContainer) responseContainer.innerHTML = '';
+            if (responseContainer) {
+                responseContainer.innerHTML = '';
+            }
 
-            // Clear loaded assets
+            // Hide iteration controls
+            const iterationControls = document.getElementById('iteration-controls');
+            if (iterationControls) {
+                iterationControls.classList.add('hidden');
+            }
+            const updateInstructions = document.getElementById('update-instructions');
+            if (updateInstructions) {
+                updateInstructions.value = '';
+            }
+
             loadedAssets = [];
             renderAssetList();
-
-            // Clear selected gems and re-render the UI for them
             selectedGems = {};
             initializeGuidanceGems();
+
+            showToast('Workspace cleared.');
         });
     }
 }
@@ -1080,6 +1203,13 @@ function initializeFloatingToolbar() {
     });
 }
 
+function initializeIteration() {
+    const iterateButton = document.getElementById('iterate-button');
+    if (iterateButton) {
+        iterateButton.addEventListener('click', () => iterateElementContent(iterateButton));
+    }
+}
+
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     initializeResizableColumns(); // Intentionally disabled for stability
@@ -1087,6 +1217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeGuidanceGems();
     initializeAssetImporter();
     initializeGeneration();
+    initializeIteration(); // Add this line
     initializeSaveButton();
     initializeLoadButton();
     initializeNewButton();

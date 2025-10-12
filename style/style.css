@@ -1008,9 +1008,32 @@ input:checked + .edit-toggle-slider:before {
     }
 }
 .generation-controls-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.generation-controls-footer {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+/* Ensure the save button has the correct styling in the new layout */
+.generation-controls-footer .action-btn {
+    background: var(--dark-bg);
+    border: 1px solid var(--panel-border);
+    color: var(--medium-text);
+    padding: 10px; /* Adjust padding for a smaller button feel */
+    font-size: 0.9rem;
+}
+
+.generation-controls-footer .action-btn:hover {
+    background: rgba(139, 148, 158, 0.1);
+    color: var(--light-text);
+    box-shadow: none; /* Remove hover shadow for these smaller buttons */
+    transform: none; /* Remove hover transform */
 }
 
 
