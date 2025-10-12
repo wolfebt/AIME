@@ -547,7 +547,22 @@ async function generateElementContent(button) {
 }
 
 function craftSuperPrompt(elementType) {
-    let prompt = `You are AIME, an AI world-building assistant. The user wants to generate details for a "${elementType}" Element. Use the provided information to create a rich, detailed, and creative description.\n\n`;
+    // System of specific, creative instructions for each element type
+    const creativeInstructions = {
+        'PERSONA': `Write a compelling character persona. Focus on bringing the character to life through vivid descriptions of their personality, appearance, and backstory. The goal is to create a believable and engaging individual for a story.`,
+        'WORLD': `Describe a unique and imaginative world. Focus on its core concept, history, and the societies that inhabit it. Create a rich tapestry of lore that feels both expansive and detailed.`,
+        'SETTING': `Paint a picture of a specific setting within a larger world. Use sensory details to evoke the atmosphere, architecture, and mood of the location. Make it feel like a real place the reader can step into.`,
+        'SCENE': `Write a complete and engaging scene. Use the provided context, characters, and setting to build a narrative moment with a clear beginning, middle, and end. Focus on action, dialogue, and emotional progression.`,
+        'SPECIES': `Create a unique and believable species. Describe their biology, culture, societal structure, and role within their world. Give them distinct traits that make them memorable and consistent.`,
+        'TECHNOLOGY': `Detail a piece of technology, explaining its function, appearance, and impact on the world. Write it from the perspective of an in-world document, like a technical manual, historical entry, or user review, as guided by the user.`,
+        'PHILOSOPHY': `Flesh out a philosophy or belief system. Explain its core tenets, history, organization, and influence on its followers and the world. Make it feel like a genuine and coherent ideology.`,
+        'UNIVERSE': `Create the foundational lore for an entire universe. Define its core genre, cosmic scope, and the fundamental rules that govern it, such as its magic or technology systems. Establish a consistent tone and history.`,
+        'FACTION': `Describe a faction or organization. Detail its goals, methods, structure, and public perception. Give it a clear identity and purpose within the larger world.`,
+        'DEFAULT': `Generate rich, detailed, and creative content for the specified element, using all provided context to inform the output.`
+    };
+
+    const instruction = creativeInstructions[elementType] || creativeInstructions['DEFAULT'];
+    let prompt = `You are AIME, an AI world-building assistant. Your task is to act as a creative partner and generate content based on the user's request.\n\n--- YOUR TASK ---\n${instruction}\n\nDo not describe the element itself in a meta way; instead, create the content *for* the element. Use the following information to guide your writing:\n\n`;
 
     // --- 1. Current Element's Traits ---
     prompt += "--- PRIMARY ELEMENT: " + elementType + " ---\n";
