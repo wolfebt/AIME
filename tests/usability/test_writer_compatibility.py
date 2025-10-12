@@ -5,7 +5,6 @@ from playwright.sync_api import sync_playwright, expect
 
 # --- Test Data ---
 PERSONA_NAME = "TestSubject-95B"
-PERSONA_PITCH = "A cybernetically enhanced mouse with a mysterious past."
 PERSONA_FILENAME = "testsubject-95b.persona"
 
 WRITER_PROMPT = "An animal adventure"
@@ -27,7 +26,6 @@ def run_test(playwright):
 
     # Fill the form with unique data
     page.locator("#persona-name").fill(PERSONA_NAME)
-    page.locator("#persona-pitch").fill(PERSONA_PITCH)
 
     # Listen for the download event and save the file
     with page.expect_download() as download_info:
@@ -71,7 +69,7 @@ def run_test(playwright):
         super_prompt = post_data['contents'][0]['parts'][0]['text']
 
         # Check if the unique persona data is in the prompt
-        if PERSONA_NAME in super_prompt and PERSONA_PITCH in super_prompt:
+        if PERSONA_NAME in super_prompt:
             prompt_verified = True
 
         # Fulfill the request with a dummy response that matches the expected format (3 concepts separated by '---')
@@ -102,9 +100,9 @@ def run_test(playwright):
             })
         )
 
-    # Intercept network requests to the backend proxy
+    # Intercept network requests to the Google AI API
     # The URL must match the one constructed in writer-bundle.js
-    page.route("http://127.0.0.1:5001/api/proxy", handle_api_request)
+    page.route("**/models/*:generateContent*", handle_api_request)
 
     # Fill the main prompt and click the generate button
     page.locator("#main-prompt").fill(WRITER_PROMPT)

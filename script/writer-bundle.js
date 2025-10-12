@@ -913,12 +913,11 @@ async function handleTextTool(action, selection, customPrompt = '') {
 }
 
 function initializeFloatingToolbar() {
-    const canvas = document.getElementById('treatment-canvas');
     const toolbar = document.getElementById('text-toolbar');
     const customPromptContainer = document.getElementById('custom-prompt-container');
     const customPromptInput = document.getElementById('custom-prompt-input');
 
-    if (!canvas || !toolbar || !customPromptContainer || !customPromptInput) return;
+    if (!toolbar || !customPromptContainer || !customPromptInput) return;
 
     let currentSelection = null;
 
@@ -927,20 +926,30 @@ function initializeFloatingToolbar() {
         // A brief delay allows click events on the toolbar to register before it's hidden
         setTimeout(() => {
             const selection = window.getSelection();
-            if (selection && !selection.isCollapsed && canvas.contains(selection.anchorNode)) {
-                currentSelection = selection;
-                const range = selection.getRangeAt(0);
-                const rect = range.getBoundingClientRect();
 
-                toolbar.style.left = `${rect.left + window.scrollX + rect.width / 2 - toolbar.offsetWidth / 2}px`;
-                toolbar.style.top = `${rect.top + window.scrollY - toolbar.offsetHeight - 10}px`;
-                toolbar.classList.remove('hidden');
-            } else {
-                // Hide only if the mouse isn't over the toolbar itself
-                if (!toolbar.contains(e.target)) {
-                    toolbar.classList.add('hidden');
-                    customPromptContainer.classList.add('hidden');
+            if (selection && !selection.isCollapsed) {
+                const node = selection.anchorNode;
+                // Find the closest ancestor (or self) that is editable. This makes the toolbar work for any editable area.
+                const editableElement = (node.nodeType === Node.TEXT_NODE ? node.parentElement : node).closest('[contenteditable="true"]');
+
+                if (editableElement) {
+                    currentSelection = selection;
+                    const range = selection.getRangeAt(0);
+                    const rect = range.getBoundingClientRect();
+
+                    // Position the toolbar above the selection
+                    toolbar.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (toolbar.offsetWidth / 2)}px`;
+                    toolbar.style.top = `${rect.top + window.scrollY - toolbar.offsetHeight - 10}px`;
+                    toolbar.classList.remove('hidden');
+                    return; // Exit early since we found an editable area
                 }
+            }
+
+            // If no selection or not in an editable area, hide the toolbar
+            // (unless the user is clicking inside the toolbar itself)
+            if (!toolbar.contains(e.target)) {
+                toolbar.classList.add('hidden');
+                customPromptContainer.classList.add('hidden');
             }
         }, 100);
     });
@@ -948,18 +957,21 @@ function initializeFloatingToolbar() {
     toolbar.addEventListener('click', (e) => {
         const button = e.target.closest('button');
         if (!button) return;
-        
+
         const action = button.dataset.action;
 
         if (action === 'custom') {
             customPromptContainer.classList.toggle('hidden');
+            if (!customPromptContainer.classList.contains('hidden')) {
+                customPromptInput.focus();
+            }
             return;
         }
-        
+
         if (currentSelection) {
             if (button.id === 'custom-prompt-submit') {
                 handleTextTool('custom', currentSelection, customPromptInput.value);
-            } else {
+            } else if (action) {
                 handleTextTool(action, currentSelection);
             }
         }
