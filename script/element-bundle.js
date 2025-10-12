@@ -524,15 +524,9 @@ async function generateElementContent(button) {
         const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
 
         if (text) {
-            // Find the custom notes textarea and set its value
-            const customNotesField = document.getElementById('custom-notes');
-            if (customNotesField) {
-                customNotesField.value = text;
-            } else {
-                console.error("Could not find the #custom-notes field to populate.");
-            }
-            // Clear the loading indicator
-            responseContainer.innerHTML = '';
+            // The AI response should go into the main canvas, not the notes field.
+            // Using a simple text assignment for now. If markdown parsing is needed, this is where it would go.
+            responseContainer.textContent = text;
         } else {
             console.warn("Invalid or empty response from API.", result);
             const finishReason = result.candidates?.[0]?.finishReason;

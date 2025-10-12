@@ -2,26 +2,60 @@ You are AIME, an AI world-building assistant. The user wants to generate details
 
 --- PRIMARY ELEMENT: PERSONA ---
 Name: Test content for persona-name
-Aliases & Nicknames: Test content for persona-aliases
-Gender & Pronouns: Test content for persona-pronouns
-Archetype: Test content for persona-archetype
-One-Line Pitch: Test content for persona-pitch
-Physical Description: Test content for persona-description
-Distinguishing Features: Test content for persona-features
-Ethnic & Cultural Traits: Test content for ethnic-traits
-Fashion & Style: Test content for fashion-style
-Signature Items: Test content for signature-items
-Voice & Speech Patterns: Test content for voice-patterns
-Personality Traits: Test content for personality-traits
-Quirks & Habits: Test content for quirks-habits
-Personality Coding: Test content for personality-coding
-Goals & Motivations: Test content for persona-goals
-Strengths & Skills: Test content for strengths-skills
-Flaws & Fears: Test content for flaws-fears
-Background & History: Test content for persona-history
 Role in Story: Test content for persona-role
-Relationships: Test content for persona-relationships
-Secrets: Test content for secrets
+Character Archetype: Test content for persona-archetype
+One-Sentence Summary: Test content for persona-summary
+Core Motivation: Test content for persona-motivation
+Primary Conflict/Goal: Test content for persona-goal
+Full Name: Test content for profile-fullname
+Nicknames / Aliases: Test content for profile-aliases
+Age & Date of Birth: Test content for profile-age
+Gender & Pronouns: Test content for profile-gender
+Occupation / Profession: Test content for profile-occupation
+Social Class & Status: Test content for profile-status
+Current Residence: Test content for profile-residence
+Place of Origin: Test content for profile-origin
+Physical Description: Test content for profile-description
+Voice & Speech: Test content for profile-voice
+Typical Clothing Style: Test content for profile-style
+Mannerisms & Body Language: Test content for profile-mannerisms
+Positive Traits: Test content for profile-positive-traits
+Negative Traits / Flaws: Test content for profile-negative-traits
+Likes: Test content for profile-likes
+Dislikes: Test content for profile-dislikes
+Hobbies & Skills: Test content for profile-hobbies
+Personality Type: Test content for profile-personality-type
+Detailed Backstory: Test content for backstory-summary
+Childhood: Test content for backstory-childhood
+Adolescence: Test content for backstory-adolescence
+Adulthood: Test content for backstory-adulthood
+Defining Trauma / 'Wound': Test content for backstory-trauma
+Greatest Accomplishment(s): Test content for backstory-accomplishments
+Key Relationships: Test content for backstory-relationships
+Worldview & Philosophy: Test content for psychology-worldview
+Moral Compass / Ethics: Test content for psychology-morals
+The Lie They Believe: Test content for psychology-lie
+The Truth They Must Learn: Test content for psychology-truth
+Deepest Fear: Test content for psychology-fear
+Most Guarded Secret: Test content for psychology-secret
+Self-Perception vs. Public-Perception: Test content for psychology-perception
+External Goal (The Want): Test content for psychology-external-goal
+Internal Goal (The Need): Test content for psychology-internal-goal
+Character Arc Summary: Test content for psychology-arc-summary
+What is at stake for them?: Test content for psychology-stakes
+Race / Species: Test content for genre-species
+Faction / Allegiance: Test content for genre-faction
+Powers / Abilities: Test content for genre-abilities
+Magical Items / Advanced Tech: Test content for genre-items
+Homeworld / Realm: Test content for genre-homeworld
+Connection to the Central Crime: Test content for genre-connection
+Potential Motive: Test content for genre-motive
+Alibi: Test content for genre-alibi
+Secrets Related to the Plot: Test content for genre-secrets
+Romantic History / Baggage: Test content for genre-history
+View on Love & Relationships: Test content for genre-love-view
+Love Language: Test content for genre-love-language
+Ideal Partner Traits: Test content for genre-partner-traits
 
 --- CUSTOM NOTES ---
 Test content for custom-notes
