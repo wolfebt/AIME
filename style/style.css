@@ -152,7 +152,7 @@ body {
 /* Hub Page Styles */
 .hub-header {
     text-align: center;
-    margin: 2rem 0 3rem 0;
+    margin: 1rem 0 1.5rem 0;
 }
 
 .hub-title { font-size: 3rem; font-weight: 700; }
@@ -235,7 +235,7 @@ body {
 /* Element Page Header Styles */
 .element-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 .element-title { font-size: 2.5rem; }
 .element-subtitle {
