@@ -878,6 +878,36 @@ function initializeSubTabs() {
     });
 }
 
+// --- Edit Mode Toggles ---
+function initializeEditToggles() {
+    const toggles = document.querySelectorAll('.edit-toggle');
+    toggles.forEach(toggle => {
+        const targetId = toggle.dataset.target;
+        const targetElement = document.getElementById(targetId);
+
+        if (targetElement) {
+            // Add the editable-area class for styling
+            targetElement.classList.add('editable-area');
+
+            // Set initial state: The textarea should be disabled, and the toggle should be off.
+            targetElement.disabled = true;
+            toggle.checked = false;
+            targetElement.classList.remove('is-editable');
+
+            toggle.addEventListener('change', (e) => {
+                const isEditable = e.target.checked;
+                targetElement.disabled = !isEditable;
+                if (isEditable) {
+                    targetElement.classList.add('is-editable');
+                    targetElement.focus();
+                } else {
+                    targetElement.classList.remove('is-editable');
+                }
+            });
+        }
+    });
+}
+
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     initializeResizableColumns(); // Intentionally disabled for stability
@@ -890,6 +920,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeNewButton();
     initializeElementTabs();
     initializeSubTabs();
+    initializeEditToggles();
 });
 
 

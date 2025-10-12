@@ -107,9 +107,18 @@
                 </div>
 
                 <div class="form-section glass-panel">
-                    <h5 class="form-subheader">Custom Notes</h5>
+                    <div class="tab-controls glass-panel" style="margin-bottom: 1rem; border-bottom: none; padding: 0;">
+                        <h5 class="form-subheader">Custom Notes</h5>
+                        <div class="edit-toggle-container">
+                            <span class="edit-toggle-label">Edit</span>
+                            <label class="edit-toggle-switch">
+                                <input type="checkbox" class="edit-toggle" data-target="custom-notes">
+                                <span class="edit-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
                     <div class="form-group">
-                        <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, notes, or custom fields here." autocomplete="off"></textarea>
+                        <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, ideas, dialogue snippets, or custom fields here." autocomplete="off" disabled></textarea>
                     </div>
                 </div>
 
