@@ -1,7 +1,7 @@
 import os
 from playwright.sync_api import sync_playwright, expect
 
-def run_test(playwright):
+def test_persona_usability(playwright):
     # The server runs on port 5001 and serves files from the root.
     # The test should navigate to the page via the server.
     server_url = "http://127.0.0.1:5001/pages/persona.html"
@@ -69,6 +69,8 @@ def run_test(playwright):
     expect(page.locator(".gem-pill-container .gem-selected-pill")).to_have_text("Heroic & Grand")
 
     # --- 4. Test "New" button ---
+    # Set up a handler for the confirmation dialog
+    page.on("dialog", lambda dialog: dialog.accept())
     new_btn = page.locator("#new-button")
     new_btn.click()
     expect(page.locator("#persona-name")).to_have_value("")
@@ -138,4 +140,4 @@ def run_test(playwright):
 
 if __name__ == "__main__":
     with sync_playwright() as p:
-        run_test(p)
+        test_persona_usability(p)

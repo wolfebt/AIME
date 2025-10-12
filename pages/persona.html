@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIME - Persona Maker</title>
     <link rel="stylesheet" href="../style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../script/global-ui.js"></script>
     <script src="../script/element-bundle.js"></script>
 </head>
@@ -204,7 +205,32 @@
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
-                <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div class="generation-controls-buttons"><button id="new-button" class="action-btn">New</button><button id="generate-button" data-element-type="PERSONA" class="generate-btn-large">Generate</button><button id="load-button" class="action-btn">Load</button><button id="save-asset-button" class="save-btn-large">Save Persona</button></div></div></div>
+                <div class="accordion glass-panel active">
+                    <button class="accordion-header active">
+                        <span>Generation Controls</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="generation-controls-buttons">
+                            <button id="generate-button" data-element-type="PERSONA" class="generate-btn-large">Generate</button>
+
+                            <!-- Iteration controls, initially hidden -->
+                            <div id="iteration-controls" class="hidden">
+                                <div class="form-group">
+                                    <label for="update-instructions">Update Instructions</label>
+                                    <textarea id="update-instructions" class="input-field" placeholder="e.g., Make the backstory more tragic, change the occupation to 'Sorcerer'..."></textarea>
+                                </div>
+                                <button id="iterate-button" class="generate-btn-large">Iterate</button>
+                            </div>
+
+                            <div class="generation-controls-footer">
+                                <button id="save-asset-button" class="action-btn">Save</button>
+                                <button id="load-button" class="action-btn">Load</button>
+                                <button id="new-button" class="action-btn">New</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="side-panel-container">
                     <div class="accordion glass-panel">
                         <button class="accordion-header">
