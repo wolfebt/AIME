@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIME - Philosophy Scribe</title>
     <link rel="stylesheet" href="../style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../script/global-ui.js"></script>
     <script src="../script/element-bundle.js"></script>
 </head>
@@ -25,14 +26,10 @@
             <a href="elements.html" class="active">Elements</a>
             <a href="writer.html">Writer</a>
             <a href="imaging.html">Imaging</a>
-            <!-- <a href="audio.html">Audio</a> -->
-            <!-- <a href="3d.html">3D</a> -->
-            <!-- <a href="video.html">Video</a> -->
         </nav>
     </header>
 
     <main class="container">
-        <!-- ... rest of philosophy.html content ... -->
         <div class="element-header">
             <h2 class="element-title animated-gradient">Philosophy Scribe</h2>
             <div class="header-actions">
@@ -42,57 +39,86 @@
         <div class="workspace-layout">
             <div class="main-column">
                 <div class="element-nav glass-panel">
-                    <button class="element-nav-button active" data-tab="core-beliefs">Core Beliefs</button>
-                    <button class="element-nav-button" data-tab="practices-structure">Practices & Structure</button>
-                    <button class="element-nav-button" data-tab="influence">Influence</button>
+                    <button class="element-nav-button active" data-tab="overview">Overview & Core Tenets</button>
+                    <button class="element-nav-button" data-tab="metaphysics">Metaphysics</button>
+                    <button class="element-nav-button" data-tab="epistemology">Epistemology</button>
+                    <button class="element-nav-button" data-tab="ethics">Ethics & Morality</button>
+                    <button class="element-nav-button" data-tab="socio-political">Socio-Political Doctrine</button>
+                    <button class="element-nav-button" data-tab="aesthetics">Aesthetics</button>
+                    <button class="element-nav-button" data-tab="history">History & Practice</button>
                 </div>
 
-                <!-- Core Beliefs Tab -->
-                <div id="core-beliefs-tab" class="element-tab active">
+                <!-- Overview & Core Tenets Tab -->
+                <div id="overview-tab" class="element-tab active">
                     <div class="form-section glass-panel">
-                        <div class="form-group"><label for="philosophy-name">Name</label><input type="text" id="philosophy-name" class="input-field" data-field-id="name" placeholder="The official or common name of the belief system." autocomplete="off"></div>
-                        <div class="form-group"><label for="philosophy-origin">Origin & Founder(s)</label><input type="text" id="philosophy-origin" class="input-field" data-field-id="origin" placeholder="How, when, and by whom the philosophy was established." autocomplete="off"></div>
-                        <div class="form-group"><label for="philosophy-tenets">Core Tenets & Beliefs</label><textarea id="philosophy-tenets" class="input-field" data-field-id="tenets" placeholder="The foundational principles, doctrines, and worldview." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="philosophy-cosmology">View on Creation & Cosmology</label><textarea id="philosophy-cosmology" class="input-field" data-field-id="cosmology" placeholder="Beliefs about the origin of the universe, life, and the afterlife." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="philosophy-ethics">Moral & Ethical Code</label><textarea id="philosophy-ethics" class="input-field" data-field-id="ethics" placeholder="What is considered right and wrong, and the code of conduct for followers." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="philosophy-texts">Sacred Texts or Figures</label><textarea id="philosophy-texts" class="input-field" data-field-id="texts" placeholder="Key written works, revered leaders, prophets, or deities." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="philosophy-name">Philosophy Name</label><input type="text" id="philosophy-name" class="input-field" data-field-id="name" placeholder="Include formal name and any common or derogatory names" autocomplete="off"></div>
+                        <div class="form-group"><label for="philosophy-core-tenet">Core Tenet</label><textarea id="philosophy-core-tenet" class="input-field" data-field-id="core_tenet" placeholder="In a single sentence, what is the central, most important belief?"></textarea></div>
+                        <div class="form-group"><label for="philosophy-category">Category</label><input type="text" id="philosophy-category" class="input-field" data-field-id="category" placeholder="e.g., Ethical System, Political Ideology, Religion" autocomplete="off"></div>
+                        <div class="form-group"><label for="philosophy-guiding-question">Guiding Question</label><textarea id="philosophy-guiding-question" class="input-field" data-field-id="guiding_question" placeholder="What fundamental question about existence does this philosophy try to answer?"></textarea></div>
                     </div>
                 </div>
 
-                <!-- Practices & Structure Tab -->
-                <div id="practices-structure-tab" class="element-tab">
+                <!-- Metaphysics Tab -->
+                <div id="metaphysics-tab" class="element-tab hidden">
                     <div class="form-section glass-panel">
-                        <div class="form-group"><label for="philosophy-rituals">Rituals & Practices</label><textarea id="philosophy-rituals" class="input-field" data-field-id="rituals" placeholder="The ceremonies, traditions, and regular activities of adherents." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="philosophy-worship">Worship & Prayer</label><textarea id="philosophy-worship" class="input-field" data-field-id="worship" placeholder="Details on prayer, worship services, and devotional acts." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="philosophy-places">Places of Worship & Significance</label><textarea id="philosophy-places" class="input-field" data-field-id="places" placeholder="Temples, shrines, natural landmarks, or other significant locations." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="philosophy-symbols">Symbols & Iconography</label><textarea id="philosophy-symbols" class="input-field" data-field-id="symbols" placeholder="Key images, emblems, and sacred objects." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="philosophy-structure">Organizational Structure</label><textarea id="philosophy-structure" class="input-field" data-field-id="structure" placeholder="The hierarchy and organization (e.g., clergy, councils, decentralized cells)." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="meta-cosmology">Cosmology & Creation</label><textarea id="meta-cosmology" class="input-field" data-field-id="cosmology" placeholder="How did the universe begin, and what is its ultimate fate?"></textarea></div>
+                        <div class="form-group"><label for="meta-ontology">Ontology (Nature of Being)</label><textarea id="meta-ontology" class="input-field" data-field-id="ontology" placeholder="What is 'real'? Is reality objective, subjective, or an illusion? What is the nature of consciousness?"></textarea></div>
+                        <div class="form-group"><label for="meta-theology">Theology & The Divine</label><textarea id="meta-theology" class="input-field" data-field-id="theology" placeholder="What is the nature of gods, spirits, or higher powers? Do they exist?"></textarea></div>
+                        <div class="form-group"><label for="meta-afterlife">The Soul & Afterlife</label><textarea id="meta-afterlife" class="input-field" data-field-id="afterlife" placeholder="Is there a soul or spirit separate from the body? What happens after death?"></textarea></div>
+                        <div class="form-group"><label for="meta-free-will">Free Will vs. Determinism</label><textarea id="meta-free-will" class="input-field" data-field-id="free_will" placeholder="Do individuals have free will, or are their actions predetermined?"></textarea></div>
                     </div>
                 </div>
 
-                <!-- Influence Tab -->
-                <div id="influence-tab" class="element-tab">
+                <!-- Epistemology Tab -->
+                <div id="epistemology-tab" class="element-tab hidden">
                     <div class="form-section glass-panel">
-                        <div class="form-group"><label for="philosophy-relations">Relationship with Other Philosophies</label><textarea id="philosophy-relations" class="input-field" data-field-id="relations" placeholder="How it views and interacts with other belief systems." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="philosophy-societal-influence">Societal Influence</label><textarea id="philosophy-societal-influence" class="input-field" data-field-id="societal_influence" placeholder="Its impact on culture, laws, and social norms." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="philosophy-political-influence">Political Influence</label><textarea id="philosophy-political-influence" class="input-field" data-field-id="political_influence" placeholder="Its role and power in government and politics." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="philosophy-adherence">Adherence & Conversion</label><textarea id="philosophy-adherence" class="input-field" data-field-id="adherence" placeholder="How new members are recruited or born into the philosophy, and the process of conversion." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="epistemology-source">Source of Truth</label><textarea id="epistemology-source" class="input-field" data-field-id="source_of_truth" placeholder="Where does true knowledge originate? (e.g., Empirical observation, divine revelation)"></textarea></div>
+                        <div class="form-group"><label for="epistemology-knowledge">Definition of Knowledge</label><textarea id="epistemology-knowledge" class="input-field" data-field-id="definition_of_knowledge" placeholder="What separates true belief from mere opinion?"></textarea></div>
+                        <div class="form-group"><label for="epistemology-skepticism">Value of Skepticism</label><textarea id="epistemology-skepticism" class="input-field" data-field-id="value_of_skepticism" placeholder="Is questioning and doubt encouraged or seen as heresy?"></textarea></div>
+                        <div class="form-group"><label for="epistemology-forbidden">Forbidden Knowledge</label><textarea id="epistemology-forbidden" class="input-field" data-field-id="forbidden_knowledge" placeholder="Are there truths or questions considered too dangerous or blasphemous to pursue?"></textarea></div>
                     </div>
                 </div>
 
-                <div class="form-section glass-panel">
-                    <div class="tab-controls glass-panel" style="margin-bottom: 1rem; border-bottom: none; padding: 0;">
-                        <h5 class="form-subheader">Custom Notes</h5>
-                        <div class="edit-toggle-container">
-                            <span class="edit-toggle-label">Edit</span>
-                            <label class="edit-toggle-switch">
-                                <input type="checkbox" class="edit-toggle" data-target="custom-notes">
-                                <span class="edit-toggle-slider"></span>
-                            </label>
-                        </div>
+                <!-- Ethics & Morality Tab -->
+                <div id="ethics-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="ethics-compass">Moral Compass</label><textarea id="ethics-compass" class="input-field" data-field-id="moral_compass" placeholder="Is morality based on duty (deontology), outcomes (consequentialism), or character (virtue ethics)?"></textarea></div>
+                        <div class="form-group"><label for="ethics-good-evil">Definition of Good & Evil</label><textarea id="ethics-good-evil" class="input-field" data-field-id="definition_good_evil" placeholder="What are the ultimate expressions of virtue and vice?"></textarea></div>
+                        <div class="form-group"><label for="ethics-ideal-life">The Ideal Life</label><textarea id="ethics-ideal-life" class="input-field" data-field-id="ideal_life" placeholder="What is the purpose of an individual's life?"></textarea></div>
+                        <div class="form-group"><label for="ethics-code">Code of Conduct</label><textarea id="ethics-code" class="input-field" data-field-id="code_of_conduct" placeholder="What are the key virtues, commandments, or ethical rules followers must abide by?"></textarea></div>
+                        <div class="form-group"><label for="ethics-dilemmas">Stance on Key Dilemmas</label><textarea id="ethics-dilemmas" class="input-field" data-field-id="key_dilemmas" placeholder="How does the philosophy view concepts like justice, mercy, sacrifice, freedom, and authority?"></textarea></div>
                     </div>
-                    <div class="form-group">
-                        <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, ideas, dialogue snippets, or custom fields here." autocomplete="off" disabled></textarea>
+                </div>
+
+                <!-- Socio-Political Doctrine Tab -->
+                <div id="socio-political-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="socio-government">Ideal Government</label><input type="text" id="socio-government" class="input-field" data-field-id="ideal_government" placeholder="e.g., Theocracy, meritocracy, republic, anarchy" autocomplete="off"></div>
+                        <div class="form-group"><label for="socio-structure">Social Structure</label><textarea id="socio-structure" class="input-field" data-field-id="social_structure" placeholder="Does it advocate for a specific hierarchy? (e.g., Caste system, egalitarianism)"></textarea></div>
+                        <div class="form-group"><label for="socio-individual">Role of the Individual</label><textarea id="socio-individual" class="input-field" data-field-id="role_of_individual" placeholder="Serve the collective, or protect the individual?"></textarea></div>
+                        <div class="form-group"><label for="socio-economic">Economic Principles</label><textarea id="socio-economic" class="input-field" data-field-id="economic_principles" placeholder="Views on property, wealth, currency, and labor."></textarea></div>
+                        <div class="form-group"><label for="socio-outsiders">Attitude Towards Outsiders</label><textarea id="socio-outsiders" class="input-field" data-field-id="attitude_towards_outsiders" placeholder="How should followers treat non-believers?"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Aesthetics Tab -->
+                <div id="aesthetics-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="aesthetics-art-purpose">Purpose of Art</label><textarea id="aesthetics-art-purpose" class="input-field" data-field-id="purpose_of_art" placeholder="What is the role of art? (e.g., A tool for worship, a corrupting distraction)"></textarea></div>
+                        <div class="form-group"><label for="aesthetics-beauty">Definition of Beauty</label><textarea id="aesthetics-beauty" class="input-field" data-field-id="definition_of_beauty" placeholder="What qualities are considered beautiful, and what is considered ugly or profane?"></textarea></div>
+                        <div class="form-group"><label for="aesthetics-art-forms">Valued Art Forms</label><textarea id="aesthetics-art-forms" class="input-field" data-field-id="valued_art_forms" placeholder="Does the philosophy favor certain types of art, such as architecture, music, or literature?"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- History & Practice Tab -->
+                <div id="history-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="history-founders">Founder(s) & Key Figures</label><textarea id="history-founders" class="input-field" data-field-id="founders" placeholder="Who created, reformed, or famously promoted the philosophy?"></textarea></div>
+                        <div class="form-group"><label for="history-texts">Foundational Texts</label><textarea id="history-texts" class="input-field" data-field-id="foundational_texts" placeholder="Are there sacred books, manifestos, or collections of wisdom?"></textarea></div>
+                        <div class="form-group"><label for="history-rituals">Rituals & Practices</label><textarea id="history-rituals" class="input-field" data-field-id="rituals_practices" placeholder="What do adherents do? (e.g., Meditate, pray, debate, perform sacrifices)"></textarea></div>
+                        <div class="form-group"><label for="history-symbols">Symbols & Iconography</label><textarea id="history-symbols" class="input-field" data-field-id="symbols_iconography" placeholder="What images, colors, or symbols are associated with the philosophy?"></textarea></div>
+                        <div class="form-group"><label for="history-organization">Organization & Hierarchy</label><textarea id="history-organization" class="input-field" data-field-id="organization" placeholder="Is it a decentralized belief system or a structured organization?"></textarea></div>
+                        <div class="form-group"><label for="history-schisms">Factions & Schisms</label><textarea id="history-schisms" class="input-field" data-field-id="factions_schisms" placeholder="Has the philosophy broken into different schools of thought or opposing sects?"></textarea></div>
                     </div>
                 </div>
 
@@ -100,7 +126,32 @@
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
-                <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div class="generation-controls-buttons"><button id="new-button" class="action-btn">New</button><button id="generate-button" data-element-type="PHILOSOPHY" class="generate-btn-large">Generate</button><button id="load-button" class="action-btn">Load</button><button id="save-asset-button" class="save-btn-large">Save Philosophy</button></div></div></div>
+                <div class="accordion glass-panel active">
+                    <button class="accordion-header active">
+                        <span>Generation Controls</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="generation-controls-buttons">
+                            <button id="generate-button" data-element-type="PHILOSOPHY" class="generate-btn-large">Generate</button>
+
+                            <!-- Iteration controls, initially hidden -->
+                            <div id="iteration-controls" class="hidden">
+                                <div class="form-group">
+                                    <label for="update-instructions">Update Instructions</label>
+                                    <textarea id="update-instructions" class="input-field" placeholder="e.g., Make the metaphysics more dualistic, add a ritual about ancestor worship..."></textarea>
+                                </div>
+                                <button id="iterate-button" class="generate-btn-large">Iterate</button>
+                            </div>
+
+                            <div class="generation-controls-footer">
+                                <button id="save-asset-button" class="action-btn">Save</button>
+                                <button id="load-button" class="action-btn">Load</button>
+                                <button id="new-button" class="action-btn">New</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="side-panel-container">
                     <div class="accordion glass-panel">
                         <button class="accordion-header">
@@ -186,7 +237,3 @@
     </div>
 </body>
 </html>
-
-
-
-

@@ -1,48 +1,49 @@
 You are AIME, an AI world-building assistant. Your task is to act as a creative partner and generate content based on the user's request.
 
 --- YOUR TASK ---
-Describe a unique and imaginative world. Focus on its core concept, history, and the societies that inhabit it. Create a rich tapestry of lore that feels both expansive and detailed.
+Flesh out a philosophy or belief system. Explain its core tenets, history, organization, and influence on its followers and the world. Make it feel like a genuine and coherent ideology.
 
 Do not describe the element itself in a meta way; instead, create the content *for* the element. Use the following information to guide your writing:
 
---- PRIMARY ELEMENT: WORLD ---
-World Name: Test content for world-name
-Core Premise / High Concept: Test content for world-premise
-Cosmology: Test content for world-cosmology
-Laws of Physics: Test content for world-physics
-The Magic System: Source of Power: Test content for magic-source
-The Magic System: Rules & Limitations: Test content for magic-rules
-The Magic System: Societal Impact: Test content for magic-impact
-Star System: Test content for physical-stars
-Planetary Statistics: Test content for physical-stats
-Moons: Test content for physical-moons
-Global Geography: Test content for physical-geography
-Global Weather & Tectonics: Test content for physical-weather
-Creation Myth / Origin Story: Test content for history-creation
-Timeline of Major Ages: Test content for history-ages
-World-Altering Events: Test content for history-events
-Fallen Empires & Precursor Races: Test content for history-empires
-Major Prophecies & Future Lore: Test content for history-prophecies
-Origin of Life: Test content for life-origin
-Major Sentient Species: Test content for life-species
-Dominant Factions & Empires: Test content for life-factions
-Global Demographics: Test content for life-demographics
-Monsters & Non-Sentient Beings: Test content for life-monsters
-Technology Level: Test content for systems-tech
-Global Economy: Test content for systems-economy
-Languages: Test content for systems-languages
-Calendar & Timekeeping: Test content for systems-calendar
-Interspecies / Intercultural Relations: Test content for systems-relations
-Gods & Pantheons: Test content for meta-gods
-The Afterlife: Test content for meta-afterlife
-Other Planes of Existence: Test content for meta-planes
-Cosmic Beings: Test content for meta-beings
-Central Themes: Test content for themes-central
-Overall Tone: Test content for themes-tone
-Aesthetic Inspirations: Test content for themes-inspirations
+--- PRIMARY ELEMENT: PHILOSOPHY ---
+Philosophy Name: Test content for philosophy-name
+Core Tenet: Test content for philosophy-core-tenet
+Category: Test content for philosophy-category
+Guiding Question: Test content for philosophy-guiding-question
+Cosmology & Creation: Test content for meta-cosmology
+Ontology (Nature of Being): Test content for meta-ontology
+Theology & The Divine: Test content for meta-theology
+The Soul & Afterlife: Test content for meta-afterlife
+Free Will vs. Determinism: Test content for meta-free-will
+Source of Truth: Test content for epistemology-source
+Definition of Knowledge: Test content for epistemology-knowledge
+Value of Skepticism: Test content for epistemology-skepticism
+Forbidden Knowledge: Test content for epistemology-forbidden
+Moral Compass: Test content for ethics-compass
+Definition of Good & Evil: Test content for ethics-good-evil
+The Ideal Life: Test content for ethics-ideal-life
+Code of Conduct: Test content for ethics-code
+Stance on Key Dilemmas: Test content for ethics-dilemmas
+Ideal Government: Test content for socio-government
+Social Structure: Test content for socio-structure
+Role of the Individual: Test content for socio-individual
+Economic Principles: Test content for socio-economic
+Attitude Towards Outsiders: Test content for socio-outsiders
+Purpose of Art: Test content for aesthetics-art-purpose
+Definition of Beauty: Test content for aesthetics-beauty
+Valued Art Forms: Test content for aesthetics-art-forms
+Founder(s) & Key Figures: Test content for history-founders
+Foundational Texts: Test content for history-texts
+Rituals & Practices: Test content for history-rituals
+Symbols & Iconography: Test content for history-symbols
+Organization & Hierarchy: Test content for history-organization
+Factions & Schisms: Test content for history-schisms
 
---- CUSTOM NOTES ---
-Test content for custom-notes
+--- GUIDANCE GEMS (STYLISTIC DIRECTION) ---
+- Strict Hierarchy
+- Widely Accepted Mainstream
+- Dogmatic & Rigid
+- Ancient & Fading
 
 --- CONTEXTUAL ASSETS (REFERENCE LORE) ---
 
