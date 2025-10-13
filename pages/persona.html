@@ -61,7 +61,7 @@
                 </div>
 
                 <!-- Profile Tab -->
-                <div id="profile-tab" class="element-tab sub-tab-container">
+                <div id="profile-tab" class="element-tab sub-tab-container hidden">
                     <div class="sub-nav glass-panel">
                         <button class="sub-nav-button active" data-sub-tab="vitals">Vitals & Identity</button>
                         <button class="sub-nav-button" data-sub-tab="physicality">Physicality</button>
@@ -79,7 +79,7 @@
                             <div class="form-group"><label for="profile-origin">Place of Origin</label><input type="text" id="profile-origin" class="input-field" data-field-id="origin" placeholder="Where they were born or grew up." autocomplete="off"></div>
                         </div>
                     </div>
-                    <div id="physicality-sub-tab" class="sub-tab-content">
+                    <div id="physicality-sub-tab" class="sub-tab-content hidden">
                         <div class="form-section glass-panel">
                             <div class="form-group"><label for="profile-description">Physical Description</label><textarea id="profile-description" class="input-field" data-field-id="description" placeholder="Height, build, hair/eye color, skin tone, etc."></textarea></div>
                             <div class="form-group"><label for="profile-voice">Voice & Speech</label><textarea id="profile-voice" class="input-field" data-field-id="voice" placeholder="Accent, pitch, common phrases, verbal tics."></textarea></div>
@@ -87,7 +87,7 @@
                             <div class="form-group"><label for="profile-mannerisms">Mannerisms & Body Language</label><textarea id="profile-mannerisms" class="input-field" data-field-id="mannerisms" placeholder="Posture, gestures, habits, nervous ticks."></textarea></div>
                         </div>
                     </div>
-                    <div id="personality-sub-tab" class="sub-tab-content">
+                    <div id="personality-sub-tab" class="sub-tab-content hidden">
                         <div class="form-section glass-panel">
                             <div class="form-group"><label for="profile-positive-traits">Positive Traits</label><textarea id="profile-positive-traits" class="input-field" data-field-id="positive_traits" placeholder="e.g., Loyal, courageous, witty, compassionate"></textarea></div>
                             <div class="form-group"><label for="profile-negative-traits">Negative Traits / Flaws</label><textarea id="profile-negative-traits" class="input-field" data-field-id="negative_traits" placeholder="e.g., Arrogant, impatient, insecure, greedy"></textarea></div>
@@ -100,7 +100,7 @@
                 </div>
 
                 <!-- Backstory Tab -->
-                <div id="backstory-tab" class="element-tab sub-tab-container">
+                <div id="backstory-tab" class="element-tab sub-tab-container hidden">
                     <div class="sub-nav glass-panel">
                         <button class="sub-nav-button active" data-sub-tab="history">History</button>
                         <button class="sub-nav-button" data-sub-tab="events">Key Life Events</button>
@@ -113,14 +113,14 @@
                             <div class="form-group"><label for="backstory-accomplishments">Greatest Accomplishment(s)</label><textarea id="backstory-accomplishments" class="input-field" data-field-id="accomplishments" placeholder="What are they most proud of?"></textarea></div>
                         </div>
                     </div>
-                    <div id="events-sub-tab" class="sub-tab-content">
+                    <div id="events-sub-tab" class="sub-tab-content hidden">
                         <div class="form-section glass-panel">
                             <div class="form-group"><label for="backstory-childhood">Childhood</label><textarea id="backstory-childhood" class="input-field" data-field-id="childhood" placeholder="Key events and experiences from their childhood."></textarea></div>
                             <div class="form-group"><label for="backstory-adolescence">Adolescence</label><textarea id="backstory-adolescence" class="input-field" data-field-id="adolescence" placeholder="Key events and experiences from their teen years."></textarea></div>
                             <div class="form-group"><label for="backstory-adulthood">Adulthood</label><textarea id="backstory-adulthood" class="input-field" data-field-id="adulthood" placeholder="Key events and experiences from their adult life."></textarea></div>
                         </div>
                     </div>
-                    <div id="relationships-sub-tab" class="sub-tab-content">
+                    <div id="relationships-sub-tab" class="sub-tab-content hidden">
                         <div class="form-section glass-panel">
                             <div class="form-group"><label for="relationship-name">Character Name</label><input type="text" id="relationship-name" class="input-field" data-field-id="relationship_name" placeholder="Link to another character." autocomplete="off"></div>
                             <div class="form-group"><label for="relationship-type">Relationship Type</label><input type="text" id="relationship-type" class="input-field" data-field-id="relationship_type" placeholder="e.g., Mother, Brother, Rival, Best Friend" autocomplete="off"></div>
@@ -130,7 +130,7 @@
                 </div>
 
                 <!-- Psychology & Arc Tab -->
-                <div id="psychology-tab" class="element-tab sub-tab-container">
+                <div id="psychology-tab" class="element-tab sub-tab-container hidden">
                      <div class="sub-nav glass-panel">
                         <button class="sub-nav-button active" data-sub-tab="makeup">Psychological Makeup</button>
                         <button class="sub-nav-button" data-sub-tab="arc">Narrative Arc</button>
@@ -146,7 +146,7 @@
                             <div class="form-group"><label for="psychology-perception">Self-Perception vs. Public-Perception</label><textarea id="psychology-perception" class="input-field" data-field-id="perception" placeholder="How they see themselves vs. how others see them."></textarea></div>
                         </div>
                     </div>
-                    <div id="arc-sub-tab" class="sub-tab-content">
+                    <div id="arc-sub-tab" class="sub-tab-content hidden">
                         <div class="form-section glass-panel">
                             <div class="form-group"><label for="psychology-external-goal">External Goal (The Want)</label><textarea id="psychology-external-goal" class="input-field" data-field-id="external_goal" placeholder="The tangible goal they are pursuing in the plot."></textarea></div>
                             <div class="form-group"><label for="psychology-internal-goal">Internal Goal (The Need)</label><textarea id="psychology-internal-goal" class="input-field" data-field-id="internal_goal" placeholder="The psychological or emotional journey they must complete."></textarea></div>
@@ -157,7 +157,7 @@
                 </div>
 
                 <!-- Genre-Specific Tab -->
-                <div id="genre-tab" class="element-tab sub-tab-container">
+                <div id="genre-tab" class="element-tab sub-tab-container hidden">
                     <div class="sub-nav glass-panel">
                         <button class="sub-nav-button active" data-sub-tab="fantasy">Fantasy/Sci-Fi</button>
                         <button class="sub-nav-button" data-sub-tab="mystery">Mystery/Thriller</button>
@@ -172,7 +172,7 @@
                             <div class="form-group"><label for="genre-homeworld">Homeworld / Realm</label><input type="text" id="genre-homeworld" class="input-field" data-field-id="homeworld" autocomplete="off"></div>
                         </div>
                     </div>
-                    <div id="mystery-sub-tab" class="sub-tab-content">
+                    <div id="mystery-sub-tab" class="sub-tab-content hidden">
                         <div class="form-section glass-panel">
                             <div class="form-group"><label for="genre-connection">Connection to the Central Plot</label><textarea id="genre-connection" class="input-field" data-field-id="connection"></textarea></div>
                             <div class="form-group"><label for="genre-motive">Potential Motive</label><textarea id="genre-motive" class="input-field" data-field-id="motive"></textarea></div>
@@ -181,7 +181,7 @@
                             <div class="form-group"><label for="genre-secrets">Secrets Related to the Plot</label><textarea id="genre-secrets" class="input-field" data-field-id="genre_secrets"></textarea></div>
                         </div>
                     </div>
-                     <div id="romance-sub-tab" class="sub-tab-content">
+                     <div id="romance-sub-tab" class="sub-tab-content hidden">
                         <div class="form-section glass-panel">
                             <div class="form-group"><label for="genre-history">Romantic History / Baggage</label><textarea id="genre-history" class="input-field" data-field-id="romance_history"></textarea></div>
                             <div class="form-group"><label for="genre-love-view">View on Love & Relationships</label><textarea id="genre-love-view" class="input-field" data-field-id="love_view"></textarea></div>
@@ -192,7 +192,7 @@
                 </div>
                 
                 <!-- Notes & Gallery Tab -->
-                <div id="notes-tab" class="element-tab sub-tab-container">
+                <div id="notes-tab" class="element-tab sub-tab-container hidden">
                     <div class="sub-nav glass-panel">
                         <button class="sub-nav-button active" data-sub-tab="notes-general">General Notes</button>
                         <button class="sub-nav-button" data-sub-tab="notes-gallery">Inspiration Gallery</button>
@@ -204,7 +204,7 @@
                             </div>
                         </div>
                     </div>
-                    <div id="notes-gallery-sub-tab" class="sub-tab-content">
+                    <div id="notes-gallery-sub-tab" class="sub-tab-content hidden">
                         <div class="form-section glass-panel">
                             <div class="form-group">
                                 <label for="persona-gallery">Inspiration Gallery</label>
