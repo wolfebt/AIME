@@ -530,10 +530,11 @@ async function generateElementContent(button) {
                 }
                 responseContainer.innerHTML = marked.parse(text);
 
-                const iterationControls = document.getElementById('iteration-controls');
-                if (iterationControls) {
-                    iterationControls.classList.remove('hidden');
-                }
+                // Show iteration controls and hide the generate button
+                document.getElementById('generate-button').classList.add('hidden');
+                document.getElementById('iterate-button').classList.remove('hidden');
+                document.getElementById('update-field-container').classList.remove('hidden');
+
             } catch (e) {
                 console.error("Error parsing markdown:", e);
                 responseContainer.innerHTML = `<p class="error-text">Error rendering content: ${e.message}</p>`;
@@ -723,10 +724,50 @@ function initializeGeneration() {
     }
 }
 
-function initializeSaveButton() {
-    const saveButton = document.getElementById('save-asset-button');
+function initializeSaveContentButton() {
+    const saveButton = document.getElementById('save-content-button');
     if (saveButton) {
         saveButton.addEventListener('click', saveElementAsset);
+    }
+}
+
+function saveElementPrompt() {
+    const generateButton = document.getElementById('generate-button');
+    if (!generateButton) {
+        console.error('Generate button not found, cannot determine element type.');
+        showToast('Error: Could not determine element type.', 'error');
+        return;
+    }
+    const elementType = generateButton.dataset.elementType; // e.g., PERSONA
+    const extension = `${elementType.toLowerCase()}prompt`; // e.g., personaprompt
+
+    const promptContent = craftSuperPrompt(elementType);
+
+    let assetName = 'Untitled';
+    const nameInput = document.querySelector('input[data-field-id="name"]');
+    if (nameInput && nameInput.value.trim()) {
+        assetName = nameInput.value.trim();
+    }
+
+    const filename = `${assetName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.${extension}`;
+    const blob = new Blob([promptContent], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", url);
+    downloadAnchorNode.setAttribute("download", filename);
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+
+    URL.revokeObjectURL(url);
+    showToast('Prompt saved successfully!');
+}
+
+function initializeSavePromptButton() {
+    const savePromptButton = document.getElementById('save-prompt-button');
+    if (savePromptButton) {
+        savePromptButton.addEventListener('click', saveElementPrompt);
     }
 }
 
@@ -939,11 +980,10 @@ function initializeNewButton() {
                 responseContainer.innerHTML = '';
             }
 
-            // Hide iteration controls
-            const iterationControls = document.getElementById('iteration-controls');
-            if (iterationControls) {
-                iterationControls.classList.add('hidden');
-            }
+            // Reset visibility of generation/iteration controls
+            document.getElementById('generate-button').classList.remove('hidden');
+            document.getElementById('iterate-button').classList.add('hidden');
+            document.getElementById('update-field-container').classList.add('hidden');
             const updateInstructions = document.getElementById('update-instructions');
             if (updateInstructions) {
                 updateInstructions.value = '';
@@ -1225,8 +1265,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeGuidanceGems();
     initializeAssetImporter();
     initializeGeneration();
-    initializeIteration(); // Add this line
-    initializeSaveButton();
+    initializeIteration();
+    initializeSaveContentButton();
+    initializeSavePromptButton();
     initializeLoadButton();
     initializeNewButton();
     initializeElementTabs();
