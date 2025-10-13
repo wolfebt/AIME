@@ -1,15 +1,16 @@
 <!--
     File: technology.html
-    Reference: Technology Forge
-    Creator: Wolfe.BT, TangentLLC
+    Reference: Technology Maker
+    Creator: Wolfe.BT@TangentLLC
 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIME - Technology Forge</title>
+    <title>AIME - Technology Maker</title>
     <link rel="stylesheet" href="../style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../script/global-ui.js"></script>
     <script src="../script/element-bundle.js"></script>
 </head>
@@ -25,80 +26,127 @@
             <a href="elements.html" class="active">Elements</a>
             <a href="writer.html">Writer</a>
             <a href="imaging.html">Imaging</a>
-            <!-- <a href="audio.html">Audio</a> -->
-            <!-- <a href="3d.html">3D</a> -->
-            <!-- <a href="video.html">Video</a> -->
         </nav>
     </header>
 
     <main class="container">
-        <!-- ... rest of technology.html content ... -->
         <div class="element-header">
-            <h2 class="element-title animated-gradient">Technology Forge</h2>
+            <h2 class="element-title animated-gradient">Technology Maker</h2>
             <div class="header-actions">
-                <p class="element-subtitle">Define a specific piece of technology and its impact.</p>
+                <p class="element-subtitle">Craft a single, significant piece of technology, magic, or machinery.</p>
             </div>
         </div>
         <div class="workspace-layout">
             <div class="main-column">
                 <div class="element-nav glass-panel">
-                    <button class="element-nav-button active" data-tab="core-concept">Core Concept</button>
-                    <button class="element-nav-button" data-tab="design-operation">Design & Operation</button>
-                    <button class="element-nav-button" data-tab="societal-impact">Societal Impact</button>
+                    <button class="element-nav-button active" data-tab="overview">Overview & Core Concept</button>
+                    <button class="element-nav-button" data-tab="mechanics">Mechanics & Principles</button>
+                    <button class="element-nav-button" data-tab="history">Origin & History</button>
+                    <button class="element-nav-button" data-tab="design">Design & Aesthetics</button>
+                    <button class="element-nav-button" data-tab="production">Production & Distribution</button>
+                    <button class="element-nav-button" data-tab="impact">Societal & Cultural Impact</button>
+                    <button class="element-nav-button" data-tab="narrative">Usage & Narrative Role</button>
                 </div>
 
-                <!-- Core Concept Tab -->
-                <div id="core-concept-tab" class="element-tab active">
+                <!-- Overview & Core Concept Tab -->
+                <div id="overview-tab" class="element-tab active">
                     <div class="form-section glass-panel">
-                        <div class="form-group"><label for="tech-name">Technology Name</label><input type="text" id="tech-name" class="input-field" data-field-id="name" placeholder="A clear designation for the technology." autocomplete="off"></div>
-                        <div class="form-group"><label for="tech-category">Category / Type</label><input type="text" id="tech-category" class="input-field" data-field-id="category" placeholder="e.g., 'Transportation,' 'Weaponry,' 'Communication,' 'Medical.'" autocomplete="off"></div>
-                        <div class="form-group"><label for="tech-level">Tech Level</label><input type="text" id="tech-level" class="input-field" data-field-id="level" placeholder="Its sophistication (e.g., 'Near-Future,' 'Magitech,' 'Ancient')." autocomplete="off"></div>
-                        <div class="form-group"><label for="tech-purpose">Function & Purpose</label><textarea id="tech-purpose" class="input-field" data-field-id="purpose" placeholder="What the technology does and the problem it solves." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="tech-name">Technology Name</label><input type="text" id="tech-name" class="input-field" data-field-id="name" placeholder="Include formal name, model number, and any common slang or nicknames" autocomplete="off"></div>
+                        <div class="form-group"><label for="tech-function">Core Function</label><textarea id="tech-function" class="input-field" data-field-id="function" placeholder="In one sentence, what is its primary purpose?"></textarea></div>
+                        <div class="form-group"><label for="tech-category">Category</label><input type="text" id="tech-category" class="input-field" data-field-id="category" placeholder="e.g., Weaponry, Transportation, Communication, Medical, Domestic, Energy, Magical Artifact" autocomplete="off"></div>
+                        <div class="form-group"><label for="tech-readiness">Readiness Level</label><input type="text" id="tech-readiness" class="input-field" data-field-id="readiness" placeholder="e.g., Mythical/Lost, Experimental, Prototype, Restricted/Military-Grade, Widespread, Obsolete" autocomplete="off"></div>
                     </div>
                 </div>
 
-                <!-- Design & Operation Tab -->
-                <div id="design-operation-tab" class="element-tab">
+                <!-- Mechanics & Principles Tab -->
+                <div id="mechanics-tab" class="element-tab">
                     <div class="form-section glass-panel">
-                        <div class="form-group"><label for="tech-aesthetics">Aesthetics & Design</label><textarea id="tech-aesthetics" class="input-field" data-field-id="aesthetics" placeholder="The visual style, form factor, and user interface." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="tech-mechanism">Operating Mechanism</label><textarea id="tech-mechanism" class="input-field" data-field-id="mechanism" placeholder="How it works on a technical level." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="tech-power">Power Source & Efficiency</label><textarea id="tech-power" class="input-field" data-field-id="power" placeholder="What fuels it and how much energy it consumes." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="tech-materials">Materials & Manufacturing</label><textarea id="tech-materials" class="input-field" data-field-id="materials" placeholder="The resources needed to build it and the production process." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="tech-drawbacks">Limitations & Drawbacks</label><textarea id="tech-drawbacks" class="input-field" data-field-id="drawbacks" placeholder="Weaknesses, side effects, or potential for misuse." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="tech-vulnerabilities">Counter-Measures & Vulnerabilities</label><textarea id="tech-vulnerabilities" class="input-field" data-field-id="vulnerabilities" placeholder="How it can be defended against or exploited." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="tech-power-source">Power Source</label><textarea id="tech-power-source" class="input-field" data-field-id="power_source" placeholder="What fuels it? (e.g., Electricity, mana, steam, chemical reaction, psionic focus, solar power, life force)"></textarea></div>
+                        <div class="form-group"><label for="tech-principles">Operating Principles</label><textarea id="tech-principles" class="input-field" data-field-id="principles" placeholder="Briefly explain the scientific or magical rules that make it work."></textarea></div>
+                        <div class="form-group"><label for="tech-components">Key Components</label><textarea id="tech-components" class="input-field" data-field-id="components" placeholder="What are its most important parts? (e.g., Power core, focusing lens, containment field, alchemical reagents)"></textarea></div>
+                        <div class="form-group"><label for="tech-interface">User Interface</label><textarea id="tech-interface" class="input-field" data-field-id="interface" placeholder="How does a person operate it? (e.g., Levers and buttons, neural link, voice commands, magical incantation, gestural controls)"></textarea></div>
                     </div>
                 </div>
 
-                <!-- Societal Impact Tab -->
-                <div id="societal-impact-tab" class="element-tab">
+                <!-- Origin & History Tab -->
+                <div id="history-tab" class="element-tab">
                     <div class="form-section glass-panel">
-                        <div class="form-group"><label for="tech-social-impact">Social & Cultural Impact</label><textarea id="tech-social-impact" class="input-field" data-field-id="social_impact" placeholder="How the technology has altered daily life, culture, and social structures." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="tech-eco-impact">Economic & Political Impact</label><textarea id="tech-eco-impact" class="input-field" data-field-id="eco_impact" placeholder="How it has affected industry, wealth distribution, and power dynamics." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="tech-history">Historical Development</label><textarea id="tech-history" class="input-field" data-field-id="history" placeholder="Who invented it, when, and how it has evolved over time." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="tech-proliferation">Adoption & Proliferation</label><textarea id="tech-proliferation" class="input-field" data-field-id="proliferation" placeholder="How widely the technology is used and who has access to it." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="tech-inventor">Inventor(s) / Creator(s)</label><textarea id="tech-inventor" class="input-field" data-field-id="inventor" placeholder="Who invented or discovered it? (e.g., A lone genius, a corporate R&D department, a divine being, an ancient race)"></textarea></div>
+                        <div class="form-group"><label for="tech-invention-date">Date & Place of Invention</label><textarea id="tech-invention-date" class="input-field" data-field-id="invention_date" placeholder="When and where did it first appear in the world's timeline?"></textarea></div>
+                        <div class="form-group"><label for="tech-dev-history">Development History</label><textarea id="tech-dev-history" class="input-field" data-field-id="dev_history" placeholder="Was it a sudden breakthrough or a long process of iteration? What were the key milestones or famous failures?"></textarea></div>
+                        <div class="form-group"><label for="tech-historical-context">Historical Context</label><textarea id="tech-historical-context" class="input-field" data-field-id="historical_context" placeholder="What problem was it created to solve? Was it an accidental discovery, a wartime necessity, or a response to a cataclysm?"></textarea></div>
                     </div>
                 </div>
 
-                <div class="form-section glass-panel">
-                    <div class="tab-controls glass-panel" style="margin-bottom: 1rem; border-bottom: none; padding: 0;">
-                        <h5 class="form-subheader">Custom Notes</h5>
-                        <div class="edit-toggle-container">
-                            <span class="edit-toggle-label">Edit</span>
-                            <label class="edit-toggle-switch">
-                                <input type="checkbox" class="edit-toggle" data-target="custom-notes">
-                                <span class="edit-toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, ideas, dialogue snippets, or custom fields here." autocomplete="off" disabled></textarea>
+                <!-- Design & Aesthetics Tab -->
+                <div id="design-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="tech-physical-desc">Physical Description</label><textarea id="tech-physical-desc" class="input-field" data-field-id="physical_desc" placeholder="Size, shape, weight, materials used."></textarea></div>
+                        <div class="form-group"><label for="tech-sensory-details">Sensory Details</label><textarea id="tech-sensory-details" class="input-field" data-field-id="sensory_details" placeholder="What does it look, sound, smell, and feel like when in use?"></textarea></div>
+                        <div class="form-group"><label for="tech-aesthetic-style">Aesthetic Style</label><textarea id="tech-aesthetic-style" class="input-field" data-field-id="aesthetic_style" placeholder="What is its design philosophy? (e.g., Brutalist and functional, sleek and minimalist, ornate and ceremonial, organic and alien)"></textarea></div>
                     </div>
                 </div>
+
+                <!-- Production & Distribution Tab -->
+                <div id="production-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="tech-resources">Required Resources</label><textarea id="tech-resources" class="input-field" data-field-id="resources" placeholder="What rare or common materials are needed to build it?"></textarea></div>
+                        <div class="form-group"><label for="tech-manufacturing">Manufacturing Process</label><textarea id="tech-manufacturing" class="input-field" data-field-id="manufacturing" placeholder="How is it made? (e.g., Mass-produced, handcrafted, grown in a bio-vat, summoned)"></textarea></div>
+                        <div class="form-group"><label for="tech-cost">Cost & Availability</label><textarea id="tech-cost" class="input-field" data-field-id="cost" placeholder="Is it cheap and common, or prohibitively expensive and rare? Who controls its production and sale?"></textarea></div>
+                        <div class="form-group"><label for="tech-maintenance">Maintenance & Repair</label><textarea id="tech-maintenance" class="input-field" data-field-id="maintenance" placeholder="How is it maintained? Can anyone fix it, or are specialists required?"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Societal & Cultural Impact Tab -->
+                <div id="impact-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="tech-economic-impact">Economic Impact</label><textarea id="tech-economic-impact" class="input-field" data-field-id="economic_impact" placeholder="Did it create new industries or make old ones obsolete?"></textarea></div>
+                        <div class="form-group"><label for="tech-social-impact">Social Impact</label><textarea id="tech-social-impact" class="input-field" data-field-id="social_impact" placeholder="How did it change daily life, social structures, or class divisions?"></textarea></div>
+                        <div class="form-group"><label for="tech-military-impact">Military Impact</label><textarea id="tech-military-impact" class="input-field" data-field-id="military_impact" placeholder="Did it revolutionize warfare and shift the balance of power?"></textarea></div>
+                        <div class="form-group"><label for="tech-legal-impact">Legal & Ethical Impact</label><textarea id="tech-legal-impact" class="input-field" data-field-id="legal_impact" placeholder="What laws, regulations, and moral debates surround its use?"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Usage & Narrative Role Tab -->
+                <div id="narrative-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="tech-primary-users">Primary User(s)</label><textarea id="tech-primary-users" class="input-field" data-field-id="primary_users" placeholder="Who typically uses this technology? (e.g., A specific social class, a military unit, a magical order, the general public)"></textarea></div>
+                        <div class="form-group"><label for="tech-strengths">Strengths & Advantages</label><textarea id="tech-strengths" class="input-field" data-field-id="strengths" placeholder="What does it allow a user to do better than anything else?"></textarea></div>
+                        <div class="form-group"><label for="tech-weaknesses">Weaknesses & Limitations</label><textarea id="tech-weaknesses" class="input-field" data-field-id="weaknesses" placeholder="What are its drawbacks, side effects, or vulnerabilities?"></textarea></div>
+                        <div class="form-group"><label for="tech-narrative-role">Role in the Story</label><textarea id="tech-narrative-role" class="input-field" data-field-id="narrative_role" placeholder="Why is this technology important to your plot? (e.g., It's a MacGuffin, the central problem, a tool the protagonist uses)"></textarea></div>
+                    </div>
+                </div>
+
                 <div id="response-container" class="response-container glass-panel" contenteditable="true"></div>
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
-                <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div class="generation-controls-buttons"><button id="new-button" class="action-btn">New</button><button id="generate-button" data-element-type="TECHNOLOGY" class="generate-btn-large">Generate</button><button id="load-button" class="action-btn">Load</button><button id="save-asset-button" class="save-btn-large">Save Technology</button></div></div></div>
+                <div class="accordion glass-panel active">
+                    <button class="accordion-header active">
+                        <span>Generation Controls</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="generation-controls-buttons">
+                            <button id="generate-button" data-element-type="TECHNOLOGY" class="generate-btn-large">Generate</button>
+
+                            <!-- Iteration controls, initially hidden -->
+                            <div id="iteration-controls" class="hidden">
+                                <div class="form-group">
+                                    <label for="update-instructions">Update Instructions</label>
+                                    <textarea id="update-instructions" class="input-field" placeholder="e.g., Make the backstory more tragic, change the occupation to 'Sorcerer'..."></textarea>
+                                </div>
+                                <button id="iterate-button" class="generate-btn-large">Iterate</button>
+                            </div>
+
+                            <div class="generation-controls-footer">
+                                <button id="save-asset-button" class="action-btn">Save</button>
+                                <button id="load-button" class="action-btn">Load</button>
+                                <button id="new-button" class="action-btn">New</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="side-panel-container">
                     <div class="accordion glass-panel">
                         <button class="accordion-header">
@@ -112,7 +160,7 @@
                     <div class="asset-hub-panel glass-panel">
                         <h3 class="side-panel-title">Asset Hub</h3>
                         <div class="asset-hub-container">
-                            <p class="asset-hub-subtitle">Import the World or Factions that use this Technology.</p>
+                            <p class="asset-hub-subtitle">Import files to provide contextual reference for this Technology.</p>
                             <div class="asset-import-area">
                                 <input type="file" id="asset-upload" multiple="" style="display: none;">
                                 <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
@@ -184,7 +232,3 @@
     </div>
 </body>
 </html>
-
-
-
-
