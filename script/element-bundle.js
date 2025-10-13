@@ -741,8 +741,24 @@ function saveElementPrompt() {
     const elementType = generateButton.dataset.elementType; // e.g., PERSONA
     const extension = `${elementType.toLowerCase()}prompt`; // e.g., personaprompt
 
-    const promptContent = craftSuperPrompt(elementType);
+    // 1. Create an object to hold all the data
+    const promptData = {
+        assetType: `${elementType.charAt(0).toUpperCase() + elementType.slice(1).toLowerCase()} Prompt`,
+        savedAt: new Date().toISOString(),
+        fields: {}
+    };
 
+    // 2. Gather data from all input fields with a data-field-id
+    const inputs = document.querySelectorAll('.input-field[data-field-id]');
+    inputs.forEach(input => {
+        const fieldId = input.dataset.fieldId;
+        const value = input.value.trim();
+        if (value) { // Only save fields that have content
+            promptData.fields[fieldId] = value;
+        }
+    });
+
+    // 3. Determine the filename from the 'name' field, or use a default
     let assetName = 'Untitled';
     const nameInput = document.querySelector('input[data-field-id="name"]');
     if (nameInput && nameInput.value.trim()) {
@@ -750,9 +766,13 @@ function saveElementPrompt() {
     }
 
     const filename = `${assetName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.${extension}`;
-    const blob = new Blob([promptContent], { type: 'text/plain;charset=utf-8' });
+
+    // 4. Convert the object to a JSON string and create a Blob
+    const jsonContent = JSON.stringify(promptData, null, 2); // Pretty-print the JSON
+    const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8' });
     const url = URL.createObjectURL(blob);
 
+    // 5. Trigger the download
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", url);
     downloadAnchorNode.setAttribute("download", filename);
@@ -778,20 +798,30 @@ function initializeLoadButton() {
             const generateButton = document.getElementById('generate-button');
             if (!generateButton) {
                 console.error('Generate button not found, cannot determine element type for loading.');
+                showToast('Error: Cannot determine element type.', 'error');
                 return;
             }
-            const elementType = generateButton.dataset.elementType;
-            const extension = `.${elementType.toLowerCase()}`;
+            const elementType = generateButton.dataset.elementType.toLowerCase();
+            const assetExtension = `.${elementType}`;
+            const promptExtension = `.${elementType}prompt`;
 
             const fileInput = document.createElement('input');
             fileInput.type = 'file';
-            fileInput.accept = extension;
+            // Allow both asset and prompt files to be selected
+            fileInput.accept = `${assetExtension},${promptExtension}`;
             fileInput.style.display = 'none';
 
             fileInput.addEventListener('change', (event) => {
                 const file = event.target.files[0];
-                if (file) {
+                if (!file) return;
+
+                // Check the file extension to decide which loader to use
+                if (file.name.endsWith(promptExtension)) {
+                    loadElementPrompt(file);
+                } else if (file.name.endsWith(assetExtension)) {
                     loadElementAsset(file);
+                } else {
+                    showToast(`Invalid file type. Please select a '${assetExtension}' or '${promptExtension}' file.`, 'error');
                 }
             });
 
@@ -800,6 +830,43 @@ function initializeLoadButton() {
             document.body.removeChild(fileInput);
         });
     }
+}
+
+function loadElementPrompt(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+
+            if (!data.fields || typeof data.fields !== 'object') {
+                throw new Error("Invalid prompt file format: 'fields' object is missing.");
+            }
+
+            // Clear existing fields before loading new data
+            const allInputs = document.querySelectorAll('.input-field[data-field-id]');
+            allInputs.forEach(input => input.value = '');
+
+            // Populate fields from the JSON data
+            for (const fieldId in data.fields) {
+                const input = document.querySelector(`.input-field[data-field-id="${fieldId}"]`);
+                if (input) {
+                    input.value = data.fields[fieldId];
+                } else {
+                    console.warn(`Could not find a form field for data-field-id: "${fieldId}"`);
+                }
+            }
+            showToast('Prompt loaded successfully!');
+
+        } catch (error) {
+            console.error('Error parsing prompt file:', error);
+            showToast(`Error: Could not parse the prompt file. ${error.message}`, 'error');
+        }
+    };
+    reader.onerror = () => {
+        console.error('Error reading file.');
+        showToast('Error: Could not read the selected file.', 'error');
+    };
+    reader.readAsText(file);
 }
 
 function loadElementAsset(file) {
