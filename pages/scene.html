@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIME - Scene Builder</title>
     <link rel="stylesheet" href="../style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../script/global-ui.js"></script>
     <script src="../script/element-bundle.js"></script>
 </head>
@@ -25,14 +26,10 @@
             <a href="elements.html" class="active">Elements</a>
             <a href="writer.html">Writer</a>
             <a href="imaging.html">Imaging</a>
-            <!-- <a href="audio.html">Audio</a> -->
-            <!-- <a href="3d.html">3D</a> -->
-            <!-- <a href="video.html">Video</a> -->
         </nav>
     </header>
 
     <main class="container">
-        <!-- ... rest of scene.html content ... -->
         <div class="element-header">
             <h2 class="element-title animated-gradient">Scene Builder</h2>
             <div class="header-actions">
@@ -41,64 +38,128 @@
         </div>
         <div class="workspace-layout">
             <div class="main-column">
-    <div class="element-nav glass-panel">
-        <button class="element-nav-button active" data-tab="core-details">Core Details</button>
-        <button class="element-nav-button" data-tab="sensory-details">Sensory Details</button>
-        <button class="element-nav-button" data-tab="narrative-elements">Narrative Elements</button>
-    </div>
+                <div class="element-nav glass-panel">
+                    <button class="element-nav-button active" data-tab="core">Core Elements</button>
+                    <button class="element-nav-button" data-tab="setting">Setting & Atmosphere</button>
+                    <button class="element-nav-button" data-tab="characters">Characters & POV</button>
+                    <button class="element-nav-button" data-tab="plot">Plot & Pacing</button>
+                    <button class="element-nav-button" data-tab="sensory">Sensory & Dialogue</button>
+                    <button class="element-nav-button" data-tab="checklist">Checklist</button>
+                </div>
 
-    <!-- Core Details Tab -->
-    <div id="core-details-tab" class="element-tab active">
-        <div class="form-section glass-panel">
-            <div class="form-group"><label for="scene-name">Scene Name / Slugline</label><input type="text" id="scene-name" class="input-field" data-field-id="name" placeholder="e.g., 'INT. COFFEE SHOP - DAY'"></div>
-            <div class="form-group"><label for="scene-location">Location Description</label><textarea id="scene-location" class="input-field" data-field-id="location" placeholder="A precise description of where the scene unfolds."></textarea></div>
-            <div class="form-group"><label for="scene-time">Time of Day & Duration</label><input type="text" id="scene-time" class="input-field" data-field-id="time" placeholder="e.g., 'Dusk, lasting a few minutes.'"></div>
-            <div class="form-group"><label for="scene-mood">Mood & Atmosphere</label><textarea id="scene-mood" class="input-field" data-field-id="mood" placeholder="The overall emotional and psychological tone (e.g., tense, humorous, melancholic)."></textarea></div>
-        </div>
-    </div>
+                <!-- Core Elements Tab -->
+                <div id="core-tab" class="element-tab active">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="scene-title">Scene Title / Working Name</label><input type="text" id="scene-title" class="input-field" data-field-id="title" placeholder="e.g., 'The Confrontation in the Rain,' 'First Contact'" autocomplete="off"></div>
+                        <div class="form-group"><label for="scene-placement">Placement in Story</label><input type="text" id="scene-placement" class="input-field" data-field-id="placement" placeholder="Act, Sequence, Chapter" autocomplete="off"></div>
+                        <div class="form-group"><label for="scene-summary">One-Sentence Summary</label><textarea id="scene-summary" class="input-field" data-field-id="summary" placeholder="What is the single most important event or revelation in this scene?"></textarea></div>
+                        <div class="form-group"><label for="scene-purpose">Scene Goal / Purpose</label><textarea id="scene-purpose" class="input-field" data-field-id="purpose" placeholder="Why does this scene exist? (e.g., To reveal a clue, introduce a character, escalate the central conflict)"></textarea></div>
+                        <div class="form-group"><label for="scene-beginning-state">Beginning State</label><textarea id="scene-beginning-state" class="input-field" data-field-id="beginning_state" placeholder="What is the status quo for the characters and plot at the start of the scene?"></textarea></div>
+                        <div class="form-group"><label for="scene-ending-state">Ending State</label><textarea id="scene-ending-state" class="input-field" data-field-id="ending_state" placeholder="What has fundamentally changed by the end of the scene? (This is the measure of its success)"></textarea></div>
+                    </div>
+                </div>
 
-    <!-- Sensory Details Tab -->
-    <div id="sensory-details-tab" class="element-tab">
-        <div class="form-section glass-panel">
-            <div class="form-group"><label for="scene-sight">Visual Details (Sight)</label><textarea id="scene-sight" class="input-field" data-field-id="sight" placeholder="Lighting, colors, key objects, and character appearances."></textarea></div>
-            <div class="form-group"><label for="scene-sound">Auditory Details (Sound)</label><textarea id="scene-sound" class="input-field" data-field-id="sound" placeholder="Dialogue, background noise, sound effects, music, or silence."></textarea></div>
-            <div class="form-group"><label for="scene-smell">Olfactory & Other Senses</label><textarea id="scene-smell" class="input-field" data-field-id="smell" placeholder="Prominent smells, temperatures, and tactile sensations."></textarea></div>
-        </div>
-    </div>
+                <!-- Setting & Atmosphere Tab -->
+                <div id="setting-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="setting-location">Location</label><input type="text" id="setting-location" class="input-field" data-field-id="location" placeholder="Be specific: 'The dimly lit corner booth of the Red Dragon tavern,' not just 'a bar'" autocomplete="off"></div>
+                        <div class="form-group"><label for="setting-time">Time of Day / Date</label><input type="text" id="setting-time" class="input-field" data-field-id="time" placeholder="" autocomplete="off"></div>
+                        <div class="form-group"><label for="setting-weather">Weather / Environment</label><textarea id="setting-weather" class="input-field" data-field-id="weather" placeholder=""></textarea></div>
+                        <div class="form-group"><label for="setting-atmosphere">Atmosphere & Mood</label><textarea id="setting-atmosphere" class="input-field" data-field-id="atmosphere" placeholder="What is the intended feeling? (e.g., Tense, somber, mysterious, romantic, chaotic)"></textarea></div>
+                        <div class="form-group"><label for="setting-props">Key Props & Objects</label><textarea id="setting-props" class="input-field" data-field-id="props" placeholder="What items in the setting are crucial for the action, plot, or symbolism?"></textarea></div>
+                    </div>
+                </div>
 
-    <!-- Narrative Elements Tab -->
-    <div id="narrative-elements-tab" class="element-tab">
-        <div class="form-section glass-panel">
-            <div class="form-group"><label for="scene-characters">Key Characters Present</label><textarea id="scene-characters" class="input-field" data-field-id="characters" placeholder="List the characters involved in the scene and their initial state."></textarea></div>
-            <div class="form-group"><label for="scene-objective">Scene Objective / Goal</label><textarea id="scene-objective" class="input-field" data-field-id="objective" placeholder="What the protagonist or main characters want to achieve in this scene."></textarea></div>
-            <div class="form-group"><label for="scene-conflict">Core Conflict / Tension</label><textarea id="scene-conflict" class="input-field" data-field-id="conflict" placeholder="The primary obstacle or source of tension preventing the goal."></textarea></div>
-            <div class="form-group"><label for="scene-beats">Narrative Beats / Pacing</label><textarea id="scene-beats" class="input-field" data-field-id="beats" placeholder="The key moments or sequence of events that happen in the scene."></textarea></div>
-            <div class="form-group"><label for="scene-objects">Key Objects & Interactivity</label><textarea id="scene-objects" class="input-field" data-field-id="objects" placeholder="Important props or elements that characters can interact with."></textarea></div>
-        </div>
-    </div>
+                <!-- Characters & POV Tab -->
+                <div id="characters-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="characters-pov">Point of View (POV) Character</label><input type="text" id="characters-pov" class="input-field" data-field-id="pov_character" placeholder="From whose perspective is the scene told?" autocomplete="off"></div>
+                        <div class="form-group"><label for="characters-present">Characters Present</label><textarea id="characters-present" class="input-field" data-field-id="characters_present" placeholder="List all characters physically in the scene and any others who are significantly mentioned."></textarea></div>
+                        <div class="form-group"><label for="characters-pov-goal">POV Character's Goal</label><textarea id="characters-pov-goal" class="input-field" data-field-id="pov_goal" placeholder="What do they want to achieve in this scene? (e.g., 'To get a confession,' 'To escape unnoticed')"></textarea></div>
+                        <div class="form-group"><label for="characters-opposing-goal">Opposing Character's Goal</label><textarea id="characters-opposing-goal" class="input-field" data-field-id="opposing_goal" placeholder="What does the primary antagonist/obstacle in the scene want?"></textarea></div>
+                        <div class="form-group"><label for="characters-emotional-arc">Emotional Arc</label><textarea id="characters-emotional-arc" class="input-field" data-field-id="emotional_arc" placeholder="How does the POV character's emotional state change from the beginning to the end of the scene?"></textarea></div>
+                    </div>
+                </div>
 
-    <!-- Custom Notes (outside tabs) -->
-    <div class="form-section glass-panel">
-        <div class="tab-controls glass-panel" style="margin-bottom: 1rem; border-bottom: none; padding: 0;">
-            <h5 class="form-subheader">Custom Notes</h5>
-            <div class="edit-toggle-container">
-                <span class="edit-toggle-label">Edit</span>
-                <label class="edit-toggle-switch">
-                    <input type="checkbox" class="edit-toggle" data-target="custom-notes">
-                    <span class="edit-toggle-slider"></span>
-                </label>
-            </div>
-        </div>
-        <div class="form-group">
-            <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, ideas, dialogue snippets, or custom fields here." autocomplete="off" disabled></textarea>
-        </div>
-    </div>
+                <!-- Plot & Pacing Tab -->
+                <div id="plot-tab" class="element-tab">
+                     <div class="form-section glass-panel">
+                        <div class="form-group"><label for="plot-opening-beat">Opening Beat</label><textarea id="plot-opening-beat" class="input-field" data-field-id="opening_beat" placeholder="How does the scene begin? What is the first image, action, or line of dialogue?"></textarea></div>
+                        <div class="form-group"><label for="plot-sequence">Sequence of Events</label><textarea id="plot-sequence" class="input-field" data-field-id="sequence" placeholder="A bulleted list of the major actions and turning points."></textarea></div>
+                        <div class="form-group"><label for="plot-inciting-incident">Inciting Incident</label><textarea id="plot-inciting-incident" class="input-field" data-field-id="inciting_incident" placeholder="The event that kicks off the scene's central conflict."></textarea></div>
+                        <div class="form-group"><label for="plot-rising-action">Rising Action</label><textarea id="plot-rising-action" class="input-field" data-field-id="rising_action" placeholder="How does the conflict escalate? What obstacles arise?"></textarea></div>
+                        <div class="form-group"><label for="plot-climax">Climax/Turning Point</label><textarea id="plot-climax" class="input-field" data-field-id="climax" placeholder="The moment of highest tension where the outcome is decided."></textarea></div>
+                        <div class="form-group"><label for="plot-resolution">Resolution / Aftermath</label><textarea id="plot-resolution" class="input-field" data-field-id="resolution" placeholder="How does the scene end? What is the immediate consequence of the climax?"></textarea></div>
+                        <div class="form-group"><label for="plot-pacing">Pacing</label><input type="text" id="plot-pacing" class="input-field" data-field-id="pacing" placeholder="e.g., Fast and frantic, slow and deliberate, reflective and quiet" autocomplete="off"></div>
+                        <div class="form-group"><label for="plot-conflict-type">Conflict Type</label><input type="text" id="plot-conflict-type" class="input-field" data-field-id="conflict_type" placeholder="e.g., Character vs. Character, Character vs. Self, Character vs. Environment" autocomplete="off"></div>
+                    </div>
+                </div>
+
+                <!-- Sensory Details & Dialogue Tab -->
+                <div id="sensory-tab" class="element-tab sub-tab-container">
+                    <div class="sub-nav glass-panel">
+                        <button class="sub-nav-button active" data-sub-tab="sensory-details">Sensory Details</button>
+                        <button class="sub-nav-button" data-sub-tab="dialogue">Dialogue</button>
+                    </div>
+                    <div id="sensory-details-sub-tab" class="sub-tab-content active">
+                        <div class="form-section glass-panel">
+                            <div class="form-group"><label for="sensory-visuals">Visuals</label><textarea id="sensory-visuals" class="input-field" data-field-id="visuals" placeholder="What are the most important things the POV character sees? (Light, color, shadow, movement)"></textarea></div>
+                            <div class="form-group"><label for="sensory-sounds">Sounds</label><textarea id="sensory-sounds" class="input-field" data-field-id="sounds" placeholder="What does the character hear? (Dialogue, background noise, significant sound effects)"></textarea></div>
+                            <div class="form-group"><label for="sensory-smells">Smells & Tastes</label><textarea id="sensory-smells" class="input-field" data-field-id="smells" placeholder="What scents are in the air? Are any tastes relevant?"></textarea></div>
+                            <div class="form-group"><label for="sensory-tactile">Tactile Sensations</label><textarea id="sensory-tactile" class="input-field" data-field-id="tactile" placeholder="What does the character physically feel? (Temperature, textures, pain, pleasure)"></textarea></div>
+                            <div class="form-group"><label for="sensory-symbolism">Dominant Imagery / Symbolism</label><textarea id="sensory-symbolism" class="input-field" data-field-id="symbolism" placeholder="Is there a recurring image or symbol used in the scene?"></textarea></div>
+                        </div>
+                    </div>
+                    <div id="dialogue-sub-tab" class="sub-tab-content">
+                        <div class="form-section glass-panel">
+                            <div class="form-group"><label for="dialogue-key-lines">Key Lines of Dialogue</label><textarea id="dialogue-key-lines" class="input-field" data-field-id="key_lines" placeholder="What are the most impactful or informative things said?"></textarea></div>
+                            <div class="form-group"><label for="dialogue-subtext">Subtext</label><textarea id="dialogue-subtext" class="input-field" data-field-id="subtext" placeholder="What is being communicated without being said directly? What are the underlying tensions, desires, or secrets?"></textarea></div>
+                            <div class="form-group"><label for="dialogue-tone">Tone of Dialogue</label><input type="text" id="dialogue-tone" class="input-field" data-field-id="tone" placeholder="e.g., Witty, aggressive, formal, sarcastic, pleading" autocomplete="off"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scene Checklist Tab -->
+                <div id="checklist-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="checklist-advances-plot">Does this scene advance the plot?</label><textarea id="checklist-advances-plot" class="input-field" data-field-id="advances_plot" placeholder="Yes/No. If yes, how?"></textarea></div>
+                        <div class="form-group"><label for="checklist-reveals-character">Does this scene reveal new information about a character?</label><textarea id="checklist-reveals-character" class="input-field" data-field-id="reveals_character" placeholder="Yes/No. If yes, what?"></textarea></div>
+                        <div class="form-group"><label for="checklist-has-conflict">Does this scene contain meaningful conflict?</label><textarea id="checklist-has-conflict" class="input-field" data-field-id="has_conflict" placeholder="Yes/No. If yes, what is it?"></textarea></div>
+                        <div class="form-group"><label for="checklist-has-hook">Does the scene end with a hook or question?</label><textarea id="checklist-has-hook" class="input-field" data-field-id="has_hook" placeholder="Does it make the reader want to continue?"></textarea></div>
+                        <div class="form-group"><label for="checklist-clear-pov">Is the POV clear and consistent throughout?</label><input type="text" id="checklist-clear-pov" class="input-field" data-field-id="clear_pov" placeholder="Yes/No" autocomplete="off"></div>
+                    </div>
+                </div>
 
                 <div id="response-container" class="response-container glass-panel" contenteditable="true"></div>
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
-                <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div class="generation-controls-buttons"><button id="new-button" class="action-btn">New</button><button id="generate-button" data-element-type="SCENE" class="generate-btn-large">Generate</button><button id="load-button" class="action-btn">Load</button><button id="save-asset-button" class="save-btn-large">Save Scene</button></div></div></div>
+                <div class="accordion glass-panel active">
+                    <button class="accordion-header active">
+                        <span>Generation Controls</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="generation-controls-buttons">
+                            <button id="generate-button" data-element-type="SCENE" class="generate-btn-large">Generate</button>
+
+                            <!-- Iteration controls, initially hidden -->
+                            <div id="iteration-controls" class="hidden">
+                                <div class="form-group">
+                                    <label for="update-instructions">Update Instructions</label>
+                                    <textarea id="update-instructions" class="input-field" placeholder="e.g., Make the dialogue more tense, change the setting to a starship bridge..."></textarea>
+                                </div>
+                                <button id="iterate-button" class="generate-btn-large">Iterate</button>
+                            </div>
+
+                            <div class="generation-controls-footer">
+                                <button id="save-asset-button" class="action-btn">Save</button>
+                                <button id="load-button" class="action-btn">Load</button>
+                                <button id="new-button" class="action-btn">New</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="side-panel-container">
                     <div class="accordion glass-panel">
                         <button class="accordion-header">
@@ -112,7 +173,7 @@
                     <div class="asset-hub-panel glass-panel">
                         <h3 class="side-panel-title">Asset Hub</h3>
                         <div class="asset-hub-container">
-                            <p class="asset-hub-subtitle">Import Personas, Settings, etc. to populate this Scene.</p>
+                            <p class="asset-hub-subtitle">Import files to provide contextual reference for this Scene.</p>
                             <div class="asset-import-area">
                                 <input type="file" id="asset-upload" multiple="" style="display: none;">
                                 <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
@@ -125,7 +186,7 @@
         </div>
     </main>
 
-    <!-- NEW Floating Text Toolbar -->
+    <!-- Floating Text Toolbar -->
     <div id="text-toolbar" class="glass-panel hidden">
         <button class="toolbar-btn" data-action="rephrase">Rephrase</button>
         <button class="toolbar-btn" data-action="shorten">Shorten</button>
@@ -184,7 +245,3 @@
     </div>
 </body>
 </html>
-
-
-
-
