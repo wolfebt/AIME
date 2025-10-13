@@ -968,9 +968,12 @@ function initializeElementTabs() {
 
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // Deactivate all buttons and tabs
+            // Deactivate all buttons and hide all tabs
             tabButtons.forEach(btn => btn.classList.remove('active'));
-            tabs.forEach(tab => tab.classList.remove('active'));
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+                tab.classList.add('hidden'); // Ensure inactive tabs are hidden
+            });
 
             // Activate the clicked button and corresponding tab
             button.classList.add('active');
@@ -978,6 +981,7 @@ function initializeElementTabs() {
             const targetTab = document.getElementById(`${tabName}-tab`);
             if (targetTab) {
                 targetTab.classList.add('active');
+                targetTab.classList.remove('hidden'); // Show the active tab
             }
         });
     });
@@ -994,16 +998,20 @@ function initializeSubTabs() {
 
         subTabButtons.forEach(button => {
             button.addEventListener('click', () => {
-                // Deactivate all buttons and tabs within this container
+                // Deactivate all buttons and hide all sub-tabs within this container
                 subTabButtons.forEach(btn => btn.classList.remove('active'));
-                subTabs.forEach(tab => tab.classList.remove('active'));
+                subTabs.forEach(tab => {
+                    tab.classList.remove('active');
+                    tab.classList.add('hidden'); // Ensure inactive sub-tabs are hidden
+                });
 
-                // Activate the clicked button and corresponding tab
+                // Activate the clicked button and corresponding sub-tab
                 button.classList.add('active');
                 const subTabName = button.dataset.subTab;
                 const targetSubTab = container.querySelector(`#${subTabName}-sub-tab`);
                 if (targetSubTab) {
                     targetSubTab.classList.add('active');
+                    targetSubTab.classList.remove('hidden'); // Show the active sub-tab
                 }
             });
         });
@@ -1226,5 +1234,3 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeEditToggles();
     initializeFloatingToolbar();
 });
-
-
