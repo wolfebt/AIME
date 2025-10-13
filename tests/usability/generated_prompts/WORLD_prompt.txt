@@ -8,28 +8,41 @@ Do not describe the element itself in a meta way; instead, create the content *f
 --- PRIMARY ELEMENT: WORLD ---
 World Name: Test content for world-name
 Core Premise / High Concept: Test content for world-premise
-Overall Tone & Mood: Test content for world-mood
-Cosmology & Unique Physics: Test content for world-physics
-Magic & Power Systems: Test content for world-magic
-Technological Level: Test content for world-tech-level
-Physical Characteristics: Test content for world-characteristics
-Geography & Climate Zones: Test content for world-geography
-Dominant Species & Cultures: Test content for world-species
-Resources & Materials: Test content for world-resources
-Major Factions & Powers: Test content for world-factions
-History & Lore Timeline: Test content for world-lore
-Major Historical Conflicts: Test content for world-conflicts
-Archaeology & Lost Civilizations: Test content for world-archaeology
+Cosmology: Test content for world-cosmology
+Laws of Physics: Test content for world-physics
+The Magic System: Source of Power: Test content for magic-source
+The Magic System: Rules & Limitations: Test content for magic-rules
+The Magic System: Societal Impact: Test content for magic-impact
+Star System: Test content for physical-stars
+Planetary Statistics: Test content for physical-stats
+Moons: Test content for physical-moons
+Global Geography: Test content for physical-geography
+Global Weather & Tectonics: Test content for physical-weather
+Creation Myth / Origin Story: Test content for history-creation
+Timeline of Major Ages: Test content for history-ages
+World-Altering Events: Test content for history-events
+Fallen Empires & Precursor Races: Test content for history-empires
+Major Prophecies & Future Lore: Test content for history-prophecies
+Origin of Life: Test content for life-origin
+Major Sentient Species: Test content for life-species
+Dominant Factions & Empires: Test content for life-factions
+Global Demographics: Test content for life-demographics
+Monsters & Non-Sentient Beings: Test content for life-monsters
+Technology Level: Test content for systems-tech
+Global Economy: Test content for systems-economy
+Languages: Test content for systems-languages
+Calendar & Timekeeping: Test content for systems-calendar
+Interspecies / Intercultural Relations: Test content for systems-relations
+Gods & Pantheons: Test content for meta-gods
+The Afterlife: Test content for meta-afterlife
+Other Planes of Existence: Test content for meta-planes
+Cosmic Beings: Test content for meta-beings
+Central Themes: Test content for themes-central
+Overall Tone: Test content for themes-tone
+Aesthetic Inspirations: Test content for themes-inspirations
 
 --- CUSTOM NOTES ---
 Test content for custom-notes
-
---- GUIDANCE GEMS (STYLISTIC DIRECTION) ---
-- Volcanic & Harsh
-- Feudal Kingdoms
-- Widespread War
-- Ancient & Mysterious
-- Nomadic & Tribal
 
 --- CONTEXTUAL ASSETS (REFERENCE LORE) ---
 

@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIME - World Anvil</title>
     <link rel="stylesheet" href="../style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../script/global-ui.js"></script>
     <script src="../script/element-bundle.js"></script>
 </head>
@@ -25,9 +26,6 @@
             <a href="elements.html" class="active">Elements</a>
             <a href="writer.html">Writer</a>
             <a href="imaging.html">Imaging</a>
-            <!-- <a href="audio.html">Audio</a> -->
-            <!-- <a href="3d.html">3D</a> -->
-            <!-- <a href="video.html">Video</a> -->
         </nav>
     </header>
 
@@ -41,67 +39,91 @@
         <div class="workspace-layout">
             <div class="main-column">
                 <div class="element-nav glass-panel">
-                    <button class="element-nav-button active" data-tab="concept">Core Concept</button>
-                    <button class="element-nav-button" data-tab="rules">Physical & Metaphysical Rules</button>
-                    <button class="element-nav-button" data-tab="environment">Environment & Inhabitants</button>
-                    <button class="element-nav-button" data-tab="history">Society & History</button>
+                    <button class="element-nav-button active" data-tab="cosmology">Cosmology & Laws</button>
+                    <button class="element-nav-button" data-tab="physical">The Physical World</button>
+                    <button class="element-nav-button" data-tab="history">Global History</button>
+                    <button class="element-nav-button" data-tab="inhabitants">Life & Inhabitants</button>
+                    <button class="element-nav-button" data-tab="systems">World Systems</button>
+                    <button class="element-nav-button" data-tab="metaphysics">Metaphysics & Divine</button>
+                    <button class="element-nav-button" data-tab="themes">Themes & Tone</button>
                 </div>
 
-                <!-- Concept Tab -->
-                <div id="concept-tab" class="element-tab active">
+                <!-- Cosmology & Fundamental Laws Tab -->
+                <div id="cosmology-tab" class="element-tab active">
                     <div class="form-section glass-panel">
-                        <h5 class="form-subheader">Core Concept</h5>
-                        <div class="form-group"><label for="world-name">World Name</label><input type="text" id="world-name" class="input-field" data-field-id="name" placeholder="The foundational identifier for your creation." autocomplete="off"></div>
-                        <div class="form-group"><label for="world-premise">Core Premise / High Concept</label><textarea id="world-premise" class="input-field" data-field-id="premise" placeholder="A one-sentence summary that encapsulates the world's central idea." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="world-mood">Overall Tone & Mood</label><input type="text" id="world-mood" class="input-field" data-field-id="mood" placeholder="e.g., 'Grimdark Fantasy,' 'Hopeful Sci-Fi,' 'Satirical Noir.'" autocomplete="off"></div>
+                        <div class="form-group"><label for="world-name">World Name</label><input type="text" id="world-name" class="input-field" data-field-id="name" placeholder="The name of your world." autocomplete="off"></div>
+                        <div class="form-group"><label for="world-premise">Core Premise / High Concept</label><textarea id="world-premise" class="input-field" data-field-id="premise" placeholder="A one-sentence pitch for the entire world."></textarea></div>
+                        <div class="form-group"><label for="world-cosmology">Cosmology</label><textarea id="world-cosmology" class="input-field" data-field-id="cosmology" placeholder="The world's place in the universe (e.g., Solar system, alternate dimension)."></textarea></div>
+                        <div class="form-group"><label for="world-physics">Laws of Physics</label><textarea id="world-physics" class="input-field" data-field-id="physics" placeholder="Do standard physics apply? Are there unique exceptions?"></textarea></div>
+                        <div class="form-group"><label for="magic-source">The Magic System: Source of Power</label><textarea id="magic-source" class="input-field" data-field-id="magic_source" placeholder="Where does unnatural power come from? (e.g., Divine, arcane, elemental)"></textarea></div>
+                        <div class="form-group"><label for="magic-rules">The Magic System: Rules & Limitations</label><textarea id="magic-rules" class="input-field" data-field-id="magic_rules" placeholder="What are the costs and limits? Who can use it? (Hard vs. Soft magic)"></textarea></div>
+                        <div class="form-group"><label for="magic-impact">The Magic System: Societal Impact</label><textarea id="magic-impact" class="input-field" data-field-id="magic_impact" placeholder="Is it common, rare, regulated, feared, or worshiped?"></textarea></div>
                     </div>
                 </div>
 
-                <!-- Rules Tab -->
-                <div id="rules-tab" class="element-tab">
+                <!-- The Physical World Tab -->
+                <div id="physical-tab" class="element-tab">
                     <div class="form-section glass-panel">
-                        <h5 class="form-subheader">Physical & Metaphysical Rules</h5>
-                        <div class="form-group"><label for="world-physics">Cosmology & Unique Physics</label><textarea id="world-physics" class="input-field" data-field-id="physics" placeholder="The fundamental rules of your world and its place in the cosmos." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="world-magic">Magic & Power Systems</label><textarea id="world-magic" class="input-field" data-field-id="magic" placeholder="The sources, limitations, and applications of any supernatural forces." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="world-tech-level">Technological Level</label><input type="text" id="world-tech-level" class="input-field" data-field-id="tech_level" placeholder="e.g., 'Bronze Age,' 'Industrial Revolution,' 'Interstellar.'" autocomplete="off"></div>
+                        <div class="form-group"><label for="physical-stars">Star System</label><textarea id="physical-stars" class="input-field" data-field-id="star_system" placeholder="Star type(s), number of planets, unique astronomical features."></textarea></div>
+                        <div class="form-group"><label for="physical-stats">Planetary Statistics</label><textarea id="physical-stats" class="input-field" data-field-id="planetary_stats" placeholder="Size, gravity, axial tilt, length of day and year."></textarea></div>
+                        <div class="form-group"><label for="physical-moons">Moons</label><textarea id="physical-moons" class="input-field" data-field-id="moons" placeholder="Number, size, names, and their effect on tides, culture, and magic."></textarea></div>
+                        <div class="form-group"><label for="physical-geography">Global Geography</label><textarea id="physical-geography" class="input-field" data-field-id="geography" placeholder="Continents, oceans, and major climate zones (polar, temperate, tropic)."></textarea></div>
+                        <div class="form-group"><label for="physical-weather">Global Weather & Tectonics</label><textarea id="physical-weather" class="input-field" data-field-id="weather_tectonics" placeholder="Prevailing wind patterns, ocean currents, and major fault lines."></textarea></div>
                     </div>
                 </div>
 
-                <!-- Environment Tab -->
-                <div id="environment-tab" class="element-tab">
-                    <div class="form-section glass-panel">
-                        <h5 class="form-subheader">Environment & Inhabitants</h5>
-                        <div class="form-group"><label for="world-characteristics">Physical Characteristics</label><textarea id="world-characteristics" class="input-field" data-field-id="characteristics" placeholder="Planet size, gravity, day/night cycle, number of moons, etc." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="world-geography">Geography & Climate Zones</label><textarea id="world-geography" class="input-field" data-field-id="geography" placeholder="Major continents, oceans, and distinct climate areas." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="world-species">Dominant Species & Cultures</label><textarea id="world-species" class="input-field" data-field-id="species" placeholder="The main intelligent species and their primary cultural groups." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="world-resources">Resources & Materials</label><textarea id="world-resources" class="input-field" data-field-id="resources" placeholder="Key natural resources, valuable materials, and their impact on society." autocomplete="off"></textarea></div>
-                    </div>
-                </div>
-
-                <!-- History Tab -->
+                <!-- Global History & Timeline Tab -->
                 <div id="history-tab" class="element-tab">
                     <div class="form-section glass-panel">
-                        <h5 class="form-subheader">Society & History</h5>
-                        <div class="form-group"><label for="world-factions">Major Factions & Powers</label><textarea id="world-factions" class="input-field" data-field-id="factions" placeholder="The significant guilds, kingdoms, corporations, etc. that shape the world." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="world-lore">History & Lore Timeline</label><textarea id="world-lore" class="input-field" data-field-id="lore" placeholder="The chronological sequence of significant events that have shaped your world." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="world-conflicts">Major Historical Conflicts</label><textarea id="world-conflicts" class="input-field" data-field-id="conflicts" placeholder="Pivotal wars, revolutions, or disasters that define the world's history." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="world-archaeology">Archaeology & Lost Civilizations</label><textarea id="world-archaeology" class="input-field" data-field-id="archaeology" placeholder="Remnants of fallen empires, forgotten technologies, and ancient mysteries." autocomplete="off"></textarea></div>
+                        <div class="form-group"><label for="history-creation">Creation Myth / Origin Story</label><textarea id="history-creation" class="input-field" data-field-id="creation_myth" placeholder="The commonly accepted (or true) story of the world's beginning."></textarea></div>
+                        <div class="form-group"><label for="history-ages">Timeline of Major Ages</label><textarea id="history-ages" class="input-field" data-field-id="major_ages" placeholder="Define the great epochs of your world's history (e.g., The Primordial Age, The Age of Gods)."></textarea></div>
+                        <div class="form-group"><label for="history-events">World-Altering Events</label><textarea id="history-events" class="input-field" data-field-id="altering_events" placeholder="Cataclysms, magical shifts, technological revolutions, or divine interventions."></textarea></div>
+                        <div class="form-group"><label for="history-empires">Fallen Empires & Precursor Races</label><textarea id="history-empires" class="input-field" data-field-id="fallen_empires" placeholder="What great civilizations existed in the distant past and what did they leave behind?"></textarea></div>
+                        <div class="form-group"><label for="history-prophecies">Major Prophecies & Future Lore</label><textarea id="history-prophecies" class="input-field" data-field-id="prophecies" placeholder="What events are foretold to shape the future of the world?"></textarea></div>
                     </div>
                 </div>
 
-                <div class="form-section glass-panel">
-                    <div class="tab-controls glass-panel" style="margin-bottom: 1rem; border-bottom: none; padding: 0;">
-                        <h5 class="form-subheader">Custom Notes</h5>
-                        <div class="edit-toggle-container">
-                            <span class="edit-toggle-label">Edit</span>
-                            <label class="edit-toggle-switch">
-                                <input type="checkbox" class="edit-toggle" data-target="custom-notes">
-                                <span class="edit-toggle-slider"></span>
-                            </label>
-                        </div>
+                <!-- Life & Inhabitants Tab -->
+                <div id="inhabitants-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="life-origin">Origin of Life</label><textarea id="life-origin" class="input-field" data-field-id="life_origin" placeholder="e.g., Divine creation, evolution, alien seeding."></textarea></div>
+                        <div class="form-group"><label for="life-species">Major Sentient Species</label><textarea id="life-species" class="input-field" data-field-id="sentient_species" placeholder="List the primary species, their homelands, and their general relationships."></textarea></div>
+                        <div class="form-group"><label for="life-factions">Dominant Factions & Empires</label><textarea id="life-factions" class="input-field" data-field-id="dominant_factions" placeholder="List the current global superpowers (kingdoms, corporations, alliances)."></textarea></div>
+                        <div class="form-group"><label for="life-demographics">Global Demographics</label><textarea id="life-demographics" class="input-field" data-field-id="demographics" placeholder="Where do populations concentrate? What areas are considered uninhabitable?"></textarea></div>
+                        <div class="form-group"><label for="life-monsters">Monsters & Non-Sentient Beings</label><textarea id="life-monsters" class="input-field" data-field-id="monsters" placeholder="What significant creatures roam the world and shape the ecosystem?"></textarea></div>
                     </div>
-                    <div class="form-group">
-                        <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, ideas, dialogue snippets, or custom fields here." autocomplete="off" disabled></textarea>
+                </div>
+
+                <!-- World Systems Tab -->
+                <div id="systems-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="systems-tech">Technology Level</label><textarea id="systems-tech" class="input-field" data-field-id="tech_level" placeholder="What is the baseline tech? Are there pockets of higher or lower technology?"></textarea></div>
+                        <div class="form-group"><label for="systems-economy">Global Economy</label><textarea id="systems-economy" class="input-field" data-field-id="economy" placeholder="Major trade routes, common currencies, and influential economic powers."></textarea></div>
+                        <div class="form-group"><label for="systems-languages">Languages</label><textarea id="systems-languages" class="input-field" data-field-id="languages" placeholder="Major language families and the existence of a 'common tongue.'"></textarea></div>
+                        <div class="form-group"><label for="systems-calendar">Calendar & Timekeeping</label><textarea id="systems-calendar" class="input-field" data-field-id="calendar" placeholder="What is the universally accepted way of tracking years, months, and days?"></textarea></div>
+                        <div class="form-group"><label for="systems-relations">Interspecies / Intercultural Relations</label><textarea id="systems-relations" class="input-field" data-field-id="relations" placeholder="Default political and social dynamics between the major species and factions."></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Metaphysics & The Divine Tab -->
+                <div id="metaphysics-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="meta-gods">Gods & Pantheons</label><textarea id="meta-gods" class="input-field" data-field-id="gods" placeholder="Major deities, their domains, relationships, and level of interaction with the mortal world."></textarea></div>
+                        <div class="form-group"><label for="meta-afterlife">The Afterlife</label><textarea id="meta-afterlife" class="input-field" data-field-id="afterlife" placeholder="What do people believe happens after death? Is it a known fact?"></textarea></div>
+                        <div class="form-group"><label for="meta-planes">Other Planes of Existence</label><textarea id="meta-planes" class="input-field" data-field-id="planes" placeholder="Do other dimensions like elemental planes, heavens, or hells exist? How are they accessed?"></textarea></div>
+                        <div class="form-group"><label for="meta-beings">Cosmic Beings</label><textarea id="meta-beings" class="input-field" data-field-id="cosmic_beings" placeholder="Are there entities more powerful than gods? (e.g., Primordials, abstracts, horrors)."></textarea></div>
+                    </div>
+                </div>
+
+                <!-- World Themes & Tone Tab -->
+                <div id="themes-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="themes-central">Central Themes</label><textarea id="themes-central" class="input-field" data-field-id="central_themes" placeholder="e.g., Order vs. Chaos, Progress vs. Tradition, Hope vs. Despair."></textarea></div>
+                        <div class="form-group"><label for="themes-tone">Overall Tone</label><textarea id="themes-tone" class="input-field" data-field-id="tone" placeholder="e.g., Grimdark, Noblebright, Satirical, Adventurous, Mysterious, Horror."></textarea></div>
+                        <div class="form-group"><label for="themes-inspirations">Aesthetic Inspirations</label><textarea id="themes-inspirations" class="input-field" data-field-id="inspirations" placeholder="What real-world cultures, art styles, or eras inspire the look and feel of your world?"></textarea></div>
+                         <div class="form-group">
+                            <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="A flexible area for uncategorized thoughts, ideas, dialogue snippets, etc." autocomplete="off"></textarea>
+                        </div>
                     </div>
                 </div>
 
@@ -109,7 +131,29 @@
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
-                <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div class="generation-controls-buttons"><button id="new-button" class="action-btn">New</button><button id="generate-button" data-element-type="WORLD" class="generate-btn-large">Generate</button><button id="load-button" class="action-btn">Load</button><button id="save-asset-button" class="save-btn-large">Save World</button></div></div></div>
+                <div class="accordion glass-panel active">
+                    <button class="accordion-header active">
+                        <span>Generation Controls</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="generation-controls-buttons">
+                            <button id="generate-button" data-element-type="WORLD" class="generate-btn-large">Generate</button>
+                            <div id="iteration-controls" class="hidden">
+                                <div class="form-group">
+                                    <label for="update-instructions">Update Instructions</label>
+                                    <textarea id="update-instructions" class="input-field" placeholder="e.g., Make the history more war-torn, add a new species..."></textarea>
+                                </div>
+                                <button id="iterate-button" class="generate-btn-large">Iterate</button>
+                            </div>
+                            <div class="generation-controls-footer">
+                                <button id="save-asset-button" class="action-btn">Save</button>
+                                <button id="load-button" class="action-btn">Load</button>
+                                <button id="new-button" class="action-btn">New</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="side-panel-container">
                     <div class="accordion glass-panel">
                         <button class="accordion-header">
@@ -123,7 +167,7 @@
                     <div class="asset-hub-panel glass-panel">
                         <h3 class="side-panel-title">Asset Hub</h3>
                         <div class="asset-hub-container">
-                            <p class="asset-hub-subtitle">Import Philosophies, Species, etc. that define this World.</p>
+                            <p class="asset-hub-subtitle">Import files to provide contextual reference for this World.</p>
                             <div class="asset-import-area">
                                 <input type="file" id="asset-upload" multiple="" style="display: none;">
                                 <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
@@ -136,7 +180,6 @@
         </div>
     </main>
 
-    <!-- NEW Floating Text Toolbar -->
     <div id="text-toolbar" class="glass-panel hidden">
         <button class="toolbar-btn" data-action="rephrase">Rephrase</button>
         <button class="toolbar-btn" data-action="shorten">Shorten</button>
@@ -148,10 +191,8 @@
         </div>
     </div>
 
-    <!-- Toast Notification Container -->
     <div id="toast-container"></div>
 
-    <!-- Settings Modal -->
     <div id="settings-modal-overlay" class="modal-overlay hidden">
         <div class="modal-content glass-panel">
             <div class="modal-header">
@@ -174,7 +215,6 @@
         </div>
     </div>
 
-    <!-- Guidance Selection Modal -->
     <div id="gem-selection-modal-overlay" class="modal-overlay hidden">
         <div class="modal-content glass-panel">
             <div class="modal-header">
@@ -182,7 +222,6 @@
                 <button id="gem-modal-close-btn" class="modal-close-btn">&times;</button>
             </div>
             <div id="gem-modal-options-container" class="modal-body">
-                <!-- Clickable option buttons will be dynamically inserted here -->
             </div>
             <div class="gem-modal-custom-input-area">
                 <input type="text" id="custom-gem-input" class="input-field" placeholder="Add a custom option...">
@@ -195,7 +234,3 @@
     </div>
 </body>
 </html>
-
-
-
-

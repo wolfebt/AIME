@@ -116,13 +116,16 @@ ELEMENT_INVENTORY = {
     "world": {
         "type": "WORLD",
         "tabs": {
-            "concept": ["world-name", "world-premise", "world-mood"],
-            "rules": ["world-physics", "world-magic", "world-tech-level"],
-            "environment": ["world-characteristics", "world-geography", "world-species", "world-resources"],
-            "history": ["world-factions", "world-lore", "world-conflicts", "world-archaeology"]
+            "cosmology": ["world-name", "world-premise", "world-cosmology", "world-physics", "magic-source", "magic-rules", "magic-impact"],
+            "physical": ["physical-stars", "physical-stats", "physical-moons", "physical-geography", "physical-weather"],
+            "history": ["history-creation", "history-ages", "history-events", "history-empires", "history-prophecies"],
+            "inhabitants": ["life-origin", "life-species", "life-factions", "life-demographics", "life-monsters"],
+            "systems": ["systems-tech", "systems-economy", "systems-languages", "systems-calendar", "systems-relations"],
+            "metaphysics": ["meta-gods", "meta-afterlife", "meta-planes", "meta-beings"],
+            "themes": ["themes-central", "themes-tone", "themes-inspirations", "custom-notes"]
         },
-        "gems": ["Dominant Biome", "Societal Structure", "Level of Conflict", "Historical Feel", "Cultural Flavor"],
-        "untabbed_fields": ["custom-notes"]
+        "gems": [],
+        "untabbed_fields": []
     }
 }
 
