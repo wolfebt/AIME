@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIME - Setting Architect</title>
     <link rel="stylesheet" href="../style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../script/global-ui.js"></script>
     <script src="../script/element-bundle.js"></script>
 </head>
@@ -25,80 +26,141 @@
             <a href="elements.html" class="active">Elements</a>
             <a href="writer.html">Writer</a>
             <a href="imaging.html">Imaging</a>
-            <!-- <a href="audio.html">Audio</a> -->
-            <!-- <a href="3d.html">3D</a> -->
-            <!-- <a href="video.html">Video</a> -->
         </nav>
     </header>
 
     <main class="container">
-        <!-- ... rest of setting.html content ... -->
         <div class="element-header">
             <h2 class="element-title animated-gradient">Setting Architect</h2>
             <div class="header-actions">
-                <p class="element-subtitle">Design a specific location within your world.</p>
+                <p class="element-subtitle">Craft a rich, immersive, and believable setting.</p>
             </div>
         </div>
         <div class="workspace-layout">
             <div class="main-column">
                 <div class="element-nav glass-panel">
-                    <button class="element-nav-button active" data-tab="core-identity">Core Identity</button>
-                    <button class="element-nav-button" data-tab="environment">Environment & Inhabitants</button>
+                    <button class="element-nav-button active" data-tab="overview">Overview</button>
+                    <button class="element-nav-button" data-tab="geography">Geography & Environment</button>
+                    <button class="element-nav-button" data-tab="flora">Flora & Fauna</button>
+                    <button class="element-nav-button" data-tab="history">History & Lore</button>
                     <button class="element-nav-button" data-tab="culture">Culture & Society</button>
+                    <button class="element-nav-button" data-tab="locations">Key Locations</button>
+                    <button class="element-nav-button" data-tab="atmosphere">Atmosphere</button>
                 </div>
 
-                <!-- Core Identity Tab -->
-                <div id="core-identity-tab" class="element-tab active">
-                    <div class="form-section glass-panel">
-                        <div class="form-group"><label for="setting-name">Setting Name</label><input type="text" id="setting-name" class="input-field" data-field-id="name" placeholder="The specific identifier for the location (e.g., 'Aethelgard')." autocomplete="off"></div>
-                        <div class="form-group"><label for="parent-world">Parent World</label><input type="text" id="parent-world" class="input-field" data-field-id="parent_world" placeholder="The larger world or realm this setting exists within." autocomplete="off"></div>
-                        <div class="form-group"><label for="setting-purpose">Function & Purpose</label><textarea id="setting-purpose" class="input-field" data-field-id="purpose" placeholder="The setting's primary role (e.g., 'Capital City,' 'Trading Hub,' 'Sacred Sanctuary')." autocomplete="off"></textarea></div>
-                    </div>
-                </div>
-
-                <!-- Environment & Inhabitants Tab -->
-                <div id="environment-tab" class="element-tab">
-                    <div class="form-section glass-panel">
-                        <div class="form-group"><label for="setting-geography">Geographical Features & Climate</label><textarea id="setting-geography" class="input-field" data-field-id="geography" placeholder="The natural landscape, terrain, and weather patterns." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="setting-landmarks">Key Landmarks</label><textarea id="setting-landmarks" class="input-field" data-field-id="landmarks" placeholder="Notable natural or artificial structures." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="setting-architecture">Architectural Style & Materials</label><textarea id="setting-architecture" class="input-field" data-field-id="architecture" placeholder="The predominant building styles and construction materials." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="setting-flora-fauna">Flora & Fauna</label><textarea id="setting-flora-fauna" class="input-field" data-field-id="flora_fauna" placeholder="Unique plants and animals found in the area." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="setting-population">Population & Demographics</label><textarea id="setting-population" class="input-field" data-field-id="population" placeholder="The number of inhabitants, their species, and characteristics." autocomplete="off"></textarea></div>
-                    </div>
-                </div>
-
-                <!-- Culture & Society Tab -->
-                <div id="culture-tab" class="element-tab">
-                    <div class="form-section glass-panel">
-                        <div class="form-group"><label for="setting-culture">Culture & Social Norms</label><textarea id="setting-culture" class="input-field" data-field-id="culture" placeholder="The customs, traditions, and values of the inhabitants." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="setting-government">Government & Leadership</label><textarea id="setting-government" class="input-field" data-field-id="government" placeholder="How the setting is ruled and who is in power." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="setting-economy">Economy & Trade</label><textarea id="setting-economy" class="input-field" data-field-id="economy" placeholder="Primary industries, resources, and trade activities." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="setting-history">History & Lore</label><textarea id="setting-history" class="input-field" data-field-id="history" placeholder="Key historical events and significant lore associated with the location." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="setting-atmosphere">Sensory Atmosphere</label><textarea id="setting-atmosphere" class="input-field" data-field-id="atmosphere" placeholder="The overall look, sound, smell, and feel of the place." autocomplete="off"></textarea></div>
-                    </div>
-                </div>
-
-                <div class="form-section glass-panel">
-                    <div class="tab-controls glass-panel" style="margin-bottom: 1rem; border-bottom: none; padding: 0;">
-                        <h5 class="form-subheader">Custom Notes</h5>
-                        <div class="edit-toggle-container">
-                            <span class="edit-toggle-label">Edit</span>
-                            <label class="edit-toggle-switch">
-                                <input type="checkbox" class="edit-toggle" data-target="custom-notes">
-                                <span class="edit-toggle-slider"></span>
-                            </label>
+                <div class="tab-content-container">
+                    <!-- Overview Tab -->
+                    <div id="overview-tab" class="element-tab active">
+                        <div class="form-section glass-panel">
+                            <div class="form-group"><label for="setting-name">Setting Name</label><input type="text" id="setting-name" class="input-field" data-field-id="name" placeholder="e.g., The Kingdom of Aerthos, Neo-Kyoto Sector 7" autocomplete="off"></div>
+                            <div class="form-group"><label for="setting-scale">Scale</label><input type="text" id="setting-scale" class="input-field" data-field-id="scale" placeholder="e.g., Single Room, City, Kingdom, Planet, Galaxy" autocomplete="off"></div>
+                            <div class="form-group"><label for="setting-genre">Genre / Tech Level</label><input type="text" id="setting-genre" class="input-field" data-field-id="genre" placeholder="e.g., High Fantasy, Cyberpunk, Stone Age" autocomplete="off"></div>
+                            <div class="form-group"><label for="setting-concept">Core Concept</label><textarea id="setting-concept" class="input-field" data-field-id="concept" placeholder="A one-sentence summary, e.g., 'A city built on the back of a colossal, sleeping beast.'"></textarea></div>
+                            <div class="form-group"><label for="setting-conflict">Primary Conflict / Tension</label><textarea id="setting-conflict" class="input-field" data-field-id="conflict" placeholder="The central source of strife inherent to this place."></textarea></div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, ideas, dialogue snippets, or custom fields here." autocomplete="off" disabled></textarea>
+
+                    <!-- Geography & Environment Tab -->
+                    <div id="geography-tab" class="element-tab">
+                        <div class="form-section glass-panel">
+                            <div class="form-group"><label for="geography-cosmology">Cosmology & Astronomy</label><textarea id="geography-cosmology" class="input-field" data-field-id="cosmology" placeholder="Planet type, star system, moons, unique celestial phenomena."></textarea></div>
+                            <div class="form-group"><label for="geography-climate">Climate & Weather Patterns</label><textarea id="geography-climate" class="input-field" data-field-id="climate" placeholder="e.g., Arid, tropical; predictable seasons, magical storms."></textarea></div>
+                            <div class="form-group"><label for="geography-topography">Topography & Terrain</label><textarea id="geography-topography" class="input-field" data-field-id="topography" placeholder="e.g., Jagged mountains, sprawling deserts, floating islands."></textarea></div>
+                            <div class="form-group"><label for="geography-water">Bodies of Water</label><textarea id="geography-water" class="input-field" data-field-id="water" placeholder="Oceans, rivers, lakes, swamps."></textarea></div>
+                            <div class="form-group"><label for="geography-resources">Natural Resources</label><textarea id="geography-resources" class="input-field" data-field-id="resources" placeholder="Key minerals, energy sources, fertile land, magical nexuses."></textarea></div>
+                            <div class="form-group"><label for="geography-hazards">Natural Hazards</label><textarea id="geography-hazards" class="input-field" data-field-id="hazards" placeholder="Volcanoes, earthquakes, extreme weather."></textarea></div>
+                        </div>
+                    </div>
+
+                    <!-- Flora & Fauna Tab -->
+                    <div id="flora-tab" class="element-tab">
+                        <div class="form-section glass-panel">
+                            <div class="form-group"><label for="flora-ecosystems">Dominant Ecosystems</label><textarea id="flora-ecosystems" class="input-field" data-field-id="ecosystems" placeholder="e.g., Bioluminescent fungus forest, sentient coral reef."></textarea></div>
+                            <div class="form-group"><label for="flora-plants">Key Flora (Plants)</label><textarea id="flora-plants" class="input-field" data-field-id="plants" placeholder="Notable trees, flowers, crops. Mundane, magical, carnivorous?"></textarea></div>
+                            <div class="form-group"><label for="flora-animals">Key Fauna (Animals)</label><textarea id="flora-animals" class="input-field" data-field-id="animals" placeholder="Common wildlife, apex predators, beasts of burden, monsters."></textarea></div>
+                            <div class="form-group"><label for="flora-interaction">Human/Inhabitant Interaction</label><textarea id="flora-interaction" class="input-field" data-field-id="interaction" placeholder="How do sentient species interact with the ecosystem?"></textarea></div>
+                        </div>
+                    </div>
+
+                    <!-- History & Lore Tab -->
+                    <div id="history-tab" class="element-tab">
+                        <div class="form-section glass-panel">
+                            <div class="form-group"><label for="history-origin">Origin / Creation Myth</label><textarea id="history-origin" class="input-field" data-field-id="origin" placeholder="How did this place come to be?"></textarea></div>
+                            <div class="form-group"><label for="history-timeline">Timeline of Major Eras</label><textarea id="history-timeline" class="input-field" data-field-id="timeline" placeholder="e.g., The Age of Giants, The Great Schism. List key events."></textarea></div>
+                            <div class="form-group"><label for="history-ruins">Ancient Civilizations & Ruins</label><textarea id="history-ruins" class="input-field" data-field-id="ruins" placeholder="Who lived here before? What evidence remains?"></textarea></div>
+                            <div class="form-group"><label for="history-wars">Major Wars & Cataclysms</label><textarea id="history-wars" class="input-field" data-field-id="wars" placeholder="Key conflicts or disasters that have scarred the land."></textarea></div>
+                            <div class="form-group"><label for="history-myths">Myths, Legends & Folklore</label><textarea id="history-myths" class="input-field" data-field-id="myths" placeholder="Famous stories, heroes, villains, and monsters."></textarea></div>
+                        </div>
+                    </div>
+
+                    <!-- Culture & Society Tab -->
+                    <div id="culture-tab" class="element-tab">
+                        <div class="form-section glass-panel">
+                            <div class="form-group"><label for="culture-demographics">Demographics</label><textarea id="culture-demographics" class="input-field" data-field-id="demographics" placeholder="Dominant species, minority groups, population density."></textarea></div>
+                            <div class="form-group"><label for="culture-government">Government & Politics</label><textarea id="culture-government" class="input-field" data-field-id="government" placeholder="e.g., Feudal monarchy, corporate council, theocratic state."></textarea></div>
+                            <div class="form-group"><label for="culture-economy">Economy & Trade</label><textarea id="culture-economy" class="input-field" data-field-id="economy" placeholder="Primary industry, currency, key trade partners."></textarea></div>
+                            <div class="form-group"><label for="culture-social">Social Structure</label><textarea id="culture-social" class="input-field" data-field-id="social" placeholder="e.g., Rigid caste system, egalitarian communes."></textarea></div>
+                            <div class="form-group"><label for="culture-language">Language(s)</label><textarea id="culture-language" class="input-field" data-field-id="language" placeholder="Common tongue, regional dialects, ancient languages."></textarea></div>
+                            <div class="form-group"><label for="culture-religion">Religion(s) & Philosophies</label><textarea id="culture-religion" class="input-field" data-field-id="religion" placeholder="Dominant deities, spiritual beliefs, moral codes."></textarea></div>
+                            <div class="form-group"><label for="culture-tech">Technology & Magic</label><textarea id="culture-tech" class="input-field" data-field-id="tech" placeholder="General tech level and how magic is understood/used."></textarea></div>
+                            <div class="form-group"><label for="culture-art">Art & Architecture</label><textarea id="culture-art" class="input-field" data-field-id="art" placeholder="Prevailing aesthetic, e.g., Brutalist, ornate, organic."></textarea></div>
+                        </div>
+                    </div>
+
+                    <!-- Key Locations & Landmarks Tab -->
+                    <div id="locations-tab" class="element-tab">
+                        <div class="form-section glass-panel">
+                            <div class="form-group"><label for="locations-cities">Major Cities & Settlements</label><textarea id="locations-cities" class="input-field" data-field-id="cities" placeholder="The capital, trade hubs, religious centers, remote villages."></textarea></div>
+                            <div class="form-group"><label for="locations-manmade">Significant Man-Made Landmarks</label><textarea id="locations-manmade" class="input-field" data-field-id="manmade_landmarks" placeholder="e.g., The Grand Citadel, The Sunken Temple, The Sky-Spire."></textarea></div>
+                            <div class="form-group"><label for="locations-natural">Significant Natural Landmarks</label><textarea id="locations-natural" class="input-field" data-field-id="natural_landmarks" placeholder="e.g., The Dragon's Tooth Mountains, The Weeping Falls."></textarea></div>
+                            <div class="form-group"><label for="locations-hidden">Hidden or Dangerous Locations</label><textarea id="locations-hidden" class="input-field" data-field-id="hidden_locations" placeholder="e.g., Ancient tombs, monster lairs, rebel hideouts."></textarea></div>
+                        </div>
+                    </div>
+
+                    <!-- Atmosphere & Sensory Details Tab -->
+                    <div id="atmosphere-tab" class="element-tab">
+                        <div class="form-section glass-panel">
+                            <div class="form-group"><label for="atmosphere-sights">Dominant Sights (Color Palette)</label><textarea id="atmosphere-sights" class="input-field" data-field-id="sights" placeholder="e.g., Neon glow, sun-bleached sandstone, vibrant greens."></textarea></div>
+                            <div class="form-group"><label for="atmosphere-sounds">Pervasive Sounds</label><textarea id="atmosphere-sounds" class="input-field" data-field-id="sounds" placeholder="e.g., Howling wind, hum of machinery, eerie silence."></textarea></div>
+                            <div class="form-group"><label for="atmosphere-smells">Common Smells</label><textarea id="atmosphere-smells" class="input-field" data-field-id="smells" placeholder="e.g., Sea salt, industrial smog, exotic spices, damp earth."></textarea></div>
+                            <div class="form-group"><label for="atmosphere-mood">Overall Mood / Vibe</label><textarea id="atmosphere-mood" class="input-field" data-field-id="mood" placeholder="e.g., Oppressive, wondrous, bustling, tranquil, decaying."></textarea></div>
+                            <div class="form-group">
+                                <label for="custom-notes">Custom Notes</label>
+                                <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="A flexible area for uncategorized thoughts, ideas, dialogue snippets, etc." autocomplete="off"></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
                 <div id="response-container" class="response-container glass-panel" contenteditable="true"></div>
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
-                <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div class="generation-controls-buttons"><button id="new-button" class="action-btn">New</button><button id="generate-button" data-element-type="SETTING" class="generate-btn-large">Generate</button><button id="load-button" class="action-btn">Load</button><button id="save-asset-button" class="save-btn-large">Save Setting</button></div></div></div>
+                <div class="accordion glass-panel active">
+                    <button class="accordion-header active">
+                        <span>Generation Controls</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="generation-controls-buttons">
+                            <button id="generate-button" data-element-type="SETTING" class="generate-btn-large">Generate</button>
+
+                            <!-- Iteration controls, initially hidden -->
+                            <div id="iteration-controls" class="hidden">
+                                <div class="form-group">
+                                    <label for="update-instructions">Update Instructions</label>
+                                    <textarea id="update-instructions" class="input-field" placeholder="e.g., Make the history more ancient, add a magical element to the environment..."></textarea>
+                                </div>
+                                <button id="iterate-button" class="generate-btn-large">Iterate</button>
+                            </div>
+
+                            <div class="generation-controls-footer">
+                                <button id="save-asset-button" class="action-btn">Save</button>
+                                <button id="load-button" class="action-btn">Load</button>
+                                <button id="new-button" class="action-btn">New</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="side-panel-container">
                     <div class="accordion glass-panel">
                         <button class="accordion-header">
@@ -112,7 +174,7 @@
                     <div class="asset-hub-panel glass-panel">
                         <h3 class="side-panel-title">Asset Hub</h3>
                         <div class="asset-hub-container">
-                            <p class="asset-hub-subtitle">Import the Parent World, Species, etc. relevant to this Setting.</p>
+                            <p class="asset-hub-subtitle">Import files to provide contextual reference for this Setting.</p>
                             <div class="asset-import-area">
                                 <input type="file" id="asset-upload" multiple="" style="display: none;">
                                 <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
@@ -184,7 +246,3 @@
     </div>
 </body>
 </html>
-
-
-
-

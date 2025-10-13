@@ -1189,10 +1189,29 @@ input:checked + .edit-toggle-slider:before {
 .element-tab {
     display: none;
 }
+.tab-content-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 0;
+}
+
+.element-tab {
+    display: none;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
 .element-tab.active {
-    display: block;
+    display: flex;
     animation: fadeInTab 0.5s ease-in-out forwards;
 }
+
+.element-tab .form-section {
+    overflow-y: auto;
+}
+
 .sub-nav {
     display: flex;
     gap: 0.5rem;
