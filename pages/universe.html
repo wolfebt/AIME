@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIME - Universe Crucible</title>
     <link rel="stylesheet" href="../style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../script/global-ui.js"></script>
     <script src="../script/element-bundle.js"></script>
 </head>
@@ -25,82 +26,132 @@
             <a href="elements.html" class="active">Elements</a>
             <a href="writer.html">Writer</a>
             <a href="imaging.html">Imaging</a>
-            <!-- <a href="audio.html">Audio</a> -->
-            <!-- <a href="3d.html">3D</a> -->
-            <!-- <a href="video.html">Video</a> -->
         </nav>
     </header>
 
     <main class="container">
-        <!-- ... rest of universe.html content ... -->
         <div class="element-header">
             <h2 class="element-title animated-gradient">Universe Crucible</h2>
             <div class="header-actions">
-                <p class="element-subtitle">Establish the foundational framework of your story's universe.</p>
+                <p class="element-subtitle">This document provides a comprehensive framework for creating a universe, multiverse, or cosmology. It is designed to establish the fundamental laws, cosmic structures, and overarching history that govern the entirety of your reality, providing a stage for one or more worlds.</p>
             </div>
         </div>
         <div class="workspace-layout">
             <div class="main-column">
-                <div class="form-section glass-panel">
-                    <div class="element-nav">
-                        <button class="element-nav-button active" data-tab="core-concept">Core Concept</button>
-                        <button class="element-nav-button" data-tab="rules-of-reality">Rules of Reality</button>
-                        <button class="element-nav-button" data-tab="metaphysical-rules">Metaphysical Rules</button>
-                        <button class="element-nav-button" data-tab="source-of-power">Source of Power</button>
-                        <button class="element-nav-button" data-tab="cosmology">Cosmology</button>
-                    </div>
+                <div class="element-nav glass-panel">
+                    <button class="element-nav-button active" data-tab="core-concept">Core Concept & Metaphysics</button>
+                    <button class="element-nav-button" data-tab="universal-laws">Universal Laws & Constants</button>
+                    <button class="element-nav-button" data-tab="cosmology">Cosmology & Structure</button>
+                    <button class="element-nav-button" data-tab="cosmogony">Cosmogony & Eschatology</button>
+                    <button class="element-nav-button" data-tab="inhabitants">Universal Inhabitants & Powers</button>
+                    <button class="element-nav-button" data-tab="inter-planar">Inter-Planar Dynamics</button>
+                    <button class="element-nav-button" data-tab="themes">Universal Themes & Tone</button>
+                </div>
 
-                    <div id="core-concept-tab" class="element-tab active">
-                        <div class="form-group"><label for="universe-name">Universe Name</label><input type="text" id="universe-name" class="input-field" data-field-id="name" autocomplete="off"></div>
-                        <div class="form-group"><label for="primary-genre">Primary Genre</label><input type="text" id="primary-genre" class="input-field" data-field-id="genre" autocomplete="off"></div>
-                        <div class="form-group"><label for="themes-motifs">Themes & Motifs</label><textarea id="themes-motifs" class="input-field" data-field-id="themes" placeholder="e.g., Redemption, the cost of power, man vs. nature." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="high-concept-pitch">High Concept Pitch</label><input type="text" id="high-concept-pitch" class="input-field" data-field-id="pitch" autocomplete="off"></div>
-                        <div class="form-group"><label for="inspirations-tone">Inspirations & Tone</label><textarea id="inspirations-tone" class="input-field" data-field-id="inspirations" placeholder="e.g., Inspired by Dune with a cosmic horror tone." autocomplete="off"></textarea></div>
-                    </div>
-
-                    <div id="rules-of-reality-tab" class="element-tab">
-                        <div class="form-group"><label for="laws-physics">Fundamental Laws of Physics</label><textarea id="laws-physics" class="input-field" data-field-id="physics" placeholder="The basic rules governing reality." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="universal-constants">Universal Constants</label><textarea id="universal-constants" class="input-field" data-field-id="constants" placeholder="Unchangeable truths or pivotal historical events." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="ftl-travel">Faster-Than-Light Travel</label><textarea id="ftl-travel" class="input-field" data-field-id="ftl" placeholder="Methods, limitations, and consequences of FTL." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="exotic-matter">Exotic Matter & Energy</label><textarea id="exotic-matter" class="input-field" data-field-id="exotic_matter" placeholder="Unique substances or energy forms and their properties." autocomplete="off"></textarea></div>
-                    </div>
-
-                    <div id="metaphysical-rules-tab" class="element-tab">
-                        <div class="form-group"><label for="soul-consciousness">The Soul & Consciousness</label><textarea id="soul-consciousness" class="input-field" data-field-id="soul" placeholder="Nature of the soul, consciousness, and the afterlife." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="time-causality">Time & Causality</label><textarea id="time-causality" class="input-field" data-field-id="time" placeholder="How time flows, potential for time travel, paradoxes." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="destiny-prophecy">Destiny & Prophecy</label><textarea id="destiny-prophecy" class="input-field" data-field-id="destiny" placeholder="The role of fate, prophecies, and free will." autocomplete="off"></textarea></div>
-                    </div>
-
-                    <div id="source-of-power-tab" class="element-tab">
-                        <div class="form-group"><label for="power-origin">Origin Point</label><textarea id="power-origin" class="input-field" data-field-id="power_origin" placeholder="e.g., Magic from celestial alignments, psychic power from genetics." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="power-access">Access Methods</label><textarea id="power-access" class="input-field" data-field-id="power_access" placeholder="How individuals or groups tap into the source of power." autocomplete="off"></textarea></div>
-                    </div>
-
-                    <div id="cosmology-tab" class="element-tab">
-                        <div class="form-group"><label for="cosmology-scale">Scale & Structure</label><textarea id="cosmology-scale" class="input-field" data-field-id="cosmology_scale" placeholder="Size of the universe, multiverses, arrangement of galaxies." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="cosmology-planes">Extra-planar Realities</label><textarea id="cosmology-planes" class="input-field" data-field-id="cosmology_planes" placeholder="Alternate dimensions, spiritual realms, etc." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="cosmology-phenomena">Unique Celestial Phenomena</label><textarea id="cosmology-phenomena" class="input-field" data-field-id="cosmology_phenomena" placeholder="e.g., Living stars, crystalline asteroid fields, temporal rifts." autocomplete="off"></textarea></div>
-                    </div>
-
-                    <div class="tab-controls glass-panel" style="margin-bottom: 1rem; border-bottom: none; padding: 0;">
-                        <h5 class="form-subheader">Custom Notes</h5>
-                        <div class="edit-toggle-container">
-                            <span class="edit-toggle-label">Edit</span>
-                            <label class="edit-toggle-switch">
-                                <input type="checkbox" class="edit-toggle" data-target="custom-notes">
-                                <span class="edit-toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, ideas, dialogue snippets, or custom fields here." autocomplete="off" disabled></textarea>
+                <!-- Core Concept & Metaphysics Tab -->
+                <div id="core-concept-tab" class="element-tab active">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="universe-name">Universe Name / Designation</label><input type="text" id="universe-name" class="input-field" data-field-id="name" placeholder="e.g., The Aethelgard Expanse" autocomplete="off"></div>
+                        <div class="form-group"><label for="high-concept">High Concept</label><textarea id="high-concept" class="input-field" data-field-id="high_concept" placeholder="A one-sentence pitch for the entire universe. (e.g., 'A universe where magic is the dying echo of creation's big bang.')"></textarea></div>
+                        <div class="form-group"><label for="ontological-premise">Ontological Premise</label><textarea id="ontological-premise" class="input-field" data-field-id="ontological_premise" placeholder="What is the true nature of existence? (e.g., Materialism, Idealism, Dualism)"></textarea></div>
+                        <div class="form-group"><label for="the-source">The Source / The All</label><textarea id="the-source" class="input-field" data-field-id="the_source" placeholder="Is there a prime, originating force or entity? (e.g., A singular consciousness, a chaotic void, a mathematical constant)"></textarea></div>
                     </div>
                 </div>
+
+                <!-- Universal Laws & Constants Tab -->
+                <div id="universal-laws-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="laws-physics">Laws of Physics</label><textarea id="laws-physics" class="input-field" data-field-id="laws_physics" placeholder="Are they consistent across the universe? Are they malleable by magic or technology?"></textarea></div>
+                        <div class="form-group"><label for="laws-metaphysics">Laws of Metaphysics</label><textarea id="laws-metaphysics" class="input-field" data-field-id="laws_metaphysics" placeholder="What are the absolute rules for souls, consciousness, life, and death? Is reincarnation a fact?"></textarea></div>
+                        <div class="form-group"><label for="nature-of-magic">The Nature of Magic / Exotic Forces</label><textarea id="nature-of-magic" class="input-field" data-field-id="nature_of_magic" placeholder="What are the foundational principles of any supernatural forces? Is there a conservation of magic/energy?"></textarea></div>
+                        <div class="form-group"><label for="nature-of-time">The Nature of Time</label><textarea id="nature-of-time" class="input-field" data-field-id="nature_of_time" placeholder="Is it linear, cyclical, branching, or an illusion? Can it be traversed or manipulated?"></textarea></div>
+                        <div class="form-group"><label for="nature-of-space">The Nature of Space</label><textarea id="nature-of-space" class="input-field" data-field-id="nature_of_space" placeholder="Is it finite or infinite? Does it have a definite shape or extra dimensions?"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Cosmology & Structure Tab -->
+                <div id="cosmology-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="cosmological-model">Cosmological Model</label><textarea id="cosmological-model" class="input-field" data-field-id="cosmological_model" placeholder="e.g., Multiverse, Single Universe, Planar System, World Tree, Nested Realities, Simulation"></textarea></div>
+                        <div class="form-group"><label for="major-planes">Major Planes / Dimensions / Realms</label><textarea id="major-planes" class="input-field" data-field-id="major_planes" placeholder="List the key distinct realities and their core properties. (e.g., The Mortal Plane, The Elemental Chaos, The Astral Sea)"></textarea></div>
+                        <div class="form-group"><label for="fabric-of-reality">The Fabric of Reality</label><textarea id="fabric-of-reality" class="input-field" data-field-id="fabric_of_reality" placeholder="What separates or connects these different planes? (e.g., The Aether, The Veil, Spacetime, The Great Void)"></textarea></div>
+                        <div class="form-group"><label for="cosmic-geography">Cosmic Geography</label><textarea id="cosmic-geography" class="input-field" data-field-id="cosmic_geography" placeholder="Description of the physical universe, its galaxies, unique nebulae, cosmic anomalies, and celestial landmarks."></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Cosmogony & Eschatology Tab -->
+                <div id="cosmogony-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="cosmogony-beginning">Cosmogony (The Beginning)</label><textarea id="cosmogony-beginning" class="input-field" data-field-id="cosmogony_beginning" placeholder="The true story of how the universe was created. (e.g., Divine Fiat, Big Bang, Collision of other universes)"></textarea></div>
+                        <div class="form-group"><label for="timeline-of-ages">Timeline of Cosmic Ages</label><textarea id="timeline-of-ages" class="input-field" data-field-id="timeline_of_ages" placeholder="The grand epochs that define universal history. (e.g., The Age of Chaos, The Era of First Life, The Reign of Gods)"></textarea></div>
+                        <div class="form-group"><label for="eschatology-end">Eschatology (The End)</label><textarea id="eschatology-end" class="input-field" data-field-id="eschatology_end" placeholder="How is the universe destined, predicted, or feared to end? (e.g., The Big Crunch, Heat Death, A Final War of the Gods)"></textarea></div>
+                        <div class="form-group"><label for="universal-prophecies">Universal Prophecies</label><textarea id="universal-prophecies" class="input-field" data-field-id="universal_prophecies" placeholder="Grand prophecies or cycles that affect the fate of all existence."></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Universal Inhabitants & Powers Tab -->
+                <div id="inhabitants-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="cosmic-entities">Cosmic Entities</label><textarea id="cosmic-entities" class="input-field" data-field-id="cosmic_entities" placeholder="The ultimate powers. (e.g., Personifications of Death or Time, Abstract Forces, Outer Gods)"></textarea></div>
+                        <div class="form-group"><label for="divine-order">The Divine Order</label><textarea id="divine-order" class="input-field" data-field-id="divine_order" placeholder="Are there gods? What is their origin, nature, and scope of influence? Are they organized into pantheons?"></textarea></div>
+                        <div class="form-group"><label for="progenitor-races">Progenitor / First Races</label><textarea id="progenitor-races" class="input-field" data-field-id="progenitor_races" placeholder="The very first sentient species to arise, now perhaps extinct, ascended, or acting as cosmic guardians/destroyers."></textarea></div>
+                        <div class="form-group"><label for="universal-hierarchy">Universal Hierarchy</label><textarea id="universal-hierarchy" class="input-field" data-field-id="universal_hierarchy" placeholder="Is there a 'pecking order' among these cosmic powers? Who is subservient to whom?"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Inter-Planar Dynamics Tab -->
+                <div id="inter-planar-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="methods-of-travel">Methods of Travel</label><textarea id="methods-of-travel" class="input-field" data-field-id="methods_of_travel" placeholder="How do beings or energies move between worlds, planes, or galaxies? (e.g., Portals, astral projection, folding space)"></textarea></div>
+                        <div class="form-group"><label for="barriers-boundaries">Barriers & Boundaries</label><textarea id="barriers-boundaries" class="input-field" data-field-id="barriers_boundaries" placeholder="What separates the planes? Are they permeable or absolute? What does it take to cross them?"></textarea></div>
+                        <div class="form-group"><label for="laws-of-transit">Laws of Transit</label><textarea id="laws-of-transit" class="input-field" data-field-id="laws_of_transit" placeholder="Do the laws of reality change when one crosses a boundary? Does it have a physical, mental, or spiritual toll?"></textarea></div>
+                        <div class="form-group"><label for="nexus-points">Points of Convergence / Nexus Points</label><textarea id="nexus-points" class="input-field" data-field-id="nexus_points" placeholder="Are there places where different realities naturally touch, overlap, or are dangerously thin?"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Universal Themes & Tone Tab -->
+                <div id="themes-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="central-question">Central Question</label><textarea id="central-question" class="input-field" data-field-id="central_question" placeholder="What is the primary philosophical question the universe poses? (e.g., 'Is free will possible in a deterministic cosmos?')"></textarea></div>
+                        <div class="form-group"><label for="overall-tone">Overall Tone</label><textarea id="overall-tone" class="input-field" data-field-id="overall_tone" placeholder="e.g., Awe & Wonder, Cosmic Horror, Mythic Fantasy, Hard Sci-Fi, Satirical"></textarea></div>
+                        <div class="form-group"><label for="narrative-potential">Narrative Potential</label><textarea id="narrative-potential" class="input-field" data-field-id="narrative_potential" placeholder="What kinds of stories is this universe built to tell? (e.g., Epic space operas, intimate character dramas, tales of divine conflict)"></textarea></div>
+                        <div class="form-group">
+                            <label for="custom-notes">Custom Notes</label>
+                            <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="A flexible area for uncategorized thoughts, ideas, dialogue snippets, etc." autocomplete="off"></textarea>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="response-container" class="response-container glass-panel" contenteditable="true"></div>
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
-                <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div class="generation-controls-buttons"><button id="new-button" class="action-btn">New</button><button id="generate-button" data-element-type="UNIVERSE" class="generate-btn-large">Generate</button><button id="load-button" class="action-btn">Load</button><button id="save-asset-button" class="save-btn-large">Save Universe</button></div></div></div>
+                <div class="accordion glass-panel active">
+                    <button class="accordion-header active">
+                        <span>Generation Controls</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="generation-controls-buttons">
+                            <button id="generate-button" data-element-type="UNIVERSE" class="generate-btn-large">Generate</button>
+
+                            <!-- Iteration controls, initially hidden -->
+                            <div id="iteration-controls" class="hidden">
+                                <div class="form-group">
+                                    <label for="update-instructions">Update Instructions</label>
+                                    <textarea id="update-instructions" class="input-field" placeholder="e.g., Make the metaphysics more idealist, add a plane of pure thought..."></textarea>
+                                </div>
+                                <button id="iterate-button" class="generate-btn-large">Iterate</button>
+                            </div>
+
+                            <div class="generation-controls-footer">
+                                <button id="save-asset-button" class="action-btn">Save</button>
+                                <button id="load-button" class="action-btn">Load</button>
+                                <button id="new-button" class="action-btn">New</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="side-panel-container">
                     <div class="accordion glass-panel">
                         <button class="accordion-header">
@@ -114,7 +165,7 @@
                     <div class="asset-hub-panel glass-panel">
                         <h3 class="side-panel-title">Asset Hub</h3>
                         <div class="asset-hub-container">
-                            <p class="asset-hub-subtitle">Import related assets to provide context.</p>
+                            <p class="asset-hub-subtitle">Import files to provide contextual reference for this Universe.</p>
                             <div class="asset-import-area">
                                 <input type="file" id="asset-upload" multiple="" style="display: none;">
                                 <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
@@ -186,7 +237,3 @@
     </div>
 </body>
 </html>
-
-
-
-
