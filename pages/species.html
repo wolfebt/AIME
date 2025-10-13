@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AIME - Species Creator</title>
     <link rel="stylesheet" href="../style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../script/global-ui.js"></script>
     <script src="../script/element-bundle.js"></script>
 </head>
@@ -25,14 +26,10 @@
             <a href="elements.html" class="active">Elements</a>
             <a href="writer.html">Writer</a>
             <a href="imaging.html">Imaging</a>
-            <!-- <a href="audio.html">Audio</a> -->
-            <!-- <a href="3d.html">3D</a> -->
-            <!-- <a href="video.html">Video</a> -->
         </nav>
     </header>
 
     <main class="container">
-        <!-- ... rest of species.html content ... -->
         <div class="element-header">
             <h2 class="element-title animated-gradient">Species Creator</h2>
             <div class="header-actions">
@@ -42,65 +39,136 @@
         <div class="workspace-layout">
             <div class="main-column">
                 <div class="element-nav glass-panel">
-                    <button class="element-nav-button active" data-tab="core-identity">Core Identity</button>
+                    <button class="element-nav-button active" data-tab="overview">Overview</button>
                     <button class="element-nav-button" data-tab="biology">Biology & Physiology</button>
-                    <button class="element-nav-button" data-tab="behavior">Behavior & Ecology</button>
-                    <button class="element-nav-button" data-tab="culture">Culture & Relations</button>
+                    <button class="element-nav-button" data-tab="psychology">Psychology & Cognition</button>
+                    <button class="element-nav-button" data-tab="culture">Culture & Society</button>
+                    <button class="element-nav-button" data-tab="ecology">Ecology & Habitat</button>
+                    <button class="element-nav-button" data-tab="abilities">Abilities & Traits</button>
+                    <button class="element-nav-button" data-tab="notes">Notes & Concepts</button>
                 </div>
 
-                <!-- Core Identity Tab -->
-                <div id="core-identity-tab" class="element-tab active">
+                <!-- Overview Tab -->
+                <div id="overview-tab" class="element-tab active">
                     <div class="form-section glass-panel">
-                        <div class="form-group"><label for="species-name">Species Name</label><input type="text" id="species-name" class="input-field" data-field-id="name" placeholder="The formal or common name of the species." autocomplete="off"></div>
-                        <div class="form-group"><label for="species-classification">Classification</label><input type="text" id="species-classification" class="input-field" data-field-id="classification" placeholder="e.g., 'Sentient Mammal,' 'Silicon-based Flora,' 'Avian Predator.'" autocomplete="off"></div>
-                        <div class="form-group"><label for="species-origin">Origin</label><input type="text" id="species-origin" class="input-field" data-field-id="origin" placeholder="The native star system, planet, or dimension." autocomplete="off"></div>
+                        <div class="form-group"><label for="species-name">Species Name</label><input type="text" id="species-name" class="input-field" data-field-id="name" placeholder="Include common name and scientific/formal name, if applicable" autocomplete="off"></div>
+                        <div class="form-group"><label for="species-homeworld">Homeworld / Plane of Origin</label><input type="text" id="species-homeworld" class="input-field" data-field-id="homeworld" autocomplete="off"></div>
+                        <div class="form-group"><label for="species-sentience">Sentience Level</label><input type="text" id="species-sentience" class="input-field" data-field-id="sentience" placeholder="e.g., Non-sentient, Animal-level, Sentient, Hive Mind, God-like" autocomplete="off"></div>
+                        <div class="form-group"><label for="species-description">General Description</label><textarea id="species-description" class="input-field" data-field-id="description" placeholder="A brief, one-paragraph summary of the species."></textarea></div>
+                        <div class="form-group"><label for="species-concept">Core Concept / Archetype</label><textarea id="species-concept" class="input-field" data-field-id="concept" placeholder="e.g., 'Silicon-based lifeforms that communicate with light'"></textarea></div>
                     </div>
                 </div>
 
                 <!-- Biology & Physiology Tab -->
-                <div id="biology-tab" class="element-tab">
-                    <div class="form-section glass-panel">
-                        <div class="form-group"><label for="species-anatomy">Physical Anatomy & Appearance</label><textarea id="species-anatomy" class="input-field" data-field-id="anatomy" placeholder="Size, shape, coloration, key features, and general appearance." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="species-biology">Biological Systems & Life Cycle</label><textarea id="species-biology" class="input-field" data-field-id="biology" placeholder="Internal systems, metabolism, reproduction, and lifespan." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="species-senses">Sensory Capabilities</label><textarea id="species-senses" class="input-field" data-field-id="senses" placeholder="Unique senses like echolocation, thermal vision, or psionic awareness." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="species-abilities">Abilities & Powers</label><textarea id="species-abilities" class="input-field" data-field-id="abilities" placeholder="Special traits, unique skills, or natural defenses." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="species-communication">Communication Methods</label><textarea id="species-communication" class="input-field" data-field-id="communication" placeholder="How they communicate: spoken language, telepathy, pheromones, etc." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="species-vulnerabilities">Biological Vulnerabilities</label><textarea id="species-vulnerabilities" class="input-field" data-field-id="vulnerabilities" placeholder="Weaknesses, environmental intolerance, or specific susceptibilities." autocomplete="off"></textarea></div>
+                <div id="biology-tab" class="element-tab sub-tab-container">
+                     <div class="sub-nav glass-panel">
+                        <button class="sub-nav-button active" data-sub-tab="anatomy">Anatomy & Appearance</button>
+                        <button class="sub-nav-button" data-sub-tab="systems">Internal Systems & Life Cycle</button>
                     </div>
-                </div>
-
-                <!-- Behavior & Ecology Tab -->
-                <div id="behavior-tab" class="element-tab">
-                    <div class="form-section glass-panel">
-                        <div class="form-group"><label for="species-behavior">Behavior & Social Structure</label><textarea id="species-behavior" class="input-field" data-field-id="behavior" placeholder="Social hierarchies, temperament, and communal habits." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="species-diet">Diet & Trophic Level</label><textarea id="species-diet" class="input-field" data-field-id="diet" placeholder="What they eat and their position in the food chain." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="species-habitat">Habitat & Planetary Origin</label><textarea id="species-habitat" class="input-field" data-field-id="habitat" placeholder="Native environment and home world." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="species-evolution">Evolutionary History</label><textarea id="species-evolution" class="input-field" data-field-id="evolution" placeholder="Ancestral forms and key evolutionary milestones." autocomplete="off"></textarea></div>
-                    </div>
-                </div>
-
-                <!-- Culture & Relations Tab -->
-                <div id="culture-tab" class="element-tab">
-                    <div class="form-section glass-panel">
-                        <div class="form-group"><label for="species-culture">Cultural Traits & Technology Level</label><textarea id="species-culture" class="input-field" data-field-id="culture" placeholder="Art, rituals, societal norms, and technological sophistication." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="species-role">Ecological Role</label><textarea id="species-role" class="input-field" data-field-id="role" placeholder="Their impact on the ecosystem (e.g., keystone species, apex predator)." autocomplete="off"></textarea></div>
-                        <div class="form-group"><label for="species-relations">Inter-species Relations</label><textarea id="species-relations" class="input-field" data-field-id="relations" placeholder="How they interact with other species (e.g., symbiotic, parasitic, hostile)." autocomplete="off"></textarea></div>
-                    </div>
-                </div>
-
-                <div class="form-section glass-panel">
-                    <div class="tab-controls glass-panel" style="margin-bottom: 1rem; border-bottom: none; padding: 0;">
-                        <h5 class="form-subheader">Custom Notes</h5>
-                        <div class="edit-toggle-container">
-                            <span class="edit-toggle-label">Edit</span>
-                            <label class="edit-toggle-switch">
-                                <input type="checkbox" class="edit-toggle" data-target="custom-notes">
-                                <span class="edit-toggle-slider"></span>
-                            </label>
+                    <div id="anatomy-sub-tab" class="sub-tab-content active">
+                        <div class="form-section glass-panel">
+                            <div class="form-group"><label for="biology-appearance">General Appearance</label><textarea id="biology-appearance" class="input-field" data-field-id="appearance" placeholder="Overall body shape, size, notable features"></textarea></div>
+                            <div class="form-group"><label for="biology-composition">Physical Composition</label><input type="text" id="biology-composition" class="input-field" data-field-id="composition" placeholder="e.g., Carbon-based, silicon-based, energy, crystalline" autocomplete="off"></div>
+                            <div class="form-group"><label for="biology-skeletal">Skeletal Structure</label><input type="text" id="biology-skeletal" class="input-field" data-field-id="skeletal" placeholder="Endoskeleton, exoskeleton, hydrostatic, etc." autocomplete="off"></div>
+                            <div class="form-group"><label for="biology-limbs">Limbs & Appendages</label><input type="text" id="biology-limbs" class="input-field" data-field-id="limbs" placeholder="Number and type of arms, legs, wings, tails, tentacles" autocomplete="off"></div>
+                            <div class="form-group"><label for="biology-integument">Integument</label><input type="text" id="biology-integument" class="input-field" data-field-id="integument" placeholder="Skin, scales, fur, feathers, chitin, bark" autocomplete="off"></div>
+                            <div class="form-group"><label for="biology-coloration">Coloration & Markings</label><textarea id="biology-coloration" class="input-field" data-field-id="coloration" placeholder="Patterns, camouflage, display colors"></textarea></div>
+                            <div class="form-group"><label for="biology-head">Head & Facial Features</label><textarea id="biology-head" class="input-field" data-field-id="head" placeholder="Eyes, mouth, sensory organs"></textarea></div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Add any other relevant details, ideas, dialogue snippets, or custom fields here." autocomplete="off" disabled></textarea>
+                    <div id="systems-sub-tab" class="sub-tab-content">
+                        <div class="form-section glass-panel">
+                            <div class="form-group"><label for="biology-diet">Diet & Metabolism</label><textarea id="biology-diet" class="input-field" data-field-id="diet" placeholder="Carnivore, herbivore, omnivore, lithovore, photosynthesizer"></textarea></div>
+                            <div class="form-group"><label for="biology-senses">Senses</label><textarea id="biology-senses" class="input-field" data-field-id="senses" placeholder="Sight, hearing, smell, touch, taste, and any unique senses"></textarea></div>
+                            <div class="form-group"><label for="biology-reproduction">Reproduction</label><textarea id="biology-reproduction" class="input-field" data-field-id="reproduction" placeholder="Sexual, asexual, budding, spawning; mating rituals, gestation period, number of offspring"></textarea></div>
+                            <div class="form-group"><label for="biology-lifecycle">Life Cycle & Maturation</label><textarea id="biology-lifecycle" class="input-field" data-field-id="lifecycle" placeholder="Stages of life from birth to death; average lifespan"></textarea></div>
+                            <div class="form-group"><label for="biology-sleep">Sleep/Rest Patterns</label><textarea id="biology-sleep" class="input-field" data-field-id="sleep" placeholder="Nocturnal, diurnal, hibernation, torpor"></textarea></div>
+                            <div class="form-group"><label for="biology-vulnerabilities">Vulnerabilities & Resistances</label><textarea id="biology-vulnerabilities" class="input-field" data-field-id="vulnerabilities" placeholder="Susceptibility to diseases, toxins, radiation; natural immunities"></textarea></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Psychology & Cognition Tab -->
+                <div id="psychology-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="psych-intelligence">Intelligence & Problem-Solving</label><textarea id="psych-intelligence" class="input-field" data-field-id="intelligence" placeholder="How do they think? Logical, intuitive, creative, analytical"></textarea></div>
+                        <div class="form-group"><label for="psych-communication">Primary Method of Communication</label><textarea id="psych-communication" class="input-field" data-field-id="communication" placeholder="Spoken language, telepathy, chemical signals, light patterns, body language"></textarea></div>
+                        <div class="form-group"><label for="psych-drives">Dominant Instincts & Drives</label><textarea id="psych-drives" class="input-field" data-field-id="drives" placeholder="Survival, procreation, hierarchy, curiosity, conquest"></textarea></div>
+                        <div class="form-group"><label for="psych-temperament">Temperament & Disposition</label><textarea id="psych-temperament" class="input-field" data-field-id="temperament" placeholder="Generally aggressive, passive, curious, xenophobic, friendly"></textarea></div>
+                        <div class="form-group"><label for="psych-emotions">Emotional Range</label><textarea id="psych-emotions" class="input-field" data-field-id="emotions" placeholder="Do they feel emotions like humans? Or something different?"></textarea></div>
+                        <div class="form-group"><label for="psych-memory">Memory & Learning</label><textarea id="psych-memory" class="input-field" data-field-id="memory" placeholder="How do they retain and pass on information?"></textarea></div>
+                        <div class="form-group"><label for="psych-self-concept">Concept of Self</label><input type="text" id="psych-self-concept" class="input-field" data-field-id="self_concept" placeholder="Individualistic, collectivist, hive-minded" autocomplete="off"></div>
+                    </div>
+                </div>
+
+                <!-- Culture & Society Tab -->
+                <div id="culture-tab" class="element-tab sub-tab-container">
+                    <div class="sub-nav glass-panel">
+                        <button class="sub-nav-button active" data-sub-tab="organization">Social Organization</button>
+                        <button class="sub-nav-button" data-sub-tab="traditions">Traditions & Technology</button>
+                    </div>
+                    <div id="organization-sub-tab" class="sub-tab-content active">
+                        <div class="form-section glass-panel">
+                            <div class="form-group"><label for="culture-structure">Social Structure</label><textarea id="culture-structure" class="input-field" data-field-id="social_structure" placeholder="e.g., Clans, hives, herds, nuclear families, solitary, complex nation-states"></textarea></div>
+                            <div class="form-group"><label for="culture-government">Government & Politics</label><textarea id="culture-government" class="input-field" data-field-id="government" placeholder="Monarchy, democracy, council, theocracy, anarchy"></textarea></div>
+                            <div class="form-group"><label for="culture-laws">Laws & Ethics</label><textarea id="culture-laws" class="input-field" data-field-id="laws" placeholder="What is considered right and wrong? How is justice administered?"></textarea></div>
+                            <div class="form-group"><label for="culture-hierarchy">Social Hierarchy</label><textarea id="culture-hierarchy" class="input-field" data-field-id="hierarchy" placeholder="Caste systems, class structures, meritocracy"></textarea></div>
+                            <div class="form-group"><label for="culture-gender-roles">Gender Roles & Family Structure</label><textarea id="culture-gender-roles" class="input-field" data-field-id="gender_roles"></textarea></div>
+                        </div>
+                    </div>
+                    <div id="traditions-sub-tab" class="sub-tab-content">
+                        <div class="form-section glass-panel">
+                            <div class="form-group"><label for="culture-language">Language(s)</label><input type="text" id="culture-language" class="input-field" data-field-id="language" placeholder="Written and/or spoken" autocomplete="off"></div>
+                            <div class="form-group"><label for="culture-technology">Technology Level</label><input type="text" id="culture-technology" class="input-field" data-field-id="technology" placeholder="e.g., Stone Age, Industrial, Information Age, Interstellar" autocomplete="off"></div>
+                            <div class="form-group"><label for="culture-arts">Arts & Aesthetics</label><textarea id="culture-arts" class="input-field" data-field-id="arts" placeholder="Music, visual art, architecture, storytelling"></textarea></div>
+                            <div class="form-group"><label for="culture-religion">Religion, Spirituality, & Mythology</label><textarea id="culture-religion" class="input-field" data-field-id="religion" placeholder="Beliefs about creation, death, and the universe"></textarea></div>
+                            <div class="form-group"><label for="culture-rituals">Traditions & Rituals</label><textarea id="culture-rituals" class="input-field" data-field-id="rituals" placeholder="Holidays, rites of passage, ceremonies"></textarea></div>
+                            <div class="form-group"><label for="culture-cuisine">Diet & Cuisine</label><textarea id="culture-cuisine" class="input-field" data-field-id="cuisine" placeholder="What they eat and how they prepare it"></textarea></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ecology & Habitat Tab -->
+                <div id="ecology-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="ecology-homeworld-desc">Homeworld Description</label><textarea id="ecology-homeworld-desc" class="input-field" data-field-id="homeworld_description" placeholder="Planet type, climate, geography, flora, fauna"></textarea></div>
+                        <div class="form-group"><label for="ecology-niche">Habitat/Niche</label><textarea id="ecology-niche" class="input-field" data-field-id="niche" placeholder="What role do they fill in their ecosystem?"></textarea></div>
+                        <div class="form-group"><label for="ecology-relationships">Relationship with Other Species</label><textarea id="ecology-relationships" class="input-field" data-field-id="eco_relationships" placeholder="Predator, prey, symbiotic, parasitic, competitive"></textarea></div>
+                        <div class="form-group"><label for="ecology-resources">Resource Needs</label><textarea id="ecology-resources" class="input-field" data-field-id="resources" placeholder="What do they need from their environment to survive and thrive?"></textarea></div>
+                        <div class="form-group"><label for="ecology-architecture">Architecture & Habitations</label><textarea id="ecology-architecture" class="input-field" data-field-id="architecture" placeholder="How and where do they build their homes?"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Abilities & Traits Tab -->
+                <div id="abilities-tab" class="element-tab">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="abilities-inherent">Inherent Abilities</label><textarea id="abilities-inherent" class="input-field" data-field-id="inherent_abilities" placeholder="Natural camouflage, flight, venom, regeneration, telekinesis, etc."></textarea></div>
+                        <div class="form-group"><label for="abilities-strengths">Species-Specific Strengths</label><textarea id="abilities-strengths" class="input-field" data-field-id="strengths" placeholder="e.g., Great physical strength, high intelligence, resistance to heat"></textarea></div>
+                        <div class="form-group"><label for="abilities-weaknesses">Species-Specific Weaknesses</label><textarea id="abilities-weaknesses" class="input-field" data-field-id="weaknesses" placeholder="e.g., Vulnerability to cold, dependency on a rare mineral"></textarea></div>
+                        <div class="form-group"><label for="abilities-unique">Unique Biological Features</label><textarea id="abilities-unique" class="input-field" data-field-id="unique_features" placeholder="Bioluminescence, ability to shapeshift, symbiotic relationship"></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Notes & Concepts Tab -->
+                <div id="notes-tab" class="element-tab sub-tab-container">
+                    <div class="sub-nav glass-panel">
+                        <button class="sub-nav-button active" data-sub-tab="notes-general">General Notes</button>
+                        <button class="sub-nav-button" data-sub-tab="notes-gallery">Inspiration Gallery</button>
+                    </div>
+                    <div id="notes-general-sub-tab" class="sub-tab-content active">
+                        <div class="form-section glass-panel">
+                            <div class="form-group">
+                                <textarea id="custom-notes" class="input-field" data-field-id="custom_notes" placeholder="Plot hooks, ideas for individuals, naming conventions, etc." autocomplete="off"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="notes-gallery-sub-tab" class="sub-tab-content">
+                        <div class="form-section glass-panel">
+                            <div class="form-group">
+                                <label for="species-gallery">Inspiration Gallery</label>
+                                <textarea id="species-gallery" class="input-field" data-field-id="gallery" placeholder="An area for images: real-world animals, concept art, landscapes, etc."></textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -108,7 +176,32 @@
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
-                <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div class="generation-controls-buttons"><button id="new-button" class="action-btn">New</button><button id="generate-button" data-element-type="SPECIES" class="generate-btn-large">Generate</button><button id="load-button" class="action-btn">Load</button><button id="save-asset-button" class="save-btn-large">Save Species</button></div></div></div>
+                <div class="accordion glass-panel active">
+                    <button class="accordion-header active">
+                        <span>Generation Controls</span>
+                        <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <div class="generation-controls-buttons">
+                            <button id="generate-button" data-element-type="SPECIES" class="generate-btn-large">Generate</button>
+
+                            <!-- Iteration controls, initially hidden -->
+                            <div id="iteration-controls" class="hidden">
+                                <div class="form-group">
+                                    <label for="update-instructions">Update Instructions</label>
+                                    <textarea id="update-instructions" class="input-field" placeholder="e.g., Make them amphibious, describe their mating rituals..."></textarea>
+                                </div>
+                                <button id="iterate-button" class="generate-btn-large">Iterate</button>
+                            </div>
+
+                            <div class="generation-controls-footer">
+                                <button id="save-asset-button" class="action-btn">Save</button>
+                                <button id="load-button" class="action-btn">Load</button>
+                                <button id="new-button" class="action-btn">New</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="side-panel-container">
                     <div class="accordion glass-panel">
                         <button class="accordion-header">
@@ -194,7 +287,3 @@
     </div>
 </body>
 </html>
-
-
-
-
