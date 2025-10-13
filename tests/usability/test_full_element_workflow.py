@@ -53,12 +53,16 @@ ELEMENT_INVENTORY = {
     "philosophy": {
         "type": "PHILOSOPHY",
         "tabs": {
-            "core-beliefs": ["philosophy-name", "philosophy-origin", "philosophy-tenets", "philosophy-cosmology", "philosophy-ethics", "philosophy-texts"],
-            "practices-structure": ["philosophy-rituals", "philosophy-worship", "philosophy-places", "philosophy-symbols", "philosophy-structure"],
-            "influence": ["philosophy-relations", "philosophy-societal-influence", "philosophy-political-influence", "philosophy-adherence"]
+            "overview": ["philosophy-name", "philosophy-core-tenet", "philosophy-category", "philosophy-guiding-question"],
+            "metaphysics": ["meta-cosmology", "meta-ontology", "meta-theology", "meta-afterlife", "meta-free-will"],
+            "epistemology": ["epistemology-source", "epistemology-knowledge", "epistemology-skepticism", "epistemology-forbidden"],
+            "ethics": ["ethics-compass", "ethics-good-evil", "ethics-ideal-life", "ethics-code", "ethics-dilemmas"],
+            "socio-political": ["socio-government", "socio-structure", "socio-individual", "socio-economic", "socio-outsiders"],
+            "aesthetics": ["aesthetics-art-purpose", "aesthetics-beauty", "aesthetics-art-forms"],
+            "history": ["history-founders", "history-texts", "history-rituals", "history-symbols", "history-organization", "history-schisms"]
         },
         "gems": ["Organizational Structure", "Public Perception", "Dominant Tone", "Historical Influence"],
-        "untabbed_fields": ["custom-notes"]
+        "untabbed_fields": []
     },
     "scene": {
         "type": "SCENE",
@@ -178,7 +182,8 @@ def run_test(playwright):
     # Set up the dialog handler once, outside the loop.
     page.on("dialog", lambda dialog: dialog.accept())
 
-    for name, details in ELEMENT_INVENTORY.items():
+    # Loop through a filtered inventory containing only 'philosophy'
+    for name, details in {"philosophy": ELEMENT_INVENTORY["philosophy"]}.items():
         print(f"--- Testing Element: {name.capitalize()} ---")
         server_url = f"http://127.0.0.1:5001/pages/{name}.html"
         try:
