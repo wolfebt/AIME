@@ -61,7 +61,7 @@
                 </div>
 
                 <!-- Ideology & Governance Tab -->
-                <div id="ideology-tab" class="element-tab sub-tab-container">
+                <div id="ideology-tab" class="element-tab sub-tab-container hidden">
                     <div class="sub-nav glass-panel">
                         <button class="sub-nav-button active" data-sub-tab="philosophy">Beliefs & Philosophy</button>
                         <button class="sub-nav-button" data-sub-tab="power">Power & Law</button>
@@ -75,7 +75,7 @@
                             <div class="form-group"><label for="ideology-view-outsiders">View on Outsiders</label><input type="text" id="ideology-view-outsiders" class="input-field" data-field-id="view_on_outsiders" placeholder="Tolerant, xenophobic, welcoming, exploitative" autocomplete="off"></div>
                         </div>
                     </div>
-                    <div id="power-sub-tab" class="sub-tab-content">
+                    <div id="power-sub-tab" class="sub-tab-content hidden">
                         <div class="form-section glass-panel">
                             <div class="form-group"><label for="power-government">Government Type</label><input type="text" id="power-government" class="input-field" data-field-id="government_type" placeholder="e.g., Monarchy, Council, Corporation, Democracy, Warlord" autocomplete="off"></div>
                             <div class="form-group"><label for="power-leadership">Leadership Structure</label><textarea id="power-leadership" class="input-field" data-field-id="leadership_structure" placeholder="A single leader, a ruling council, a decentralized network"></textarea></div>
@@ -87,7 +87,7 @@
                 </div>
 
                 <!-- Assets & Resources Tab -->
-                <div id="assets-tab" class="element-tab sub-tab-container">
+                <div id="assets-tab" class="element-tab sub-tab-container hidden">
                     <div class="sub-nav glass-panel">
                         <button class="sub-nav-button active" data-sub-tab="territory">Territory & Influence</button>
                         <button class="sub-nav-button" data-sub-tab="military">Military & Security</button>
@@ -100,14 +100,14 @@
                             <div class="form-group"><label for="assets-population">Population / Membership Size</label><input type="text" id="assets-population" class="input-field" data-field-id="population_size" autocomplete="off"></div>
                         </div>
                     </div>
-                    <div id="military-sub-tab" class="sub-tab-content">
+                    <div id="military-sub-tab" class="sub-tab-content hidden">
                         <div class="form-section glass-panel">
                             <div class="form-group"><label for="assets-strength">Military Strength</label><textarea id="assets-strength" class="input-field" data-field-id="military_strength" placeholder="e.g., Elite but small, massive but poorly-equipped, unconventional"></textarea></div>
                             <div class="form-group"><label for="assets-units">Key Units / Troop Types</label><textarea id="assets-units" class="input-field" data-field-id="key_units" placeholder="Standard infantry, special forces, fleet, spies"></textarea></div>
                             <div class="form-group"><label for="assets-specialties">Technological & Tactical Specialties</label><textarea id="assets-specialties" class="input-field" data-field-id="tactical_specialties" placeholder="What are they best at? e.g., Siege warfare, espionage, cyber warfare"></textarea></div>
                         </div>
                     </div>
-                    <div id="economy-sub-tab" class="sub-tab-content">
+                    <div id="economy-sub-tab" class="sub-tab-content hidden">
                         <div class="form-section glass-panel">
                             <div class="form-group"><label for="assets-economic-strength">Economic Strength</label><input type="text" id="assets-economic-strength" class="input-field" data-field-id="economic_strength" placeholder="Wealthy, struggling, self-sufficient" autocomplete="off"></div>
                             <div class="form-group"><label for="assets-industries">Primary Industries & Resources</label><textarea id="assets-industries" class="input-field" data-field-id="primary_industries" placeholder="What do they produce, control, or trade?"></textarea></div>
@@ -117,7 +117,7 @@
                 </div>
 
                 <!-- Culture & Society Tab -->
-                <div id="culture-tab" class="element-tab">
+                <div id="culture-tab" class="element-tab hidden">
                     <div class="form-section glass-panel">
                         <div class="form-group"><label for="culture-hierarchy">Social Hierarchy</label><textarea id="culture-hierarchy" class="input-field" data-field-id="social_hierarchy" placeholder="e.g., Rigid caste system, meritocracy, egalitarian"></textarea></div>
                         <div class="form-group"><label for="culture-traditions">Common Culture & Traditions</label><textarea id="culture-traditions" class="input-field" data-field-id="common_traditions" placeholder="Rituals, holidays, social norms"></textarea></div>
@@ -128,7 +128,7 @@
                 </div>
 
                 <!-- Foreign Relations Tab -->
-                <div id="relations-tab" class="element-tab">
+                <div id="relations-tab" class="element-tab hidden">
                     <div class="form-section glass-panel">
                         <div class="form-group"><label for="relations-allies">Allies</label><textarea id="relations-allies" class="input-field" data-field-id="allies" placeholder="List of friendly factions and the nature of the alliance"></textarea></div>
                         <div class="form-group"><label for="relations-enemies">Enemies / Rivals</label><textarea id="relations-enemies" class="input-field" data-field-id="enemies" placeholder="List of opposing factions and the source of the conflict"></textarea></div>
@@ -139,7 +139,7 @@
                 </div>
 
                 <!-- History & Origins Tab -->
-                <div id="history-tab" class="element-tab">
+                <div id="history-tab" class="element-tab hidden">
                     <div class="form-section glass-panel">
                         <div class="form-group"><label for="history-founding">Founding Story</label><textarea id="history-founding" class="input-field" data-field-id="founding_story" placeholder="How, when, and why was the faction created?"></textarea></div>
                         <div class="form-group"><label for="history-founders">Founders & Historical Figures</label><textarea id="history-founders" class="input-field" data-field-id="historical_figures" placeholder="Key individuals from their past"></textarea></div>
@@ -148,7 +148,7 @@
                 </div>
 
                 <!-- Notes & Concepts Tab -->
-                <div id="notes-tab" class="element-tab sub-tab-container">
+                <div id="notes-tab" class="element-tab sub-tab-container hidden">
                     <div class="sub-nav glass-panel">
                         <button class="sub-nav-button active" data-sub-tab="figures">Key Figures / NPCs</button>
                         <button class="sub-nav-button" data-sub-tab="hooks">Plot Hooks</button>
@@ -159,12 +159,12 @@
                              <textarea id="notes-figures" class="input-field" data-field-id="key_figures" placeholder="A list of important members, like the current leader, commanders, etc."></textarea>
                         </div>
                     </div>
-                    <div id="hooks-sub-tab" class="sub-tab-content">
+                    <div id="hooks-sub-tab" class="sub-tab-content hidden">
                         <div class="form-section glass-panel">
                            <textarea id="notes-hooks" class="input-field" data-field-id="plot_hooks" placeholder="Ideas for how this faction can drive the story"></textarea>
                         </div>
                     </div>
-                    <div id="gallery-sub-tab" class="sub-tab-content">
+                    <div id="gallery-sub-tab" class="sub-tab-content hidden">
                         <div class="form-section glass-panel">
                             <textarea id="notes-gallery" class="input-field" data-field-id="inspiration_gallery" placeholder="Images for mood, symbols, characters, locations"></textarea>
                         </div>
