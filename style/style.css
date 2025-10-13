@@ -20,6 +20,11 @@
     --font-main: 'Inter', sans-serif;
 }
 
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
 /* General Body Styles */
 body {
     background-color: var(--dark-bg);
@@ -1013,27 +1018,37 @@ input:checked + .edit-toggle-slider:before {
     gap: 1rem;
 }
 
-.generation-controls-footer {
+.generation-controls-row {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
+}
+
+#update-field-container {
     margin-top: 0.5rem;
 }
 
-/* Ensure the save button has the correct styling in the new layout */
-.generation-controls-footer .action-btn {
+#update-instructions {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.action-btn {
     background: var(--dark-bg);
     border: 1px solid var(--panel-border);
     color: var(--medium-text);
-    padding: 10px; /* Adjust padding for a smaller button feel */
+    padding: 10px;
     font-size: 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    text-align: center;
 }
 
-.generation-controls-footer .action-btn:hover {
+.action-btn:hover {
     background: rgba(139, 148, 158, 0.1);
     color: var(--light-text);
-    box-shadow: none; /* Remove hover shadow for these smaller buttons */
-    transform: none; /* Remove hover transform */
 }
 
 

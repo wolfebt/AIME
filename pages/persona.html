@@ -226,18 +226,19 @@
                     <div class="accordion-content">
                         <div class="generation-controls-buttons">
                             <button id="generate-button" data-element-type="PERSONA" class="generate-btn-large">Generate</button>
+                            <button id="iterate-button" class="generate-btn-large hidden">Iterate</button>
 
-                            <!-- Iteration controls, initially hidden -->
-                            <div id="iteration-controls" class="hidden">
-                                <div class="form-group">
-                                    <label for="update-instructions">Update Instructions</label>
-                                    <textarea id="update-instructions" class="input-field" placeholder="e.g., Make the backstory more tragic, change the occupation to 'Sorcerer'..."></textarea>
-                                </div>
-                                <button id="iterate-button" class="generate-btn-large">Iterate</button>
+                            <div id="update-field-container" class="form-group hidden">
+                                <label for="update-instructions">Update Instructions</label>
+                                <textarea id="update-instructions" class="input-field" placeholder="e.g., Make the backstory more tragic..."></textarea>
                             </div>
 
-                            <div class="generation-controls-footer">
-                                <button id="save-asset-button" class="action-btn">Save</button>
+                            <div class="generation-controls-row">
+                                <button id="save-prompt-button" class="action-btn">Save Prompt</button>
+                                <button id="save-content-button" class="action-btn">Save Content</button>
+                            </div>
+
+                            <div class="generation-controls-row">
                                 <button id="load-button" class="action-btn">Load</button>
                                 <button id="new-button" class="action-btn">New</button>
                             </div>
