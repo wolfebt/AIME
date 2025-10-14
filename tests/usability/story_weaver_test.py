@@ -31,7 +31,7 @@ def test_initial_ui_and_state(page: Page):
 
     # 5. Check for side column elements
     expect(page.locator("#main-prompt")).to_be_visible()
-    expect(page.locator("#generate-button")).to_have_text("Brainstorm Concepts")
+    expect(page.locator("#generate-button")).to_have_text("Generate")
 
     # Open the Guidance accordion to check its contents
     page.locator(".accordion-header", has_text="Guidance").click()
@@ -288,6 +288,7 @@ def test_new_button_functionality(page: Page):
     expect(page.locator(".brainstorm-card")).to_be_visible()
 
     # 3. Click the "New" button
+    page.on("dialog", lambda dialog: dialog.accept())
     page.locator("#new-button").click()
 
     # 4. Verify everything is cleared

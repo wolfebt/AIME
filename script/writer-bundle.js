@@ -402,20 +402,10 @@ function initializeTabs() {
     const tabButtons = document.querySelectorAll('.writer-nav-button');
     const tabs = document.querySelectorAll('.writer-tab');
     const generateBtn = document.getElementById('generate-button');
-    const saveBtn = document.getElementById('save-button');
+    const iterateBtn = document.getElementById('iterate-button');
 
-    const buttonTextMap = {
-        brainstorm: "Brainstorm Concepts",
-        outline: "Suggest Plot Point",
-        treatment: "Generate Treatment"
-    };
-
-    const saveButtonTextMap = {
-        brainstorm: "Save Concepts",
-        outline: "Save Outline",
-        treatment: "Save Draft"
-    };
-
+    // This function now only handles tab switching.
+    // Button text and visibility will be managed by the generation logic itself.
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
             tabButtons.forEach(btn => btn.classList.remove('active'));
@@ -424,18 +414,10 @@ function initializeTabs() {
             const tabName = button.dataset.tab;
             document.getElementById(`${tabName}-tab`).classList.add('active');
 
-            // Update button text
-            if (generateBtn && buttonTextMap[tabName]) {
-                generateBtn.textContent = buttonTextMap[tabName];
-            }
-            if (saveBtn && saveButtonTextMap[tabName]) {
-                saveBtn.textContent = saveButtonTextMap[tabName];
-            }
-
-            // Show/hide the main generate button
-            if (generateBtn) {
-                generateBtn.style.display = (tabName === 'treatment') ? 'none' : 'block';
-            }
+            // Reset generation buttons to initial state when switching tabs
+            generateBtn.classList.remove('hidden');
+            iterateBtn.classList.add('hidden');
+            document.getElementById('update-field-container').classList.add('hidden');
         });
     });
 }
@@ -570,65 +552,149 @@ function createBrainstormCard(data) {
 }
 
 async function generateBrainstormConcepts() {
+    console.log("DEBUG: generateBrainstormConcepts called");
     const promptInput = document.getElementById('main-prompt');
     const responseArea = document.getElementById('brainstorm-response-area');
     const generateBtn = document.getElementById('generate-button');
+    const iterateBtn = document.getElementById('iterate-button');
+    const updateFieldContainer = document.getElementById('update-field-container');
 
-    if (!promptInput || !responseArea || !generateBtn) return;
+    if (!promptInput || !responseArea || !generateBtn) {
+        console.log("DEBUG: Exiting, required elements not found.");
+        return;
+    }
 
     const superPrompt = craftSuperPrompt(promptInput.value);
 
-    responseArea.innerHTML = '<p class="loading-text">AIME is brainstorming concepts...</p>';
+    responseArea.innerHTML = '<div class="loading-indicator"><div class="loading-spinner"></div><p class="loading-text">AIME is brainstorming...</p></div>';
     generateBtn.disabled = true;
+    generateBtn.textContent = 'Generating...';
 
+    console.log("DEBUG: Calling generateContent");
     const aiResponse = await generateContent(superPrompt);
 
     if (aiResponse.startsWith("Error:")) {
-         responseArea.innerHTML = `<p class="error-text">${aiResponse}</p>`;
-         generateBtn.disabled = false;
-         return;
-    }
-
-    const concepts = parseBrainstormResponse(aiResponse);
-
-    responseArea.innerHTML = ''; // Clear loading text
-    if (concepts.length > 0) {
-        concepts.forEach(concept => {
-            const card = createBrainstormCard(concept);
-            responseArea.appendChild(card);
-        });
+        responseArea.innerHTML = `<p class="error-text">An AI error occurred: ${aiResponse}</p>`;
     } else {
-        responseArea.innerHTML = `<p class="error-text">AIME had trouble formatting the response. Please try a different prompt.</p><p style="font-size: 0.8rem; color: var(--medium-text);">${aiResponse.replace(/\n/g, '<br>')}</p>`;
+        const concepts = parseBrainstormResponse(aiResponse);
+        responseArea.innerHTML = ''; // Clear loading text
+        if (concepts.length > 0) {
+            concepts.forEach(concept => {
+                const card = createBrainstormCard(concept);
+                responseArea.appendChild(card);
+            });
+            // Show iteration controls
+            generateBtn.classList.add('hidden');
+            iterateBtn.classList.remove('hidden');
+            updateFieldContainer.classList.remove('hidden');
+        } else {
+            responseArea.innerHTML = `<p class="error-text">AIME had trouble formatting the response. Please try a different prompt.</p><p class="small-text-display">${aiResponse.replace(/\n/g, '<br>')}</p>`;
+        }
     }
 
     generateBtn.disabled = false;
+    generateBtn.textContent = 'Generate';
+}
+
+async function iterateContent(button) {
+    const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
+    if (!activeTab) return;
+
+    const updateInstructions = document.getElementById('update-instructions');
+    if (!updateInstructions || updateInstructions.value.trim() === '') {
+        showToast("Please provide update instructions.", "error");
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Iterating...';
+
+    let existingContent = '';
+    let responseContainer;
+    let prompt;
+
+    switch (activeTab) {
+        case 'brainstorm':
+            responseContainer = document.getElementById('brainstorm-response-area');
+            existingContent = Array.from(responseContainer.querySelectorAll('.brainstorm-card')).map(card => card.innerText).join('\n---\n');
+            prompt = `Based on the following brainstormed concepts, please revise them according to the user's instructions.\n\nCONCEPTS:\n${existingContent}\n\nINSTRUCTIONS:\n${updateInstructions.value}`;
+            break;
+        case 'outline':
+            responseContainer = document.getElementById('outline-list');
+            existingContent = Array.from(responseContainer.querySelectorAll('.outline-item')).map(item => item.innerText).join('\n');
+            prompt = `Based on the following outline, please revise it according to the user's instructions.\n\nOUTLINE:\n${existingContent}\n\nINSTRUCTIONS:\n${updateInstructions.value}`;
+            break;
+        case 'treatment':
+            responseContainer = document.getElementById('treatment-canvas');
+            existingContent = responseContainer.innerText;
+            prompt = `Based on the following draft, please revise it according to the user's instructions.\n\nDRAFT:\n${existingContent}\n\nINSTRUCTIONS:\n${updateInstructions.value}`;
+            break;
+    }
+
+    responseContainer.style.opacity = '0.5';
+    const aiResponse = await generateContent(prompt);
+    responseContainer.style.opacity = '1';
+
+
+    if (aiResponse.startsWith("Error:")) {
+        showToast(aiResponse, 'error');
+    } else {
+        if (activeTab === 'brainstorm') {
+            const concepts = parseBrainstormResponse(aiResponse);
+            responseContainer.innerHTML = '';
+            if (concepts.length > 0) {
+                concepts.forEach(concept => responseContainer.appendChild(createBrainstormCard(concept)));
+            } else {
+                 responseContainer.innerHTML = `<p class="error-text">AIME had trouble formatting the response.</p><p class="small-text-display">${aiResponse.replace(/\n/g, '<br>')}</p>`;
+            }
+        } else if (activeTab === 'outline') {
+            const plotPoints = parseOutlineResponse(aiResponse);
+            responseContainer.innerHTML = '';
+            if (plotPoints.length > 0) {
+                plotPoints.forEach(point => responseContainer.appendChild(createPlotPointListItem(point)));
+            } else {
+                responseContainer.innerHTML = `<li class="error-text">AIME had trouble formatting the response.</li>`;
+            }
+        } else {
+            responseContainer.innerHTML = aiResponse.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
+        }
+        updateInstructions.value = ''; // Clear instructions field
+    }
+
+    button.disabled = false;
+    button.textContent = 'Iterate';
 }
 
 
 function initializeGeneration() {
     const generateBtn = document.getElementById('generate-button');
-    if (!generateBtn) return;
+    const iterateBtn = document.getElementById('iterate-button');
 
-    generateBtn.addEventListener('click', () => {
-        const activeTabButton = document.querySelector('.writer-nav-button.active');
-        if (!activeTabButton) return;
+    if (generateBtn) {
+        generateBtn.addEventListener('click', async () => {
+            const activeTabButton = document.querySelector('.writer-nav-button.active');
+            if (!activeTabButton) return;
+            const activeTab = activeTabButton.dataset.tab;
 
-        const activeTab = activeTabButton.dataset.tab;
+            switch (activeTab) {
+                case 'brainstorm':
+                    await generateBrainstormConcepts();
+                    break;
+                case 'outline':
+                    const outlineList = document.getElementById('outline-list');
+                    const existingText = outlineList.innerText;
+                    generatePlotPoint(existingText);
+                    break;
+                case 'treatment':
+                    generateTreatment();
+                    break;
+            }
+        });
+    }
 
-        switch (activeTab) {
-            case 'brainstorm':
-                generateBrainstormConcepts();
-                break;
-            case 'outline':
-                const outlineList = document.getElementById('outline-list');
-                const existingText = outlineList.innerText; // Use innerText to get the current, potentially edited content
-                generatePlotPoint(existingText);
-                break;
-            case 'treatment':
-                generateTreatment();
-                break;
-        }
-    });
+    if(iterateBtn) {
+        iterateBtn.addEventListener('click', () => iterateContent(iterateBtn));
+    }
 }
 
 // --- Outline, Treatment, and Writing Canvas Logic ---
@@ -978,80 +1044,120 @@ function initializeFloatingToolbar() {
     });
 }
 
-function initializeSaveButton() {
-    const saveBtn = document.getElementById('save-button');
-    if (!saveBtn) return;
+function saveWriterPrompt() {
+    const promptInput = document.getElementById('main-prompt');
+    if (!promptInput || promptInput.value.trim() === '') {
+        showToast('Nothing to save.', 'error');
+        return;
+    }
 
-    saveBtn.addEventListener('click', () => {
-        const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
-        if (!activeTab) return;
-
-        let content = '';
-        let filename = '';
-        let extension = '';
-        let assetName = 'untitled';
-
-        switch (activeTab) {
-            case 'brainstorm':
-                const cards = document.querySelectorAll('.brainstorm-card');
-                if (cards.length === 0) {
-                    showToast("Nothing to save!", "error");
-                    return;
-                }
-                extension = '.brainstorm';
-                content = "# Brainstorm Session\n\n";
-                cards.forEach((card, index) => {
-                    const title = card.querySelector('.card-title').textContent.trim();
-                    if (index === 0 && title) assetName = title;
-                    const logline = card.querySelector('.brainstorm-logline').textContent.trim();
-                    const concept = card.querySelector('.brainstorm-concept').innerText.trim(); // Use innerText to preserve paragraph breaks
-                    content += `## ${title}\n\n**Logline:** ${logline}\n\n${concept}\n\n---\n\n`;
-                });
-                break;
-
-            case 'outline':
-                const outlineItems = document.querySelectorAll('.outline-item');
-                if (outlineItems.length === 0) {
-                    showToast("Nothing to save!", "error");
-                    return;
-                }
-                extension = '.outline';
-                content = "# Story Outline\n\n";
-                outlineItems.forEach((item, index) => {
-                    const title = item.querySelector('.outline-item-title').textContent.trim();
-                    if (index === 0 && title) assetName = title;
-                    const description = item.querySelector('.outline-item-description').innerText.trim();
-                    content += `## ${index + 1}. ${title}\n\n${description}\n\n`;
-                });
-                break;
-
-            case 'treatment':
-                const treatmentCanvas = document.getElementById('treatment-canvas');
-                content = treatmentCanvas.innerText.trim();
-                if (content === '' || treatmentCanvas.querySelector('.placeholder-text')) {
-                    showToast("Nothing to save!", "error");
-                    return;
-                }
-                extension = '.draft';
-                assetName = content.split('\n')[0].trim() || 'draft';
-                break;
+    const promptData = {
+        assetType: 'Writer Prompt',
+        savedAt: new Date().toISOString(),
+        fields: {
+            'main-prompt': promptInput.value.trim()
         }
+    };
 
-        filename = `${assetName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}${extension}`;
+    const assetName = (promptInput.value.substring(0, 25) || 'untitled').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const filename = `${assetName}.writerprompt`;
 
-        const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
+    const jsonContent = JSON.stringify(promptData, null, 2);
+    const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
 
-        const downloadAnchorNode = document.createElement('a');
-        downloadAnchorNode.setAttribute("href", url);
-        downloadAnchorNode.setAttribute("download", filename);
-        document.body.appendChild(downloadAnchorNode);
-        downloadAnchorNode.click();
-        document.body.removeChild(downloadAnchorNode);
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", url);
+    downloadAnchorNode.setAttribute("download", filename);
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
 
-        URL.revokeObjectURL(url);
-        showToast('Content saved successfully!', 'success');
-    });
+    URL.revokeObjectURL(url);
+    showToast('Prompt saved successfully!');
+}
+
+function saveWriterContent() {
+    const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
+    if (!activeTab) return;
+
+    let content = '';
+    let filename = '';
+    let extension = '';
+    let assetName = 'untitled';
+
+    switch (activeTab) {
+        case 'brainstorm':
+            const cards = document.querySelectorAll('.brainstorm-card');
+            if (cards.length === 0) {
+                showToast("Nothing to save!", "error");
+                return;
+            }
+            extension = '.brainstorm';
+            content = "# Brainstorm Session\n\n";
+            cards.forEach((card, index) => {
+                const title = card.querySelector('.card-title').textContent.trim();
+                if (index === 0 && title) assetName = title;
+                const logline = card.querySelector('.brainstorm-logline').textContent.trim();
+                const concept = card.querySelector('.brainstorm-concept').innerText.trim();
+                content += `## ${title}\n\n**Logline:** ${logline}\n\n${concept}\n\n---\n\n`;
+            });
+            break;
+
+        case 'outline':
+            const outlineItems = document.querySelectorAll('.outline-item');
+            if (outlineItems.length === 0) {
+                showToast("Nothing to save!", "error");
+                return;
+            }
+            extension = '.outline';
+            content = "# Story Outline\n\n";
+            outlineItems.forEach((item, index) => {
+                const title = item.querySelector('.outline-item-title').textContent.trim();
+                if (index === 0 && title) assetName = title;
+                const description = item.querySelector('.outline-item-description').innerText.trim();
+                content += `## ${index + 1}. ${title}\n\n${description}\n\n`;
+            });
+            break;
+
+        case 'treatment':
+            const treatmentCanvas = document.getElementById('treatment-canvas');
+            content = treatmentCanvas.innerText.trim();
+            if (content === '' || treatmentCanvas.querySelector('.placeholder-text')) {
+                showToast("Nothing to save!", "error");
+                return;
+            }
+            extension = '.draft';
+            assetName = content.split('\n')[0].trim() || 'draft';
+            break;
+    }
+
+    filename = `${assetName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}${extension}`;
+
+    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", url);
+    downloadAnchorNode.setAttribute("download", filename);
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    document.body.removeChild(downloadAnchorNode);
+
+    URL.revokeObjectURL(url);
+    showToast('Content saved successfully!', 'success');
+}
+
+function initializeSaveButtons() {
+    const savePromptBtn = document.getElementById('save-prompt-button');
+    const saveContentBtn = document.getElementById('save-content-button');
+
+    if (savePromptBtn) {
+        savePromptBtn.addEventListener('click', saveWriterPrompt);
+    }
+    if (saveContentBtn) {
+        saveContentBtn.addEventListener('click', saveWriterContent);
+    }
 }
 
 
@@ -1060,44 +1166,34 @@ function initializeNewButton() {
     if (!newButton) return;
 
     newButton.addEventListener('click', () => {
+        if (!confirm('Are you sure you want to clear the entire workspace? This cannot be undone.')) {
+            return;
+        }
+
         // 1. Clear main prompt
         const mainPrompt = document.getElementById('main-prompt');
-        if (mainPrompt) {
-            mainPrompt.value = '';
-        }
+        if (mainPrompt) mainPrompt.value = '';
 
         // 2. Clear loaded assets
         loadedAssets = [];
         renderAssetList();
 
-        // 3. Clear selected gems and re-render the UI
+        // 3. Clear selected gems
         selectedGems = {};
         initializeGuidanceGems();
 
-        // 4. Clear the content of the active tab
-        const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
-        if (activeTab) {
-            switch (activeTab) {
-                case 'brainstorm':
-                    const responseArea = document.getElementById('brainstorm-response-area');
-                    if (responseArea) {
-                        responseArea.innerHTML = '<p class="placeholder-text">Enter a core idea in the prompt box and click "Brainstorm Concepts" to generate story ideas.</p>';
-                    }
-                    break;
-                case 'outline':
-                    const outlineList = document.getElementById('outline-list');
-                    if (outlineList) {
-                        outlineList.innerHTML = '<p class="placeholder-text">Click "Develop Outline" on a concept card to generate an outline here.</p>';
-                    }
-                    break;
-                case 'treatment':
-                    const treatmentCanvas = document.getElementById('treatment-canvas');
-                    if (treatmentCanvas) {
-                        treatmentCanvas.innerHTML = '<p class="placeholder-text">Generate an outline, then click "Generate Treatment" to create a story treatment here.</p>';
-                    }
-                    break;
-            }
-        }
+        // 4. Clear all tab content areas
+        document.getElementById('brainstorm-response-area').innerHTML = '<p class="placeholder-text">Enter a core idea and click "Generate" to brainstorm concepts.</p>';
+        document.getElementById('outline-list').innerHTML = '<p class="placeholder-text">Develop an outline from a concept or generate one directly.</p>';
+        document.getElementById('treatment-canvas').innerHTML = '<p class="placeholder-text">Create a draft from an outline.</p>';
+
+        // 5. Reset generation controls
+        document.getElementById('generate-button').classList.remove('hidden');
+        document.getElementById('iterate-button').classList.add('hidden');
+        const updateContainer = document.getElementById('update-field-container');
+        updateContainer.classList.add('hidden');
+        document.getElementById('update-instructions').value = '';
+
 
         showToast('Workspace cleared.', 'success');
     });
@@ -1105,35 +1201,63 @@ function initializeNewButton() {
 
 function initializeLoadButton() {
     const loadButton = document.getElementById('load-button');
-    if (loadButton) {
-        loadButton.addEventListener('click', () => {
-            const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
-            if (!activeTab) return;
+    if (!loadButton) return;
 
-            const fileInput = document.createElement('input');
-            fileInput.type = 'file';
+    loadButton.addEventListener('click', () => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        // Accept all relevant writer file types at once
+        fileInput.accept = '.writerprompt,.brainstorm,.outline,.draft';
+        fileInput.style.display = 'none';
 
-            const extensions = {
-                brainstorm: '.brainstorm',
-                outline: '.outline',
-                treatment: '.draft'
-            };
-            fileInput.accept = extensions[activeTab] || '.txt,.md,.brainstorm,.outline,.draft';
+        fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
 
-            fileInput.style.display = 'none';
-
-            fileInput.addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    loadFileContent(file, activeTab);
+            const extension = '.' + file.name.split('.').pop();
+            if (extension === '.writerprompt') {
+                loadWriterPrompt(file);
+            } else {
+                // Determine which tab to load content into based on extension
+                const tabMap = {
+                    '.brainstorm': 'brainstorm',
+                    '.outline': 'outline',
+                    '.draft': 'treatment'
+                };
+                const targetTab = tabMap[extension];
+                if (targetTab) {
+                    // Switch to the correct tab before loading
+                    document.querySelector(`.writer-nav-button[data-tab="${targetTab}"]`)?.click();
+                    loadFileContent(file, targetTab);
+                } else {
+                    showToast(`Unsupported file type: ${extension}`, 'error');
                 }
-            });
-
-            document.body.appendChild(fileInput);
-            fileInput.click();
-            document.body.removeChild(fileInput);
+            }
         });
-    }
+
+        document.body.appendChild(fileInput);
+        fileInput.click();
+        document.body.removeChild(fileInput);
+    });
+}
+
+function loadWriterPrompt(file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            if (data.fields && data.fields['main-prompt']) {
+                document.getElementById('main-prompt').value = data.fields['main-prompt'];
+                showToast('Prompt loaded successfully!', 'success');
+            } else {
+                throw new Error("Invalid writer prompt file format.");
+            }
+        } catch (error) {
+            showToast(`Error: Could not parse prompt file. ${error.message}`, 'error');
+        }
+    };
+    reader.onerror = () => showToast('Error reading file.', 'error');
+    reader.readAsText(file);
 }
 
 function loadFileContent(file, activeTab) {
@@ -1289,7 +1413,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeWorkflowButtons();
     initializeOutline();
     initializeFloatingToolbar();
-    initializeSaveButton();
+    initializeSaveButtons();
     initializeNewButton();
     initializeLoadButton();
 });
