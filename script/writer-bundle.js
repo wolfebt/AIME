@@ -113,29 +113,6 @@ function initializeAccordions() {
     });
 }
 
-// --- Accordion Logic ---
-function initializeAccordions() {
-    const accordions = document.querySelectorAll('.accordion');
-    accordions.forEach(accordion => {
-        const header = accordion.querySelector('.accordion-header');
-        const content = accordion.querySelector('.accordion-content');
-        const chevron = header.querySelector('.accordion-chevron');
-        if (!header || !content || !chevron) return;
-
-        header.addEventListener('click', () => {
-            const isOpen = header.classList.toggle('active');
-            content.classList.toggle('active'); // Toggle content visibility
-            chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-        });
-
-        // Ensure initially active accordions are open on page load
-        if (header.classList.contains('active')) {
-            content.classList.add('active');
-            chevron.style.transform = 'rotate(180deg)';
-        }
-    });
-}
-
 // --- Guidance Gems ---
 // REFACTORED: This entire section has been rewritten to use a modal for multi-selection.
 function initializeGuidanceGems() {
@@ -671,14 +648,14 @@ function initializeGeneration() {
     const iterateBtn = document.getElementById('iterate-button');
 
     if (generateBtn) {
-        generateBtn.addEventListener('click', async () => {
+        generateBtn.addEventListener('click', () => {
             const activeTabButton = document.querySelector('.writer-nav-button.active');
             if (!activeTabButton) return;
             const activeTab = activeTabButton.dataset.tab;
 
             switch (activeTab) {
                 case 'brainstorm':
-                    await generateBrainstormConcepts();
+                    generateBrainstormConcepts();
                     break;
                 case 'outline':
                     const outlineList = document.getElementById('outline-list');
@@ -686,7 +663,7 @@ function initializeGeneration() {
                     generatePlotPoint(existingText);
                     break;
                 case 'treatment':
-                    generateTreatment();
+                    await generateTreatment();
                     break;
             }
         });
@@ -739,16 +716,13 @@ async function generatePlotPoint(existingOutlineText) {
     if (!outlineList) return;
 
     const generateBtn = document.getElementById('generate-button');
+    const iterateBtn = document.getElementById('iterate-button');
+    const updateFieldContainer = document.getElementById('update-field-container');
+
     generateBtn.disabled = true;
     generateBtn.textContent = 'Suggesting...';
 
-    const prompt = `You are AIME, an AI creative partner. Based on the following plot points, suggest the next logical plot point to continue the narrative.
-
---- EXISTING PLOT ---
-${existingOutlineText}
-
---- TASK ---
-Generate a single, new plot point that follows from the existing ones. Provide a short, punchy "Title:" and a "Description:" paragraph. Do not use '---' separators.`;
+    const prompt = `You are AIME, an AI creative partner. Based on the following plot points, suggest the next logical plot point to continue the narrative.\n\n--- EXISTING PLOT ---\n${existingOutlineText}\n\n--- TASK ---\nGenerate a single, new plot point that follows from the existing ones. Provide a short, punchy "Title:" and a "Description:" paragraph. Do not use '---' separators.`;
 
     const aiResponse = await generateContent(prompt);
 
@@ -756,16 +730,23 @@ Generate a single, new plot point that follows from the existing ones. Provide a
         const plotPoints = parseOutlineResponse(aiResponse); // This can still parse a single point
         if (plotPoints.length > 0) {
             const li = createPlotPointListItem(plotPoints[0]);
+            // If it's the first item, clear the placeholder
+            if (outlineList.querySelector('.placeholder-text')) {
+                outlineList.innerHTML = '';
+            }
             outlineList.appendChild(li);
+            generateBtn.classList.add('hidden');
+            iterateBtn.classList.remove('hidden');
+            updateFieldContainer.classList.remove('hidden');
         } else {
-            alert("AIME had trouble formatting the suggestion. Please try again.");
+            showToast("AIME had trouble formatting the suggestion. Please try again.", "error");
         }
     } else {
-        alert(aiResponse);
+        showToast(aiResponse, "error");
     }
 
     generateBtn.disabled = false;
-    generateBtn.textContent = 'Suggest Plot Point';
+    generateBtn.textContent = 'Generate';
 }
 
 
@@ -905,13 +886,18 @@ function initializeWorkflowButtons() {
 async function generateTreatment() {
     const outlineItems = document.querySelectorAll('#outline-list .outline-item');
     const treatmentCanvas = document.getElementById('treatment-canvas');
+    const generateBtn = document.getElementById('generate-button');
+    const iterateBtn = document.getElementById('iterate-button');
+    const updateFieldContainer = document.getElementById('update-field-container');
 
     if (outlineItems.length === 0 || !treatmentCanvas) {
-        alert("Please generate an outline first.");
+        showToast("Please generate an outline first.", "error");
         return;
     }
 
-    treatmentCanvas.innerHTML = '<p class="loading-text">AIME is crafting your treatment...</p>';
+    treatmentCanvas.innerHTML = '<div class="loading-indicator"><div class="loading-spinner"></div><p class="loading-text">AIME is crafting your draft...</p></div>';
+    generateBtn.disabled = true;
+    generateBtn.textContent = 'Generating...';
 
     let fullOutline = "Please write a detailed story treatment based on the following ordered plot points:\n\n";
     outlineItems.forEach((item, index) => {
@@ -925,14 +911,16 @@ async function generateTreatment() {
     const aiResponse = await generateContent(fullOutline);
     if (aiResponse.startsWith("Error:")) {
          treatmentCanvas.innerHTML = `<p class="error-text">${aiResponse}</p>`;
-         return;
+    } else {
+        let formattedHtml = aiResponse.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
+        treatmentCanvas.innerHTML = `<p>${formattedHtml}</p>`;
+        generateBtn.classList.add('hidden');
+        iterateBtn.classList.remove('hidden');
+        updateFieldContainer.classList.remove('hidden');
     }
 
-    let formattedHtml = aiResponse
-        .replace(/\n\n/g, '</p><p>')
-        .replace(/\n/g, '<br>');
-
-    treatmentCanvas.innerHTML = `<p>${formattedHtml}</p>`;
+    generateBtn.disabled = false;
+    generateBtn.textContent = 'Generate';
 }
 
 async function handleTextTool(action, selection, customPrompt = '') {
@@ -1166,10 +1154,6 @@ function initializeNewButton() {
     if (!newButton) return;
 
     newButton.addEventListener('click', () => {
-        if (!confirm('Are you sure you want to clear the entire workspace? This cannot be undone.')) {
-            return;
-        }
-
         // 1. Clear main prompt
         const mainPrompt = document.getElementById('main-prompt');
         if (mainPrompt) mainPrompt.value = '';
@@ -1354,50 +1338,6 @@ function loadOutlineContent(content) {
     }
 }
 
-// --- Edit Mode Toggles ---
-function initializeEditToggles() {
-    const toggles = document.querySelectorAll('.edit-toggle');
-    toggles.forEach(toggle => {
-        const targetId = toggle.dataset.target;
-        const targetElement = document.getElementById(targetId);
-
-        if (targetElement) {
-            // Add the editable-area class for styling
-            targetElement.classList.add('editable-area');
-
-            // Set initial state
-            const isChecked = toggle.checked;
-            targetElement.contentEditable = isChecked;
-            if (isChecked) {
-                targetElement.classList.add('is-editable');
-            } else {
-                targetElement.classList.remove('is-editable');
-            }
-
-            const childEditables = targetElement.querySelectorAll('.editable-content');
-            childEditables.forEach(child => {
-                child.contentEditable = isChecked;
-            });
-
-            toggle.addEventListener('change', (e) => {
-                const isEditable = e.target.checked;
-                targetElement.contentEditable = isEditable;
-
-                if (isEditable) {
-                    targetElement.classList.add('is-editable');
-                } else {
-                    targetElement.classList.remove('is-editable');
-                }
-
-                const childEditables = targetElement.querySelectorAll('.editable-content');
-                childEditables.forEach(child => {
-                    child.contentEditable = isEditable;
-                });
-            });
-        }
-    });
-}
-
 // --- DOMContentLoaded Initializer ---
 document.addEventListener('DOMContentLoaded', () => {
     // Core UI Initializers
@@ -1406,7 +1346,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeGuidanceGems();
     initializeAssetImporter();
     initializeTabs();
-    initializeEditToggles();
 
     // Workflow and Generation Initializers
     initializeGeneration();
