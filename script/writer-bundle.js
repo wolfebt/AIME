@@ -1,13 +1,12 @@
 /*
     File: writer-bundle.js
-    Reference: Story Weaver Logic
+    Reference: Story Weaver Logic (Adapted from element-bundle.js)
     Creator: Wolfe.BT, TangentLLC
 */
 
-let loadedAssets = []; // NEW: Data store for asset content
-let selectedGems = {}; // Data store for all selected guidance options
+let loadedAssets = [];
+let selectedGems = {};
 
-// MODIFICATION: Move gemsData to global scope for persistence
 const gemsData = {
     "Genre": ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Sci-Fi", "Horror", "Mystery", "Romance", "Thriller", "Whimsical", "Gritty", "Noir"],
     "Tone": ["Serious", "Humorous", "Formal", "Informal", "Optimistic", "Pessimistic", "Joyful", "Sad", "Hopeful", "Cynical", "Dark", "Uplifting"],
@@ -18,108 +17,62 @@ const gemsData = {
     "Themes": ["Redemption", "Betrayal", "Discovery", "Survival", "Love", "Hate", "Power", "Corruption", "Nature vs. Nurture"]
 };
 
-// --- Resizable Columns ---
 function initializeResizableColumns() {
     const workspace = document.querySelector('.workspace-layout');
     if (!workspace) return;
-
     const mainColumn = workspace.querySelector('.main-column');
     const sideColumn = workspace.querySelector('.side-column');
     const resizeHandle = workspace.querySelector('.resize-handle');
-
     if (!mainColumn || !sideColumn || !resizeHandle) return;
-
     let isResizing = false;
-
-    resizeHandle.addEventListener('mousedown', (e) => {
+    resizeHandle.addEventListener('mousedown', () => {
         isResizing = true;
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', () => {
             isResizing = false;
             document.removeEventListener('mousemove', handleMouseMove);
-            document.body.style.cursor = 'default';
-            resizeHandle.classList.remove('resizing');
         });
-        document.body.style.cursor = 'col-resize';
-        resizeHandle.classList.add('resizing');
     });
-
     function handleMouseMove(e) {
         if (!isResizing) return;
         const containerRect = workspace.getBoundingClientRect();
         const newLeftWidth = e.clientX - containerRect.left;
         let newLeftPercent = (newLeftWidth / containerRect.width) * 100;
-
-        // Clamp the percentage between 20% and 80%
         newLeftPercent = Math.max(20, Math.min(80, newLeftPercent));
-
         mainColumn.style.width = `calc(${newLeftPercent}% - 6px)`;
         sideColumn.style.width = `calc(${100 - newLeftPercent}% - 6px)`;
     }
 }
 
-// --- Accordion Logic ---
 function initializeAccordions() {
     const accordions = document.querySelectorAll('.accordion');
-    let alreadyOpenOnLoad = false; // Flag to ensure only one accordion opens on load
-
     accordions.forEach(accordion => {
         const header = accordion.querySelector('.accordion-header');
         const content = accordion.querySelector('.accordion-content');
         const chevron = header.querySelector('.accordion-chevron');
         if (!header || !content || !chevron) return;
-
         header.addEventListener('click', () => {
-            const wasActive = header.classList.contains('active');
-
-            // Close all accordions
-            accordions.forEach(acc => {
-                const h = acc.querySelector('.accordion-header');
-                const c = acc.querySelector('.accordion-content');
-                const v = h.querySelector('.accordion-chevron');
-                if (h.classList.contains('active')) {
-                    acc.classList.remove('open'); // NEW: Remove open class from container
-                    h.classList.remove('active');
-                    v.style.transform = 'rotate(0deg)';
-                    c.style.maxHeight = null;
-                    c.style.padding = '0 1.5rem';
-                }
-            });
-
-            // If the clicked accordion wasn't already open, open it
-            if (!wasActive) {
-                accordion.classList.add('open'); // NEW: Add open class to container
-                header.classList.add('active');
-                chevron.style.transform = 'rotate(180deg)';
-                content.style.padding = '1.5rem';
+            const isOpen = header.classList.toggle('active');
+            chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+            if (isOpen) {
                 content.style.maxHeight = content.scrollHeight + "px";
+                content.style.padding = '1.5rem';
+            } else {
+                content.style.maxHeight = null;
+                content.style.padding = '0 1.5rem';
             }
         });
-
-        // Handle initially active accordions, ensuring only one is open
         if (header.classList.contains('active')) {
-            if (!alreadyOpenOnLoad) {
-                accordion.classList.add('open'); // NEW: Add open class to container
-                content.style.padding = '1.5rem';
-                content.style.maxHeight = content.scrollHeight + "px";
-                chevron.style.transform = 'rotate(180deg)';
-                alreadyOpenOnLoad = true;
-            } else {
-                // If one is already open, force subsequent 'active' ones to be closed.
-                header.classList.remove('active');
-                 accordion.classList.remove('open'); // NEW: Remove open class
-            }
+            content.style.maxHeight = content.scrollHeight + "px";
+            content.style.padding = '1.5rem';
+            chevron.style.transform = 'rotate(180deg)';
         }
     });
 }
 
-// --- Guidance Gems ---
-// REFACTORED: This entire section has been rewritten to use a modal for multi-selection.
 function initializeGuidanceGems() {
     const container = document.getElementById('guidance-gems-container');
     if (!container) return;
-
-    // Modal elements
     const modalOverlay = document.getElementById('gem-selection-modal-overlay');
     const modalTitle = document.getElementById('gem-modal-title');
     const modalOptionsContainer = document.getElementById('gem-modal-options-container');
@@ -128,50 +81,32 @@ function initializeGuidanceGems() {
     const customGemInput = document.getElementById('custom-gem-input');
     const addCustomGemBtn = document.getElementById('add-custom-gem-btn');
 
-    if (!modalOverlay || !modalTitle || !modalOptionsContainer || !modalSaveBtn || !modalCloseBtn || !customGemInput || !addCustomGemBtn) {
-        console.error("Guidance modal elements not found!");
-        return;
-    }
+    if (!modalOverlay || !modalTitle || !modalOptionsContainer || !modalSaveBtn || !modalCloseBtn || !customGemInput || !addCustomGemBtn) return;
 
-    // --- Functions ---
     function addCustomGem() {
         const category = modalOverlay.dataset.currentCategory;
         const value = customGemInput.value.trim();
-
         if (!category || value === '') return;
-
-        // Prevent duplicates (case-insensitive)
         if (gemsData[category] && gemsData[category].map(v => v.toLowerCase()).includes(value.toLowerCase())) {
             customGemInput.value = '';
             return;
         }
-
-        // Add to the main data source if it doesn't exist
-        if (!gemsData[category]) {
-            gemsData[category] = [];
-        }
+        if (!gemsData[category]) gemsData[category] = [];
         gemsData[category].push(value);
-
-        // Create and add the new button to the modal UI, and activate it
         const button = document.createElement('button');
         button.className = 'gem-modal-option-button active';
         button.textContent = value;
         button.dataset.value = value;
         modalOptionsContainer.appendChild(button);
-
-        // Clear and refocus input for better UX
         customGemInput.value = '';
         customGemInput.focus();
     }
 
-
     function renderSelectedGems(category) {
         const categoryContainer = container.querySelector(`[data-category="${category}"]`);
         if (!categoryContainer) return;
-
         const pillContainer = categoryContainer.querySelector('.gem-pill-container');
-        pillContainer.innerHTML = ''; // Clear existing pills
-
+        pillContainer.innerHTML = '';
         if (selectedGems[category] && selectedGems[category].length > 0) {
             selectedGems[category].forEach(gemText => {
                 const pill = document.createElement('span');
@@ -186,26 +121,21 @@ function initializeGuidanceGems() {
 
     function openGemsModal(category) {
         modalTitle.textContent = `Select ${category}`;
-        modalOptionsContainer.innerHTML = ''; // Clear previous options
-        modalOverlay.dataset.currentCategory = category; // Store which category is being edited
-
+        modalOptionsContainer.innerHTML = '';
+        modalOverlay.dataset.currentCategory = category;
         const options = gemsData[category] || [];
         const currentSelections = selectedGems[category] || [];
-
         options.forEach(option => {
             const button = document.createElement('button');
             button.className = 'gem-modal-option-button';
             button.textContent = option;
             button.dataset.value = option;
-            if (currentSelections.includes(option)) {
-                button.classList.add('active');
-            }
+            if (currentSelections.includes(option)) button.classList.add('active');
             modalOptionsContainer.appendChild(button);
         });
-
-        customGemInput.value = ''; // Clear previous custom input
+        customGemInput.value = '';
         modalOverlay.classList.remove('hidden');
-        customGemInput.focus(); // Focus on the input for easy typing
+        customGemInput.focus();
     }
 
     function closeGemsModal() {
@@ -215,174 +145,102 @@ function initializeGuidanceGems() {
     function saveGemsSelection() {
         const category = modalOverlay.dataset.currentCategory;
         if (!category) return;
-
         const selectedButtons = modalOptionsContainer.querySelectorAll('.gem-modal-option-button.active');
-        const newSelections = Array.from(selectedButtons).map(btn => btn.dataset.value);
-
-        selectedGems[category] = newSelections;
+        selectedGems[category] = Array.from(selectedButtons).map(btn => btn.dataset.value);
         renderSelectedGems(category);
         closeGemsModal();
     }
 
-    // --- Initial Setup ---
-
-    container.innerHTML = ''; // Clear existing content
+    container.innerHTML = '';
     for (const category of Object.keys(gemsData)) {
-        selectedGems[category] = []; // Initialize data store
-
+        selectedGems[category] = [];
         const categoryContainer = document.createElement('div');
         categoryContainer.className = 'gem-category-container';
         categoryContainer.dataset.category = category;
-
-        categoryContainer.innerHTML = `
-            <button class="gem-category-button">${category}</button>
-            <div class="gem-pill-container">
-                <span class="gem-selected-placeholder">None selected</span>
-            </div>
-        `;
+        categoryContainer.innerHTML = `<button class="gem-category-button">${category}</button><div class="gem-pill-container"><span class="gem-selected-placeholder">None selected</span></div>`;
         container.appendChild(categoryContainer);
     }
 
-    // --- Event Listeners ---
-
     container.addEventListener('click', e => {
         if (e.target.matches('.gem-category-button')) {
-            const category = e.target.closest('.gem-category-container').dataset.category;
-            openGemsModal(category);
+            openGemsModal(e.target.closest('.gem-category-container').dataset.category);
         }
     });
-
     modalSaveBtn.addEventListener('click', saveGemsSelection);
     modalCloseBtn.addEventListener('click', closeGemsModal);
-    modalOverlay.addEventListener('click', e => {
-        if (e.target === modalOverlay) {
-            closeGemsModal();
-        }
-    });
-
-    modalOptionsContainer.addEventListener('click', e => {
-        if (e.target.matches('.gem-modal-option-button')) {
-            e.target.classList.toggle('active');
-        }
-    });
-
+    modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) closeGemsModal(); });
+    modalOptionsContainer.addEventListener('click', e => { if (e.target.matches('.gem-modal-option-button')) e.target.classList.toggle('active'); });
     addCustomGemBtn.addEventListener('click', addCustomGem);
-    customGemInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault(); // prevent form submission
-            addCustomGem();
-        }
-    });
+    customGemInput.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); addCustomGem(); } });
 }
 
-
-// --- Asset Hub Importer ---
-// MODIFIED: This section has been completely rewritten to correctly read files.
 function initializeAssetImporter() {
     const importBtn = document.getElementById('import-asset-btn');
     const fileInput = document.getElementById('asset-upload');
-    
     if (!importBtn || !fileInput) return;
-
     importBtn.addEventListener('click', () => fileInput.click());
-
     fileInput.addEventListener('change', (event) => {
-        const files = event.target.files;
-        if (!files.length) return;
-
-        for (const file of files) {
+        for (const file of event.target.files) {
             const reader = new FileReader();
-            
             reader.onload = (e) => {
                 const assetData = {
                     id: `asset-${Date.now()}-${Math.random()}`,
                     fileName: file.name,
                     content: e.target.result
                 };
-
                 if (file.type.startsWith('image/')) {
                     assetData.type = 'image';
                 } else if (file.name.endsWith('.json')) {
                     assetData.type = 'json';
                     try {
-                        // Pre-parse JSON to ensure it's valid
                         assetData.content = JSON.parse(e.target.result);
                     } catch (err) {
-                        alert(`Error parsing JSON file ${file.name}. It will be treated as plain text.`);
                         assetData.type = 'text';
-                        assetData.content = e.target.result; // Revert to text if parsing fails
+                        assetData.content = e.target.result;
                     }
                 } else {
                     assetData.type = 'text';
                 }
-
                 loadedAssets.push(assetData);
                 renderAssetList();
             };
-
-            if (file.type.startsWith('image/')) {
-                reader.readAsDataURL(file);
-            } else {
-                reader.readAsText(file);
-            }
+            if (file.type.startsWith('image/')) reader.readAsDataURL(file);
+            else reader.readAsText(file);
         }
-        // Reset file input to allow re-uploading the same file
         event.target.value = null;
     });
 }
 
-// NEW: Renders the asset list UI based on the loadedAssets data store.
 function renderAssetList() {
     const assetList = document.getElementById('asset-list');
     if (!assetList) return;
-    
-    assetList.innerHTML = ''; // Clear the list
-
+    assetList.innerHTML = '';
     loadedAssets.forEach(asset => {
         const assetItem = document.createElement('div');
         assetItem.className = 'asset-item';
-        
         let assetInfoHtml = '';
         if (asset.type === 'image') {
-            assetInfoHtml = `
-                <div class="asset-info">
-                    <img src="${asset.content}" alt="${asset.fileName}" class="asset-thumbnail">
-                    <span class="asset-name">${asset.fileName}</span>
-                </div>`;
+            assetInfoHtml = `<div class="asset-info"><img src="${asset.content}" alt="${asset.fileName}" class="asset-thumbnail"><span class="asset-name">${asset.fileName}</span></div>`;
         } else {
             const icon = asset.type === 'json' ? 'JSON' : 'TXT';
-            assetInfoHtml = `
-                 <div class="asset-info">
-                    <span class="asset-icon-text">${icon}</span>
-                    <span class="asset-name">${asset.fileName}</span>
-                </div>`;
+            assetInfoHtml = `<div class="asset-info"><span class="asset-icon-text">${icon}</span><span class="asset-name">${asset.fileName}</span></div>`;
         }
-
         assetItem.innerHTML = `${assetInfoHtml}<button class="remove-asset-btn" data-asset-id="${asset.id}">&times;</button>`;
         assetList.appendChild(assetItem);
     });
 }
 
-// NEW: Global event listener to handle removing assets from the data store and UI.
 document.addEventListener('click', (e) => {
     if (e.target.matches('.remove-asset-btn')) {
-        const assetId = e.target.dataset.assetId;
-        loadedAssets = loadedAssets.filter(asset => asset.id !== assetId);
+        loadedAssets = loadedAssets.filter(asset => asset.id !== e.target.dataset.assetId);
         renderAssetList();
     }
 });
 
-// REMOVED: The old addAssetToList function is no longer needed.
-
-// --- Story Weaver Tabs & Workflow ---
 function initializeTabs() {
     const tabButtons = document.querySelectorAll('.writer-nav-button');
     const tabs = document.querySelectorAll('.writer-tab');
-    const generateBtn = document.getElementById('generate-button');
-    const iterateBtn = document.getElementById('iterate-button');
-
-    // This function now only handles tab switching.
-    // Button text and visibility will be managed by the generation logic itself.
+    if (!tabButtons.length || !tabs.length) return;
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
             tabButtons.forEach(btn => btn.classList.remove('active'));
@@ -390,425 +248,263 @@ function initializeTabs() {
             button.classList.add('active');
             const tabName = button.dataset.tab;
             document.getElementById(`${tabName}-tab`).classList.add('active');
-
-            // Reset generation buttons to initial state when switching tabs
-            generateBtn.classList.remove('hidden');
-            iterateBtn.classList.add('hidden');
+            document.getElementById('generate-button').classList.remove('hidden');
+            document.getElementById('iterate-button').classList.add('hidden');
             document.getElementById('update-field-container').classList.add('hidden');
         });
     });
 }
 
-// --- AI Generation Logic ---
-
 async function generateContent(prompt) {
     const userApiKey = localStorage.getItem('AIME_API_KEY');
-    const model = 'gemini-2.5-flash-lite';
-
     if (!userApiKey) {
-        alert("API key not found. Please set it in the settings modal (the gear icon).");
+        alert("API key not found. Please set it in the settings modal.");
         return "Error: API key not found.";
     }
-
+    const model = 'gemini-2.5-flash-lite';
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${userApiKey}`;
-
-    const payload = {
-        contents: [{
-            parts: [{
-                text: prompt
-            }]
-        }],
-    };
-
+    const payload = { contents: [{ parts: [{ text: prompt }] }] };
     try {
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload)
-        });
-
+        const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         const result = await response.json();
-
         if (!response.ok) {
             const errorDetails = result.error || { message: `API request failed with status ${response.status}` };
-            console.error("API Error Response:", errorDetails);
-            throw new Error(`API Error: ${errorDetails.message} (Code: ${errorDetails.code || 'N/A'})`);
+            throw new Error(`API Error: ${errorDetails.message}`);
         }
-
         const candidate = result.candidates?.[0];
         if (candidate && candidate.content?.parts?.[0]?.text) {
             return candidate.content.parts[0].text;
         } else {
-            console.warn("Invalid or empty response from API.", result);
-            const finishReason = candidate?.finishReason || 'N/A';
-            const safetyRatings = candidate?.safetyRatings ? JSON.stringify(candidate.safetyRatings, null, 2) : 'N/A';
-            return `Error: The AI model returned an empty response. This may be due to the safety filter. Finish Reason: ${finishReason}. Safety Ratings: ${safetyRatings}`;
+            return `Error: The AI model returned an empty response. Finish Reason: ${candidate?.finishReason || 'N/A'}`;
         }
     } catch (error) {
-        console.error("Error generating content:", error);
-        if (error instanceof TypeError) { // Network or CORS errors
-            return "Error: A network error occurred. Please check your internet connection and ensure you can access the Google API.";
-        }
         return `Error: ${error.message}`;
     }
 }
 
-function craftSuperPrompt(promptText) {
-    let allSelectedGems = [];
-    for (const category in selectedGems) {
-        allSelectedGems.push(...selectedGems[category]);
+function craftSuperPrompt(activeTab, iterationData = null) {
+    const promptText = document.getElementById('main-prompt').value;
+    let prompt = `You are AIME, an AI creative partner specializing in storytelling.\n\n`;
+
+    if (iterationData) {
+        prompt += `You are in an iteration loop. Revise the following content based *only* on the new instructions.\n\n--- PREVIOUS CONTENT ---\n${iterationData.existingContent}\n\n--- USER'S UPDATE INSTRUCTIONS ---\n${iterationData.updateInstructions}\n\n`;
+    } else {
+        const instructions = {
+            'brainstorm': 'Generate three distinct and creative story concepts based on the user\'s core idea. For each, provide a "Title:", a "Logline:", and a "Concept:" paragraph. Separate concepts with "---".',
+            'outline': 'Generate a single, new plot point that follows from the existing ones. Provide a short, punchy "Title:" and a "Description:" paragraph. Do not use "---" separators.',
+            'treatment': 'Write a detailed story treatment based on the provided plot points. Expand on them, connect scenes, and describe character emotions and motivations.'
+        };
+        prompt += `--- TASK ---\n${instructions[activeTab]}\n\n--- USER'S CORE IDEA ---\n"${promptText}"\n\n`;
+        if (activeTab === 'outline') {
+            const existingOutline = Array.from(document.querySelectorAll('#outline-list .outline-item')).map(item => item.innerText).join('\n');
+            prompt += `--- EXISTING PLOT ---\n${existingOutline}\n\n`;
+        } else if (activeTab === 'treatment') {
+            const fullOutline = Array.from(document.querySelectorAll('#outline-list .outline-item')).map((item, index) => `${index + 1}. ${item.innerText}`).join('\n');
+            prompt += `--- PLOT OUTLINE ---\n${fullOutline}\n\n`;
+        }
     }
 
-    // MODIFIED: Use the loadedAssets array for rich context from file content
-    const contextualAssets = loadedAssets.filter(asset => asset.type === 'text' || asset.type === 'json');
-
-    let formattedPrompt = `You are AIME, an AI creative partner specializing in storytelling.\n\n--- STORY BRAINSTORM REQUEST ---\n`;
-    formattedPrompt += `USER'S CORE IDEA: "${promptText}"\n\n`;
-
+    const allSelectedGems = Object.values(selectedGems).flat();
     if (allSelectedGems.length > 0) {
-        formattedPrompt += `--- GUIDANCE GEMS (GENRE, TONE, THEMES) ---\n`;
-        formattedPrompt += `Incorporate these elements: ${allSelectedGems.join(', ')}\n`;
+        prompt += `--- GUIDANCE GEMS ---\n${allSelectedGems.join(', ')}\n`;
     }
-    
-    // MODIFIED: Build a more detailed context block from actual asset content
+
+    const contextualAssets = loadedAssets.filter(asset => asset.type === 'text' || asset.type === 'json');
     if (contextualAssets.length > 0) {
-        formattedPrompt += `\n--- CONTEXTUAL ASSETS (REFERENCE THESE) ---\n`;
+        prompt += `\n--- CONTEXTUAL ASSETS ---\n`;
         contextualAssets.forEach(asset => {
-            formattedPrompt += `\n[ASSET: ${asset.fileName}]\n`;
-            if (asset.type === 'json') {
-                // Stringify the pre-parsed JSON content
-                formattedPrompt += JSON.stringify(asset.content, null, 2);
-            } else {
-                formattedPrompt += asset.content;
-            }
-            formattedPrompt += `\n[END ASSET: ${asset.fileName}]\n`;
+            prompt += `\n[ASSET: ${asset.fileName}]\n${asset.type === 'json' ? JSON.stringify(asset.content, null, 2) : asset.content}\n[END ASSET]\n`;
         });
     }
-
-    formattedPrompt += `\n--- TASK ---\nBased on all the information above, generate three distinct and creative story concepts. For each concept, you MUST provide a "Title:", a one-sentence "Logline:", and a "Concept:" paragraph. Separate each of the three concepts with '---'.`;
-
-    return formattedPrompt;
+    return prompt;
 }
 
-function parseBrainstormResponse(responseText) {
-    const concepts = [];
-    const rawConcepts = responseText.split('---').filter(c => c.trim().length > 10);
-
-    rawConcepts.forEach(rawConcept => {
-        const trimmedConcept = rawConcept.trim(); // Trim whitespace from the chunk
-        const titleMatch = trimmedConcept.match(/Title:\s*(.*)/);
-        const loglineMatch = trimmedConcept.match(/Logline:\s*(.*)/);
-        const conceptMatch = trimmedConcept.match(/Concept:\s*([\s\S]*)/);
-
-        if (titleMatch && loglineMatch && conceptMatch) {
-            concepts.push({
-                title: titleMatch[1].trim(),
-                logline: loglineMatch[1].trim(),
-                concept: conceptMatch[1].trim()
-            });
-        }
-    });
-    return concepts;
+function showGenerationControls(showIterate) {
+    document.getElementById('generate-button').classList.toggle('hidden', showIterate);
+    document.getElementById('iterate-button').classList.toggle('hidden', !showIterate);
+    document.getElementById('update-field-container').classList.toggle('hidden', !showIterate);
 }
 
-
-function createBrainstormCard(data) {
-    const card = document.createElement('div');
-    card.className = 'brainstorm-card glass-panel';
-    card.innerHTML = `
-        <h4 class="card-title editable-content" contenteditable="true">${data.title}</h4>
-        <p class="brainstorm-logline editable-content" contenteditable="true">${data.logline}</p>
-        <p class="brainstorm-concept editable-content" contenteditable="true">${data.concept.replace(/\n/g, '<br>')}</p>
-        <div class="card-actions">
-            <button class="action-btn develop-outline-btn">Develop Outline</button>
-        </div>
-    `;
-    return card;
-}
-
-async function generateBrainstormConcepts() {
-    console.log("DEBUG: generateBrainstormConcepts called");
-    const promptInput = document.getElementById('main-prompt');
-    const responseArea = document.getElementById('brainstorm-response-area');
+async function handleGeneration(activeTab) {
     const generateBtn = document.getElementById('generate-button');
-    const iterateBtn = document.getElementById('iterate-button');
-    const updateFieldContainer = document.getElementById('update-field-container');
-
-    if (!promptInput || !responseArea || !generateBtn) {
-        console.log("DEBUG: Exiting, required elements not found.");
-        return;
-    }
-
-    const superPrompt = craftSuperPrompt(promptInput.value);
-
-    responseArea.innerHTML = '<div class="loading-indicator"><div class="loading-spinner"></div><p class="loading-text">AIME is brainstorming...</p></div>';
     generateBtn.disabled = true;
     generateBtn.textContent = 'Generating...';
 
-    console.log("DEBUG: Calling generateContent");
-    const aiResponse = await generateContent(superPrompt);
-
-    if (aiResponse.startsWith("Error:")) {
-        responseArea.innerHTML = `<p class="error-text">An AI error occurred: ${aiResponse}</p>`;
-    } else {
-        const concepts = parseBrainstormResponse(aiResponse);
-        responseArea.innerHTML = ''; // Clear loading text
-        if (concepts.length > 0) {
-            concepts.forEach(concept => {
-                const card = createBrainstormCard(concept);
-                responseArea.appendChild(card);
-            });
-            // Show iteration controls
-            generateBtn.classList.add('hidden');
-            iterateBtn.classList.remove('hidden');
-            updateFieldContainer.classList.remove('hidden');
-        } else {
-            responseArea.innerHTML = `<p class="error-text">AIME had trouble formatting the response. Please try a different prompt.</p><p class="small-text-display">${aiResponse.replace(/\n/g, '<br>')}</p>`;
-        }
-    }
-
-    generateBtn.disabled = false;
-    generateBtn.textContent = 'Generate';
-}
-
-async function iterateContent(button) {
-    const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
-    if (!activeTab) return;
-
-    const updateInstructions = document.getElementById('update-instructions');
-    if (!updateInstructions || updateInstructions.value.trim() === '') {
-        showToast("Please provide update instructions.", "error");
-        return;
-    }
-
-    button.disabled = true;
-    button.textContent = 'Iterating...';
-
-    let existingContent = '';
-    let responseContainer;
-    let prompt;
-
+    let responseContainer, superPrompt;
     switch (activeTab) {
         case 'brainstorm':
             responseContainer = document.getElementById('brainstorm-response-area');
-            existingContent = Array.from(responseContainer.querySelectorAll('.brainstorm-card')).map(card => card.innerText).join('\n---\n');
-            prompt = `Based on the following brainstormed concepts, please revise them according to the user's instructions.\n\nCONCEPTS:\n${existingContent}\n\nINSTRUCTIONS:\n${updateInstructions.value}`;
+            responseContainer.innerHTML = '<div class="loading-indicator"><div class="loading-spinner"></div></div>';
+            superPrompt = craftSuperPrompt(activeTab);
             break;
         case 'outline':
             responseContainer = document.getElementById('outline-list');
-            existingContent = Array.from(responseContainer.querySelectorAll('.outline-item')).map(item => item.innerText).join('\n');
-            prompt = `Based on the following outline, please revise it according to the user's instructions.\n\nOUTLINE:\n${existingContent}\n\nINSTRUCTIONS:\n${updateInstructions.value}`;
+            superPrompt = craftSuperPrompt(activeTab);
             break;
         case 'treatment':
             responseContainer = document.getElementById('treatment-canvas');
-            existingContent = responseContainer.innerText;
-            prompt = `Based on the following draft, please revise it according to the user's instructions.\n\nDRAFT:\n${existingContent}\n\nINSTRUCTIONS:\n${updateInstructions.value}`;
+            responseContainer.innerHTML = '<div class="loading-indicator"><div class="loading-spinner"></div></div>';
+            superPrompt = craftSuperPrompt(activeTab);
             break;
     }
 
-    responseContainer.style.opacity = '0.5';
-    const aiResponse = await generateContent(prompt);
-    responseContainer.style.opacity = '1';
-
+    const aiResponse = await generateContent(superPrompt);
 
     if (aiResponse.startsWith("Error:")) {
-        showToast(aiResponse, 'error');
+        responseContainer.innerHTML = `<p class="error-text">${aiResponse}</p>`;
+        showGenerationControls(false);
     } else {
         if (activeTab === 'brainstorm') {
-            const concepts = parseBrainstormResponse(aiResponse);
+            const concepts = aiResponse.split('---').filter(c => c.trim().length > 10);
             responseContainer.innerHTML = '';
-            if (concepts.length > 0) {
-                concepts.forEach(concept => responseContainer.appendChild(createBrainstormCard(concept)));
-            } else {
-                 responseContainer.innerHTML = `<p class="error-text">AIME had trouble formatting the response.</p><p class="small-text-display">${aiResponse.replace(/\n/g, '<br>')}</p>`;
-            }
-        } else if (activeTab === 'outline') {
-            const plotPoints = parseOutlineResponse(aiResponse);
-            responseContainer.innerHTML = '';
-            if (plotPoints.length > 0) {
-                plotPoints.forEach(point => responseContainer.appendChild(createPlotPointListItem(point)));
-            } else {
-                responseContainer.innerHTML = `<li class="error-text">AIME had trouble formatting the response.</li>`;
-            }
-        } else {
-            responseContainer.innerHTML = aiResponse.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
-        }
-        updateInstructions.value = ''; // Clear instructions field
-    }
-
-    button.disabled = false;
-    button.textContent = 'Iterate';
-}
-
-
-function initializeGeneration() {
-    const generateBtn = document.getElementById('generate-button');
-    const iterateBtn = document.getElementById('iterate-button');
-
-    if (generateBtn) {
-        generateBtn.addEventListener('click', () => {
-            const activeTabButton = document.querySelector('.writer-nav-button.active');
-            if (!activeTabButton) return;
-            const activeTab = activeTabButton.dataset.tab;
-
-            switch (activeTab) {
-                case 'brainstorm':
-                    generateBrainstormConcepts();
-                    break;
-                case 'outline':
-                    const outlineList = document.getElementById('outline-list');
-                    const existingText = outlineList.innerText;
-                    generatePlotPoint(existingText);
-                    break;
-                case 'treatment':
-                    await generateTreatment();
-                    break;
-            }
-        });
-    }
-
-    if(iterateBtn) {
-        iterateBtn.addEventListener('click', () => iterateContent(iterateBtn));
-    }
-}
-
-// --- Outline, Treatment, and Writing Canvas Logic ---
-
-function parseOutlineResponse(responseText) {
-    const points = [];
-    const rawPoints = responseText.split('---').filter(p => p.trim().length > 10);
-
-    rawPoints.forEach(rawPoint => {
-        const titleMatch = rawPoint.match(/Title:\s*(.*)/);
-        const descriptionMatch = rawPoint.match(/Description:\s*([\s\S]*)/);
-
-        if (titleMatch && descriptionMatch) {
-            points.push({
-                title: titleMatch[1].trim(),
-                description: descriptionMatch[1].trim()
+            concepts.forEach(rawConcept => {
+                const titleMatch = rawConcept.match(/Title:\s*(.*)/);
+                const loglineMatch = rawConcept.match(/Logline:\s*(.*)/);
+                const conceptMatch = rawConcept.match(/Concept:\s*([\s\S]*)/);
+                if (titleMatch && loglineMatch && conceptMatch) {
+                    const card = document.createElement('div');
+                    card.className = 'brainstorm-card glass-panel';
+                    card.innerHTML = `<h4 class="card-title editable-content">${titleMatch[1].trim()}</h4><p class="brainstorm-logline editable-content">${loglineMatch[1].trim()}</p><p class="brainstorm-concept editable-content">${conceptMatch[1].trim().replace(/\n/g, '<br>')}</p><div class="card-actions"><button class="action-btn develop-outline-btn">Develop Outline</button></div>`;
+                    responseContainer.appendChild(card);
+                }
             });
-        }
-    });
-    return points;
-}
-
-function createPlotPointListItem(data) {
-    const li = document.createElement('li');
-    li.className = 'outline-item glass-panel';
-    li.setAttribute('draggable', 'true');
-    li.innerHTML = `
-        <div class="outline-item-header">
-            <span class="outline-item-title editable-content" contenteditable="true">${data.title}</span>
-            <button class="remove-item-btn">&times;</button>
-        </div>
-        <p class="outline-item-description editable-content" contenteditable="true">${data.description.replace(/\n/g, '<br>')}</p>
-    `;
-    li.querySelector('.remove-item-btn').addEventListener('click', () => {
-        li.remove();
-    });
-    return li;
-}
-
-async function generatePlotPoint(existingOutlineText) {
-    const outlineList = document.getElementById('outline-list');
-    if (!outlineList) return;
-
-    const generateBtn = document.getElementById('generate-button');
-    const iterateBtn = document.getElementById('iterate-button');
-    const updateFieldContainer = document.getElementById('update-field-container');
-
-    generateBtn.disabled = true;
-    generateBtn.textContent = 'Suggesting...';
-
-    const prompt = `You are AIME, an AI creative partner. Based on the following plot points, suggest the next logical plot point to continue the narrative.\n\n--- EXISTING PLOT ---\n${existingOutlineText}\n\n--- TASK ---\nGenerate a single, new plot point that follows from the existing ones. Provide a short, punchy "Title:" and a "Description:" paragraph. Do not use '---' separators.`;
-
-    const aiResponse = await generateContent(prompt);
-
-    if (!aiResponse.startsWith("Error:")) {
-        const plotPoints = parseOutlineResponse(aiResponse); // This can still parse a single point
-        if (plotPoints.length > 0) {
-            const li = createPlotPointListItem(plotPoints[0]);
-            // If it's the first item, clear the placeholder
-            if (outlineList.querySelector('.placeholder-text')) {
-                outlineList.innerHTML = '';
+        } else if (activeTab === 'outline') {
+            const titleMatch = aiResponse.match(/Title:\s*(.*)/);
+            const descriptionMatch = aiResponse.match(/Description:\s*([\s\S]*)/);
+            if (titleMatch && descriptionMatch) {
+                if(responseContainer.querySelector('.placeholder-text')) responseContainer.innerHTML = '';
+                const li = document.createElement('li');
+                li.className = 'outline-item glass-panel';
+                li.innerHTML = `<div class="outline-item-header"><span class="outline-item-title editable-content">${titleMatch[1].trim()}</span><button class="remove-item-btn">&times;</button></div><p class="outline-item-description editable-content">${descriptionMatch[1].trim().replace(/\n/g, '<br>')}</p>`;
+                responseContainer.appendChild(li);
             }
-            outlineList.appendChild(li);
-            generateBtn.classList.add('hidden');
-            iterateBtn.classList.remove('hidden');
-            updateFieldContainer.classList.remove('hidden');
         } else {
-            showToast("AIME had trouble formatting the suggestion. Please try again.", "error");
+            responseContainer.innerHTML = `<p>${aiResponse.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p>`;
         }
-    } else {
-        showToast(aiResponse, "error");
+        showGenerationControls(true);
     }
-
     generateBtn.disabled = false;
     generateBtn.textContent = 'Generate';
 }
 
+function initializeGeneration() {
+    document.getElementById('generate-button').addEventListener('click', () => {
+        const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
+        if (activeTab) handleGeneration(activeTab);
+    });
+}
 
-async function generateOutline(conceptText) {
-    const outlineList = document.getElementById('outline-list');
-    if (!outlineList) return;
+function initializeIteration() {
+    document.getElementById('iterate-button').addEventListener('click', async () => {
+        const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
+        const updateInstructions = document.getElementById('update-instructions').value;
+        if (!activeTab || !updateInstructions) return;
 
-    outlineList.innerHTML = `<li class="loading-text">AIME is building your outline...</li>`;
+        let existingContent = '';
+        let responseContainer;
 
-    const prompt = `You are AIME, an AI creative partner. Based on the following story concept, generate a list of 7-10 key plot points that form a coherent narrative arc (e.g., Inciting Incident, Rising Action, Climax, Falling Action, Resolution).
+        switch(activeTab) {
+            case 'brainstorm':
+                responseContainer = document.getElementById('brainstorm-response-area');
+                existingContent = Array.from(responseContainer.querySelectorAll('.brainstorm-card')).map(c => c.innerText).join('\n---\n');
+                break;
+            case 'outline':
+                responseContainer = document.getElementById('outline-list');
+                existingContent = Array.from(responseContainer.querySelectorAll('.outline-item')).map(i => i.innerText).join('\n');
+                break;
+            case 'treatment':
+                responseContainer = document.getElementById('treatment-canvas');
+                existingContent = responseContainer.innerText;
+                break;
+        }
 
---- STORY CONCEPT ---
-${conceptText}
+        const superPrompt = craftSuperPrompt(activeTab, { existingContent, updateInstructions });
+        const aiResponse = await generateContent(superPrompt);
 
---- TASK ---
-Generate a list of plot points. For each plot point, you MUST provide a short, punchy "Title:" and a "Description:" paragraph. Separate each plot point with '---'.`;
+        if (!aiResponse.startsWith("Error:")) {
+            if (activeTab === 'treatment') {
+                 responseContainer.innerHTML = `<p>${aiResponse.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p>`;
+            } else {
+                // For brainstorm and outline, we re-run the original generation logic on the new response
+                handleGeneration(activeTab); // This is a simplified approach
+            }
+        } else {
+            showToast(aiResponse, "error");
+        }
+    });
+}
 
-    const aiResponse = await generateContent(prompt);
-    if (aiResponse.startsWith("Error:")) {
-         outlineList.innerHTML = `<li class="error-text">${aiResponse}</li>`;
-         return;
-    }
 
-    const plotPoints = parseOutlineResponse(aiResponse);
+document.addEventListener('DOMContentLoaded', () => {
+    initializeResizableColumns();
+    initializeAccordions();
+    initializeGuidanceGems();
+    initializeAssetImporter();
+    initializeTabs();
+    initializeGeneration();
+    initializeIteration();
+    initializeSaveButtons();
+    initializeLoadButton();
+    initializeNewButton();
+    initializeFloatingToolbar();
+    initializeWorkflowButtons();
+    initializeOutline();
+});
 
-    outlineList.innerHTML = ''; // Clear loading
-    if (plotPoints.length > 0) {
-        plotPoints.forEach(point => {
-            const li = createPlotPointListItem(point);
-            outlineList.appendChild(li);
-        });
-    } else {
-        outlineList.innerHTML = `<li class="error-text">AIME had trouble generating the outline. Please try again.</li>`;
-    }
+function initializeWorkflowButtons() {
+    const mainColumn = document.querySelector('.main-column');
+    if (!mainColumn) return;
+
+    mainColumn.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('develop-outline-btn')) {
+            e.target.textContent = 'Developing...';
+            e.target.disabled = true;
+            const card = e.target.closest('.brainstorm-card');
+            if (!card) return;
+            const title = card.querySelector('.card-title').innerText;
+            const logline = card.querySelector('.brainstorm-logline').innerText;
+            const concept = card.querySelector('.brainstorm-concept').innerText;
+            const fullConcept = `Title: ${title}\nLogline: ${logline}\nConcept: ${concept}`;
+            const outlineTabButton = document.querySelector('.writer-nav-button[data-tab="outline"]');
+            if (outlineTabButton) outlineTabButton.click();
+            await generateOutline(fullConcept);
+            e.target.textContent = 'Develop Outline';
+            e.target.disabled = false;
+        }
+        if (e.target.id === 'create-treatment-from-outline-btn') {
+            e.target.textContent = 'Creating...';
+            e.target.disabled = true;
+            const treatmentTabButton = document.querySelector('.writer-nav-button[data-tab="treatment"]');
+            if (treatmentTabButton) treatmentTabButton.click();
+            await generateTreatment();
+            const btn = document.getElementById('create-treatment-from-outline-btn');
+            if(btn) {
+                btn.textContent = 'Create Draft';
+                btn.disabled = false;
+            }
+        }
+    });
 }
 
 function initializeOutline() {
     const outlineList = document.getElementById('outline-list');
     if (!outlineList) return;
-
     let draggingItem = null;
-
     outlineList.addEventListener('dragstart', (e) => {
         if (e.target.classList.contains('outline-item')) {
             draggingItem = e.target;
-            setTimeout(() => {
-                e.target.classList.add('dragging');
-            }, 0);
+            setTimeout(() => e.target.classList.add('dragging'), 0);
         }
     });
-
-    outlineList.addEventListener('dragend', (e) => {
+    outlineList.addEventListener('dragend', () => {
         if (draggingItem) {
             draggingItem.classList.remove('dragging');
             draggingItem = null;
         }
     });
-
     outlineList.addEventListener('dragover', (e) => {
         e.preventDefault();
         if (!draggingItem) return;
-
         const afterElement = getDragAfterElement(outlineList, e.clientY);
         if (afterElement == null) {
             outlineList.appendChild(draggingItem);
@@ -816,10 +512,8 @@ function initializeOutline() {
             outlineList.insertBefore(draggingItem, afterElement);
         }
     });
-
     function getDragAfterElement(container, y) {
         const draggableElements = [...container.querySelectorAll('.outline-item:not(.dragging)')];
-
         return draggableElements.reduce((closest, child) => {
             const box = child.getBoundingClientRect();
             const offset = y - box.top - box.height / 2;
@@ -832,355 +526,52 @@ function initializeOutline() {
     }
 }
 
-function initializeWorkflowButtons() {
-    const mainColumn = document.querySelector('.main-column');
-    if (!mainColumn) return;
-
-    mainColumn.addEventListener('click', async (e) => {
-        // Handle "Develop Outline" from Brainstorm card
-        if (e.target.classList.contains('develop-outline-btn')) {
-            e.target.textContent = 'Developing...';
-            e.target.disabled = true;
-
-            const card = e.target.closest('.brainstorm-card');
-            if (!card) return;
-
-            const title = card.querySelector('.card-title').innerText;
-            const logline = card.querySelector('.brainstorm-logline').innerText;
-            const concept = card.querySelector('.brainstorm-concept').innerText;
-            const fullConcept = `Title: ${title}\nLogline: ${logline}\nConcept: ${concept}`;
-
-            const outlineTabButton = document.querySelector('.writer-nav-button[data-tab="outline"]');
-            if (outlineTabButton) {
-                outlineTabButton.click();
-            }
-
-            await generateOutline(fullConcept);
-            e.target.textContent = 'Develop Outline';
-            e.target.disabled = false;
-        }
-
-        // NEW: Handle "Create Treatment" from Outline tab
-        if (e.target.id === 'create-treatment-from-outline-btn') {
-            e.target.textContent = 'Creating...';
-            e.target.disabled = true;
-
-            // Switch to the treatment tab to show progress
-            const treatmentTabButton = document.querySelector('.writer-nav-button[data-tab="treatment"]');
-            if (treatmentTabButton) {
-                treatmentTabButton.click();
-            }
-            
-            await generateTreatment();
-            
-            // Re-enable the button after generation is complete
-            const btn = document.getElementById('create-treatment-from-outline-btn');
-            if(btn) {
-                btn.textContent = 'Create Treatment';
-                btn.disabled = false;
-            }
-        }
-    });
-}
-
-async function generateTreatment() {
-    const outlineItems = document.querySelectorAll('#outline-list .outline-item');
-    const treatmentCanvas = document.getElementById('treatment-canvas');
-    const generateBtn = document.getElementById('generate-button');
-    const iterateBtn = document.getElementById('iterate-button');
-    const updateFieldContainer = document.getElementById('update-field-container');
-
-    if (outlineItems.length === 0 || !treatmentCanvas) {
-        showToast("Please generate an outline first.", "error");
-        return;
-    }
-
-    treatmentCanvas.innerHTML = '<div class="loading-indicator"><div class="loading-spinner"></div><p class="loading-text">AIME is crafting your draft...</p></div>';
-    generateBtn.disabled = true;
-    generateBtn.textContent = 'Generating...';
-
-    let fullOutline = "Please write a detailed story treatment based on the following ordered plot points:\n\n";
-    outlineItems.forEach((item, index) => {
-        const title = item.querySelector('.outline-item-title').innerText;
-        const description = item.querySelector('.outline-item-description').innerText;
-        fullOutline += `${index + 1}. ${title}: ${description}\n`;
-    });
-
-    fullOutline += "\nWrite the treatment in a clear, narrative style. Expand on the plot points, connect the scenes, and describe the key character emotions and motivations. The treatment should flow like a short story.";
-
-    const aiResponse = await generateContent(fullOutline);
-    if (aiResponse.startsWith("Error:")) {
-         treatmentCanvas.innerHTML = `<p class="error-text">${aiResponse}</p>`;
-    } else {
-        let formattedHtml = aiResponse.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>');
-        treatmentCanvas.innerHTML = `<p>${formattedHtml}</p>`;
-        generateBtn.classList.add('hidden');
-        iterateBtn.classList.remove('hidden');
-        updateFieldContainer.classList.remove('hidden');
-    }
-
-    generateBtn.disabled = false;
-    generateBtn.textContent = 'Generate';
-}
-
-async function handleTextTool(action, selection, customPrompt = '') {
-    const selectedText = selection.toString().trim();
-    if (selectedText === '') {
-        alert("Please select some text to modify.");
-        return;
-    }
-
-    const toolbar = document.getElementById('text-toolbar');
-    toolbar.classList.add('hidden'); // Hide toolbar during processing
-
-    let prompt = '';
-    switch (action) {
-        case 'rephrase':
-            prompt = `Rephrase the following text to be clearer and more engaging, while maintaining the original meaning:\n\n"${selectedText}"`;
-            break;
-        case 'shorten':
-            prompt = `Shorten the following text, keeping the core meaning concise:\n\n"${selectedText}"`;
-            break;
-        case 'expand':
-            prompt = `Expand upon the following text, adding more detail and description:\n\n"${selectedText}"`;
-            break;
-        case 'custom':
-            if (customPrompt.trim() === '') {
-                alert("Please enter a custom instruction.");
-                return;
-            }
-            prompt = `Apply the following instruction to the text below:\n\nInstruction: "${customPrompt}"\n\nText: "${selectedText}"`;
-            break;
-        default:
-             return;
-    }
-
-    const aiResponse = await generateContent(prompt);
-
-    if (aiResponse.startsWith("Error:")) {
-        alert(aiResponse);
-    } else {
-        const range = selection.getRangeAt(0);
-        range.deleteContents();
-        range.insertNode(document.createTextNode(aiResponse));
-    }
-}
-
 function initializeFloatingToolbar() {
     const toolbar = document.getElementById('text-toolbar');
     const customPromptContainer = document.getElementById('custom-prompt-container');
     const customPromptInput = document.getElementById('custom-prompt-input');
-
     if (!toolbar || !customPromptContainer || !customPromptInput) return;
-
     let currentSelection = null;
-
-    // Show/hide toolbar on text selection
     document.addEventListener('mouseup', (e) => {
-        // A brief delay allows click events on the toolbar to register before it's hidden
         setTimeout(() => {
             const selection = window.getSelection();
-
             if (selection && !selection.isCollapsed) {
-                const node = selection.anchorNode;
-                // Find the closest ancestor (or self) that is editable. This makes the toolbar work for any editable area.
-                const editableElement = (node.nodeType === Node.TEXT_NODE ? node.parentElement : node).closest('[contenteditable="true"]');
-
+                const editableElement = (selection.anchorNode.nodeType === Node.TEXT_NODE ? selection.anchorNode.parentElement : selection.anchorNode).closest('[contenteditable="true"]');
                 if (editableElement) {
                     currentSelection = selection;
                     const range = selection.getRangeAt(0);
                     const rect = range.getBoundingClientRect();
-
-                    // Position the toolbar above the selection
                     toolbar.style.left = `${rect.left + window.scrollX + (rect.width / 2) - (toolbar.offsetWidth / 2)}px`;
                     toolbar.style.top = `${rect.top + window.scrollY - toolbar.offsetHeight - 10}px`;
                     toolbar.classList.remove('hidden');
-                    return; // Exit early since we found an editable area
+                    return;
                 }
             }
-
-            // If no selection or not in an editable area, hide the toolbar
-            // (unless the user is clicking inside the toolbar itself)
             if (!toolbar.contains(e.target)) {
                 toolbar.classList.add('hidden');
                 customPromptContainer.classList.add('hidden');
             }
         }, 100);
     });
-
     toolbar.addEventListener('click', (e) => {
         const button = e.target.closest('button');
         if (!button) return;
-
         const action = button.dataset.action;
-
         if (action === 'custom') {
             customPromptContainer.classList.toggle('hidden');
-            if (!customPromptContainer.classList.contains('hidden')) {
-                customPromptInput.focus();
-            }
+            if (!customPromptContainer.classList.contains('hidden')) customPromptInput.focus();
             return;
         }
-
         if (currentSelection) {
-            if (button.id === 'custom-prompt-submit') {
-                handleTextTool('custom', currentSelection, customPromptInput.value);
-            } else if (action) {
-                handleTextTool(action, currentSelection);
-            }
+            if (button.id === 'custom-prompt-submit') handleTextTool('custom', currentSelection, customPromptInput.value);
+            else if (action) handleTextTool(action, currentSelection);
         }
     });
-}
-
-function saveWriterPrompt() {
-    const promptInput = document.getElementById('main-prompt');
-    if (!promptInput || promptInput.value.trim() === '') {
-        showToast('Nothing to save.', 'error');
-        return;
-    }
-
-    const promptData = {
-        assetType: 'Writer Prompt',
-        savedAt: new Date().toISOString(),
-        fields: {
-            'main-prompt': promptInput.value.trim()
-        }
-    };
-
-    const assetName = (promptInput.value.substring(0, 25) || 'untitled').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    const filename = `${assetName}.writerprompt`;
-
-    const jsonContent = JSON.stringify(promptData, null, 2);
-    const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", url);
-    downloadAnchorNode.setAttribute("download", filename);
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-
-    URL.revokeObjectURL(url);
-    showToast('Prompt saved successfully!');
-}
-
-function saveWriterContent() {
-    const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
-    if (!activeTab) return;
-
-    let content = '';
-    let filename = '';
-    let extension = '';
-    let assetName = 'untitled';
-
-    switch (activeTab) {
-        case 'brainstorm':
-            const cards = document.querySelectorAll('.brainstorm-card');
-            if (cards.length === 0) {
-                showToast("Nothing to save!", "error");
-                return;
-            }
-            extension = '.brainstorm';
-            content = "# Brainstorm Session\n\n";
-            cards.forEach((card, index) => {
-                const title = card.querySelector('.card-title').textContent.trim();
-                if (index === 0 && title) assetName = title;
-                const logline = card.querySelector('.brainstorm-logline').textContent.trim();
-                const concept = card.querySelector('.brainstorm-concept').innerText.trim();
-                content += `## ${title}\n\n**Logline:** ${logline}\n\n${concept}\n\n---\n\n`;
-            });
-            break;
-
-        case 'outline':
-            const outlineItems = document.querySelectorAll('.outline-item');
-            if (outlineItems.length === 0) {
-                showToast("Nothing to save!", "error");
-                return;
-            }
-            extension = '.outline';
-            content = "# Story Outline\n\n";
-            outlineItems.forEach((item, index) => {
-                const title = item.querySelector('.outline-item-title').textContent.trim();
-                if (index === 0 && title) assetName = title;
-                const description = item.querySelector('.outline-item-description').innerText.trim();
-                content += `## ${index + 1}. ${title}\n\n${description}\n\n`;
-            });
-            break;
-
-        case 'treatment':
-            const treatmentCanvas = document.getElementById('treatment-canvas');
-            content = treatmentCanvas.innerText.trim();
-            if (content === '' || treatmentCanvas.querySelector('.placeholder-text')) {
-                showToast("Nothing to save!", "error");
-                return;
-            }
-            extension = '.draft';
-            assetName = content.split('\n')[0].trim() || 'draft';
-            break;
-    }
-
-    filename = `${assetName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}${extension}`;
-
-    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", url);
-    downloadAnchorNode.setAttribute("download", filename);
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    document.body.removeChild(downloadAnchorNode);
-
-    URL.revokeObjectURL(url);
-    showToast('Content saved successfully!', 'success');
 }
 
 function initializeSaveButtons() {
-    const savePromptBtn = document.getElementById('save-prompt-button');
-    const saveContentBtn = document.getElementById('save-content-button');
-
-    if (savePromptBtn) {
-        savePromptBtn.addEventListener('click', saveWriterPrompt);
-    }
-    if (saveContentBtn) {
-        saveContentBtn.addEventListener('click', saveWriterContent);
-    }
-}
-
-
-function initializeNewButton() {
-    const newButton = document.getElementById('new-button');
-    if (!newButton) return;
-
-    newButton.addEventListener('click', () => {
-        // 1. Clear main prompt
-        const mainPrompt = document.getElementById('main-prompt');
-        if (mainPrompt) mainPrompt.value = '';
-
-        // 2. Clear loaded assets
-        loadedAssets = [];
-        renderAssetList();
-
-        // 3. Clear selected gems
-        selectedGems = {};
-        initializeGuidanceGems();
-
-        // 4. Clear all tab content areas
-        document.getElementById('brainstorm-response-area').innerHTML = '<p class="placeholder-text">Enter a core idea and click "Generate" to brainstorm concepts.</p>';
-        document.getElementById('outline-list').innerHTML = '<p class="placeholder-text">Develop an outline from a concept or generate one directly.</p>';
-        document.getElementById('treatment-canvas').innerHTML = '<p class="placeholder-text">Create a draft from an outline.</p>';
-
-        // 5. Reset generation controls
-        document.getElementById('generate-button').classList.remove('hidden');
-        document.getElementById('iterate-button').classList.add('hidden');
-        const updateContainer = document.getElementById('update-field-container');
-        updateContainer.classList.add('hidden');
-        document.getElementById('update-instructions').value = '';
-
-
-        showToast('Workspace cleared.', 'success');
-    });
+    document.getElementById('save-prompt-button').addEventListener('click', saveWriterPrompt);
+    document.getElementById('save-content-button').addEventListener('click', saveWriterContent);
 }
 
 function initializeLoadButton() {
@@ -1190,7 +581,6 @@ function initializeLoadButton() {
     loadButton.addEventListener('click', () => {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
-        // Accept all relevant writer file types at once
         fileInput.accept = '.writerprompt,.brainstorm,.outline,.draft';
         fileInput.style.display = 'none';
 
@@ -1202,7 +592,6 @@ function initializeLoadButton() {
             if (extension === '.writerprompt') {
                 loadWriterPrompt(file);
             } else {
-                // Determine which tab to load content into based on extension
                 const tabMap = {
                     '.brainstorm': 'brainstorm',
                     '.outline': 'outline',
@@ -1210,7 +599,6 @@ function initializeLoadButton() {
                 };
                 const targetTab = tabMap[extension];
                 if (targetTab) {
-                    // Switch to the correct tab before loading
                     document.querySelector(`.writer-nav-button[data-tab="${targetTab}"]`)?.click();
                     loadFileContent(file, targetTab);
                 } else {
@@ -1257,104 +645,145 @@ function loadFileContent(file, activeTab) {
                 break;
             case 'treatment':
                 const treatmentCanvas = document.getElementById('treatment-canvas');
-                if (treatmentCanvas) {
-                    treatmentCanvas.innerText = content;
-                }
+                if (treatmentCanvas) treatmentCanvas.innerText = content;
                 break;
         }
         showToast(`Loaded ${file.name} successfully!`, 'success');
     };
-    reader.onerror = () => {
-        showToast(`Error reading file: ${file.name}`, 'error');
-    };
+    reader.onerror = () => showToast(`Error reading file: ${file.name}`, 'error');
     reader.readAsText(file);
 }
 
 function loadBrainstormContent(content) {
     const responseArea = document.getElementById('brainstorm-response-area');
     if (!responseArea) return;
-    responseArea.innerHTML = ''; // Clear current content
-
-    const concepts = [];
-    // Split by the '---' separator, which is more reliable than complex regex.
-    const rawConcepts = content.split('---').filter(c => c.trim().length > 5);
-
-    rawConcepts.forEach(rawConcept => {
+    responseArea.innerHTML = '';
+    const concepts = content.split('---').filter(c => c.trim().length > 5);
+    concepts.forEach(rawConcept => {
         const lines = rawConcept.trim().split('\n').filter(line => line.trim() !== '');
         if (lines.length < 3) return;
-
         const titleLine = lines.find(l => l.startsWith('## '));
         const loglineLine = lines.find(l => l.startsWith('**Logline:**'));
-
         if (titleLine && loglineLine) {
             const title = titleLine.replace('## ', '').trim();
             const logline = loglineLine.replace('**Logline:**', '').trim();
-
-            // The rest of the lines constitute the concept.
             const loglineIndex = lines.indexOf(loglineLine);
             const concept = lines.slice(loglineIndex + 1).join('\n').trim();
-
             if (concept) {
-                 concepts.push({ title, logline, concept });
+                const card = document.createElement('div');
+                card.className = 'brainstorm-card glass-panel';
+                card.innerHTML = `<h4 class="card-title editable-content">${title}</h4><p class="brainstorm-logline editable-content">${logline}</p><p class="brainstorm-concept editable-content">${concept.replace(/\n/g, '<br>')}</p><div class="card-actions"><button class="action-btn develop-outline-btn">Develop Outline</button></div>`;
+                responseArea.appendChild(card);
             }
         }
     });
-
-    if (concepts.length > 0) {
-        concepts.forEach(conceptData => {
-            const card = createBrainstormCard(conceptData);
-            responseArea.appendChild(card);
-        });
-    } else {
-        // Fallback for content that doesn't match the expected format
-        responseArea.innerHTML = `<p class="placeholder-text">${content.replace(/\n/g, '<br>')}</p>`;
-    }
 }
 
 function loadOutlineContent(content) {
     const outlineList = document.getElementById('outline-list');
     if (!outlineList) return;
-    outlineList.innerHTML = ''; // Clear current content
-
-    const plotPoints = [];
+    outlineList.innerHTML = '';
     const sections = content.split(/^## \d+\.\s+/m).filter(s => s.trim());
-
     sections.forEach(section => {
         const lines = section.trim().split('\n');
         const title = lines.shift().trim();
         const description = lines.join('\n').trim();
         if (title && description) {
-            plotPoints.push({ title, description });
+            const li = document.createElement('li');
+            li.className = 'outline-item glass-panel';
+            li.innerHTML = `<div class="outline-item-header"><span class="outline-item-title editable-content">${title}</span><button class="remove-item-btn">&times;</button></div><p class="outline-item-description editable-content">${description.replace(/\n/g, '<br>')}</p>`;
+            outlineList.appendChild(li);
         }
     });
-
-    if (plotPoints.length > 0) {
-        plotPoints.forEach(pointData => {
-            const li = createPlotPointListItem(pointData);
-            outlineList.appendChild(li);
-        });
-    } else {
-        outlineList.innerHTML = `<p class="placeholder-text">${content.replace(/\n/g, '<br>')}</p>`;
-    }
 }
 
-// --- DOMContentLoaded Initializer ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Core UI Initializers
-    initializeResizableColumns();
-    initializeAccordions();
-    initializeGuidanceGems();
-    initializeAssetImporter();
-    initializeTabs();
+function initializeNewButton() {
+    const newButton = document.getElementById('new-button');
+    if (!newButton) return;
+    newButton.addEventListener('click', () => {
+        document.getElementById('main-prompt').value = '';
+        loadedAssets = [];
+        renderAssetList();
+        selectedGems = {};
+        initializeGuidanceGems();
+        document.getElementById('brainstorm-response-area').innerHTML = '<p class="placeholder-text">Enter a core idea and click "Generate" to brainstorm concepts.</p>';
+        document.getElementById('outline-list').innerHTML = '<p class="placeholder-text">Develop an outline from a concept or generate one directly.</p>';
+        document.getElementById('treatment-canvas').innerHTML = '<p class="placeholder-text">Create a draft from an outline.</p>';
+        showGenerationControls(false);
+        document.getElementById('update-instructions').value = '';
+        showToast('Workspace cleared.', 'success');
+    });
+}
 
-    // Workflow and Generation Initializers
-    initializeGeneration();
-    initializeWorkflowButtons();
-    initializeOutline();
-    initializeFloatingToolbar();
-    initializeSaveButtons();
-    initializeNewButton();
-    initializeLoadButton();
-});
+function saveWriterPrompt() {
+    const promptData = {
+        assetType: 'Writer Prompt',
+        savedAt: new Date().toISOString(),
+        fields: {
+            'main-prompt': document.getElementById('main-prompt').value.trim()
+        }
+    };
+    if (!promptData.fields['main-prompt']) {
+        showToast('Nothing to save.', 'error');
+        return;
+    }
+    const assetName = (promptData.fields['main-prompt'].substring(0, 25) || 'untitled').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+    const filename = `${assetName}.writerprompt`;
+    const blob = new Blob([JSON.stringify(promptData, null, 2)], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Prompt saved successfully!');
+}
 
+function saveWriterContent() {
+    const activeTab = document.querySelector('.writer-nav-button.active')?.dataset.tab;
+    let content = '';
+    let extension = '';
+    let assetName = 'untitled';
 
+    switch (activeTab) {
+        case 'brainstorm':
+            const cards = document.querySelectorAll('.brainstorm-card');
+            if (cards.length === 0) { showToast("Nothing to save!", "error"); return; }
+            extension = '.brainstorm';
+            content = "# Brainstorm Session\n\n";
+            cards.forEach((card, index) => {
+                const title = card.querySelector('.card-title').textContent.trim();
+                if (index === 0 && title) assetName = title;
+                content += `## ${title}\n\n**Logline:** ${card.querySelector('.brainstorm-logline').textContent.trim()}\n\n${card.querySelector('.brainstorm-concept').innerText.trim()}\n\n---\n\n`;
+            });
+            break;
+        case 'outline':
+            const items = document.querySelectorAll('.outline-item');
+            if (items.length === 0) { showToast("Nothing to save!", "error"); return; }
+            extension = '.outline';
+            content = "# Story Outline\n\n";
+            items.forEach((item, index) => {
+                const title = item.querySelector('.outline-item-title').textContent.trim();
+                if (index === 0 && title) assetName = title;
+                content += `## ${index + 1}. ${title}\n\n${item.querySelector('.outline-item-description').innerText.trim()}\n\n`;
+            });
+            break;
+        case 'treatment':
+            const canvas = document.getElementById('treatment-canvas');
+            content = canvas.innerText.trim();
+            if (content === '' || canvas.querySelector('.placeholder-text')) { showToast("Nothing to save!", "error"); return; }
+            extension = '.draft';
+            assetName = content.split('\n')[0].trim() || 'draft';
+            break;
+    }
+
+    const filename = `${assetName.replace(/[^a-z0-9]/gi, '_').toLowerCase()}${extension}`;
+    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Content saved successfully!');
+}

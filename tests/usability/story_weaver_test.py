@@ -30,11 +30,14 @@ def test_initial_ui_and_state(page: Page):
     expect(page.locator("#treatment-tab")).not_to_have_class(re.compile(r"\bactive\b"))
 
     # 5. Check for side column elements
+    page.locator(".accordion-header", has_text="Generation Controls").click()
+    page.wait_for_timeout(500)
     expect(page.locator("#main-prompt")).to_be_visible()
     expect(page.locator("#generate-button")).to_have_text("Generate")
 
     # Open the Guidance accordion to check its contents
     page.locator(".accordion-header", has_text="Guidance").click()
+    page.wait_for_timeout(500)
     expect(page.locator("#guidance-gems-container")).to_be_visible()
 
     expect(page.locator(".asset-hub-panel")).to_be_visible()
@@ -47,6 +50,7 @@ def test_guidance_gems_functionality(page: Page):
 
     # Open the Guidance accordion first
     page.locator(".accordion-header", has_text="Guidance").click()
+    page.wait_for_timeout(500)
 
     # 1. Open the modal for 'Genre'
     page.locator(".gem-category-button", has_text="Genre").click()
@@ -164,6 +168,8 @@ def test_full_ai_workflow_e2e(page: Page):
     page.route("https://generativelanguage.googleapis.com/**", lambda route: route.fulfill(status=200, json=mock_brainstorm_response))
 
     # --- 1. Brainstorm ---
+    page.locator(".accordion-header", has_text="Generation Controls").click()
+    page.wait_for_timeout(500)
     page.locator("#main-prompt").fill("A lost city of crystals")
 
     with page.expect_response("https://generativelanguage.googleapis.com/**"):
@@ -250,13 +256,15 @@ Test Concept
 
     # Set up the file chooser handler
     with page.expect_file_chooser() as fc_info:
+            page.locator(".accordion-header", has_text="Generation Controls").click()
+            page.wait_for_timeout(500)
         page.locator("#load-button").click()
     file_chooser = fc_info.value
     file_chooser.set_files(file_path)
 
-    # Verify content is loaded back
-    expect(page.locator(".brainstorm-card", has_text="Test Title")).to_be_visible()
-    expect(page.locator(".brainstorm-card", has_text="Test Logline")).to_be_visible()
+        # Verify content is loaded back
+        expect(page.locator(".brainstorm-card", has_text="Test Title")).to_be_visible()
+        expect(page.locator(".brainstorm-card", has_text="Test Logline")).to_be_visible()
 
 def test_new_button_functionality(page: Page):
     """
@@ -266,9 +274,12 @@ def test_new_button_functionality(page: Page):
 
     # 1. Add content to the workspace
     # Prompt
+    page.locator(".accordion-header", has_text="Generation Controls").click()
+    page.wait_for_timeout(500)
     page.locator("#main-prompt").fill("Some test prompt")
     # Gems
     page.locator(".accordion-header", has_text="Guidance").click()
+    page.wait_for_timeout(500)
     page.locator(".gem-category-button", has_text="Genre").click()
     page.locator(".gem-modal-option-button", has_text="Fantasy").click()
     page.locator("#gem-modal-save-btn").click()
