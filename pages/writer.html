@@ -93,12 +93,27 @@
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <textarea id="main-prompt" class="input-field" placeholder="Enter your core idea, a theme, or a character concept..."></textarea>
+                        <div class="prompt-box">
+                            <textarea id="main-prompt" class="input-field" data-field-id="main-prompt" placeholder="Enter your core idea, a theme, or a character concept..."></textarea>
+                        </div>
                         <div class="generation-controls-buttons">
-                            <button id="new-button" class="action-btn">New</button>
-                            <button id="generate-button" class="generate-btn-large">Brainstorm Concepts</button>
-                            <button id="load-button" class="action-btn">Load</button>
-                            <button id="save-button" class="save-btn-large">Save Concepts</button>
+                            <button id="generate-button" class="generate-btn-large">Generate</button>
+                            <button id="iterate-button" class="generate-btn-large hidden">Iterate</button>
+
+                            <div id="update-field-container" class="form-group hidden">
+                                <label for="update-instructions">Update Instructions</label>
+                                <textarea id="update-instructions" class="input-field" placeholder="e.g., make this more dramatic..."></textarea>
+                            </div>
+
+                            <div class="generation-controls-row">
+                                <button id="save-prompt-button" class="action-btn">Save Prompt</button>
+                                <button id="save-content-button" class="action-btn">Save Content</button>
+                            </div>
+
+                            <div class="generation-controls-row">
+                                <button id="load-button" class="action-btn">Load</button>
+                                <button id="new-button" class="action-btn">New</button>
+                            </div>
                         </div>
                     </div>
                 </div>
