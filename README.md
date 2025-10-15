@@ -4,14 +4,36 @@ AIME is a powerful, web-based creative assistant designed to augment and amplify
 
 ## Creative Hub
 
-The AIME Creative Hub is the starting point for your creative journey. From here, you can access a range of specialized modules, each tailored to a specific aspect of the creative process:
+The AIME Creative Hub is the starting point for your creative journey. From here, you can access two specialized modules, each tailored to a specific aspect of the creative process:
 
-- **Story Weaver:** A four-phase writing assistant that guides you through brainstorming, plotting, drafting, and refining your manuscript.
+- **Story Weaver:** A three-phase writing assistant that guides you through brainstorming, outlining, and drafting your manuscript.
 - **Element Forge:** A tool for creating and managing the building blocks of your universe, including detailed assets for personas, settings, species, technology, and more.
-- **Imaging Studio:** A module for bringing your world to life by generating concept art, character portraits, and landscapes based on your created elements.
-- **3D Workshop:** A workspace for creating 3D models of your characters, props, and environments.
-- **Audio Lab:** A sound studio for generating dialogue, immersive sound effects, and musical scores to enhance the atmosphere of your story.
-- **Director's Suite:** A video creation tool for animating your world by combining your characters, settings, and scenes into dynamic sequences.
+
+## Story Weaver
+
+The Story Weaver module is a comprehensive writing environment that guides you through the creative process from idea to draft. It is broken down into three distinct phases:
+
+1.  **Brainstorm:** This phase is designed to help you generate and develop your core story concepts. You can input a simple premise, a character idea, or a thematic question, and the AI will provide you with a variety of story ideas to explore.
+2.  **Outline:** Once you've selected a concept, the outlining phase helps you structure your narrative. The AI can generate a detailed plot outline based on your chosen idea, which you can then edit and refine.
+3.  **Draft:** In the final phase, you can expand your outline into a full draft. The AI will write the story scene by scene, based on the structure you've created.
+
+Throughout the Story Weaver module, you have access to a suite of powerful tools to help you shape your story:
+
+-   **Generation Controls:** These allow you to generate new content, iterate on existing content, and save your work.
+-   **Asset Hub:** You can import characters, settings, and other elements from your Element Forge to provide the AI with a rich contextual understanding of your world.
+-   **Guidance Gems:** These provide a way to guide the AI's creative process by providing specific instructions, constraints, or stylistic notes.
+
+## Element Forge
+
+The Element Forge is your personal library of story elements. It's a powerful tool for world-building, allowing you to create, manage, and catalog all the components of your fictional universe. The Element Forge includes dedicated sections for:
+
+-   **Personas:** Create detailed character profiles, including their backstory, personality, and motivations.
+-   **Settings:** Build your world from the ground up, from sprawling continents to individual rooms.
+-   **Species:** Design unique creatures and races to populate your world.
+-   **Technology:** Invent new technologies and magical systems.
+-   **And more:** The Element Forge is designed to be a flexible and expandable system for all your world-building needs.
+
+Like the Story Weaver, the Element Forge includes the same powerful Generation Controls, Asset Hub, and Guidance Gems to help you bring your ideas to life.
 
 ## The Art of AI Crafting
 
