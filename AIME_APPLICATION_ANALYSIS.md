@@ -19,29 +19,61 @@ The application is built on the principle that narrative consistency is achieved
 
 ### 2.1. The Element Forge
 
-The Element Forge is the starting point for any project in AIME. It allows the user to create a detailed "lore bible" that the AI uses as a reference for all creative tasks. This ensures consistency across all generated content.
+The Element Forge is the starting point for any project in AIME. It allows the user to create a detailed "lore bible" that the AI uses as a reference for all creative tasks. This ensures consistency across all generated content. Each module provides a structured, tabbed interface to guide the user in defining a specific aspect of their world.
 
 The Forge consists of the following modules, accessible from the **Elements Hub** (`pages/elements.html`):
 
-*   **Persona Maker**: Crafts detailed characters with unique personalities, backstories, motivations, and genre-specific traits.
-*   **Species Creator**: Designs the biology, culture, and abilities of the various species that inhabit the world.
-*   **Faction Shaper**: Defines the organizations (governments, corporations, guilds) that drive conflict and cooperation.
-*   **Scene Builder**: Constructs individual narrative scenes with specific moods, settings, and sensory details.
-*   **Setting Architect**: Designs a detailed location within a world, such as a city, a building, or a specific environment.
-*   **World Anvil**: Builds a specific planet or realm with its own history, cultures, and societies.
-*   **Technology Forge**: Creates specific technologies, from magical artifacts to advanced AI, and defines their impact.
-*   **Philosophy Scribe**: Defines the religions, belief systems, and societal creeds that shape cultures.
-*   **Universe Crucible**: Establishes the high-level framework: genres, themes, and the fundamental laws of the universe.
+#### 2.1.1. Universe Crucible
+*   **Purpose**: To establish the highest-level framework of the fictional reality. This is the "constitution" of the story world, defining its fundamental laws and boundaries.
+*   **Function**: Users define the core genres and themes, the cosmic scope (e.g., single galaxy, multiverse), the nature of its physical and metaphysical laws (e.g., hard or soft magic systems), and the overarching tone of the narrative. This element serves as the primary contextual document for all other elements.
+
+#### 2.1.2. World Anvil
+*   **Purpose**: To build a specific planet, realm, or plane of existence within the universe.
+*   **Function**: Users detail the world's physical characteristics (geography, climate), its history and lore, the dominant cultures and societies, and its level of technological or magical development. This element provides a global context for settings, factions, and species.
+
+#### 2.1.3. Setting Architect
+*   **Purpose**: To design a specific, self-contained location within a world. This is where the actual events of a story often take place.
+*   **Function**: This module allows for the detailed creation of a city, building, forest, or any other specific environment. Users can define its atmosphere, key landmarks, population, and its role within the larger world.
+
+#### 2.1.4. Philosophy Scribe
+*   **Purpose**: To define the belief systems, religions, and societal creeds that shape the cultures and characters of the world.
+*   **Function**: Users can detail a philosophy's core tenets, its history and key figures, its organizational structure (e.g., hierarchical church, decentralized cults), and its influence on society. This adds depth to the motivations of characters and factions.
+
+#### 2.1.5. Faction Shaper
+*   **Purpose**: To create the organizations that drive conflict, cooperation, and plot progression.
+*   **Function**: This module allows users to define a faction's ideology, governance, assets, and public perception. Whether it's a sprawling empire, a clandestine rebel group, or a mega-corporation, this element helps structure the political and social landscape of the story.
+
+#### 2.1.6. Technology Forge
+*   **Purpose**: To create specific technologies, from magical artifacts to advanced scientific inventions.
+*   **Function**: Users can define a technology's function, its principles of operation, its history, its design aesthetic, and its societal impact. This ensures that the tools and devices in the story are well-defined and consistently applied.
+
+#### 2.1.7. Species Creator
+*   **Purpose**: To design the various intelligent (or non-intelligent) lifeforms that inhabit the world.
+*   **Function**: This module guides the user through defining a species' biology, psychology, culture, and unique abilities. This is crucial for creating believable and distinct non-human characters and societies.
+
+#### 2.1.8. Persona Maker
+*   **Purpose**: To craft detailed, individual characters. This is one of the most in-depth and critical elements.
+*   **Function**: Through a comprehensive multi-tab interface (including Overview, Profile, Backstory, Psychology, and Genre-Specific details), users can define a character's personality, motivations, fears, relationships, and their complete narrative arc. A well-defined Persona is a key asset for generating compelling dialogue and actions in the Story Weaver.
+
+#### 2.1.9. Scene Builder
+*   **Purpose**: To construct the smallest unit of a narrative: a single event that occurs at a specific time and place.
+*   **Function**: Users define the scene's core elements, the setting and atmosphere, the characters involved, and the plot-related events that occur. This element can be used as a building block for more complex plots in the Story Weaver.
 
 ### 2.2. The Story Weaver (Writer)
 
-The Story Weaver (`pages/writer.html`) is a comprehensive, three-stage writing environment that guides a narrative from concept to final draft. Its power lies in the **Asset Hub**, where a user can import the Elements they've created in the Forge to provide deep context for the AI.
+The Story Weaver (`pages/writer.html`) is a comprehensive, three-stage writing environment that guides a narrative from concept to final draft. Its power lies in the **Asset Hub**, where a user can import the Elements they've created in the Forge to provide deep context for the AI. The workflow is designed to be sequential, moving from high-level ideas to a finished piece of prose.
 
-The workflow is divided into three tabs:
+#### 2.2.1. Stage 1: Brainstorm
+*   **Purpose**: To generate and explore high-level story concepts from a single core idea. This stage is about discovering potential narrative directions.
+*   **Function**: The user provides a core idea in the main prompt box. By importing high-level assets (like a `.universe` or `.world` file) and selecting stylistic **Guidance Gems**, they set the creative boundaries for the AI. Upon clicking "Generate," AIME produces several distinct story concepts, presented as "concept cards." Each card contains a title, a logline, and a summary paragraph, giving the user multiple creative paths to choose from.
 
-1.  **Brainstorm**: Generates high-level story concepts based on a core idea and contextual assets. The output is a series of "concept cards," each with a title, logline, and summary.
-2.  **Outline**: Develops a chosen concept into a structured plot outline. Users can generate plot points, edit them directly, and re-order them via drag-and-drop.
-3.  **Draft**: Expands the finalized outline into a full prose draft. The generated text can be refined using a floating toolbar with AI-powered editing functions like "Rephrase," "Shorten," and "Expand."
+#### 2.2.2. Stage 2: Outline
+*   **Purpose**: To structure the chosen narrative concept into a coherent sequence of plot points. This stage is about building the architectural blueprint of the story.
+*   **Function**: The user selects their favorite concept card and clicks "Develop Outline," which transitions them to this tab. AIME generates the initial plot points. The user can then import more specific assets, such as `.persona` files for the main characters, to ensure the plot is character-driven and consistent. The outline is fully interactive: users can edit text directly, drag-and-drop plot points to change their order, and click "Generate" again to have AIME intelligently suggest the next logical event based on the existing sequence.
+
+#### 2.2.3. Stage 3: Draft
+*   **Purpose**: To transform the structured outline into a complete, prose-written narrative. This is where the story is fleshed out with description, dialogue, and character emotion.
+*   **Function**: After finalizing the outline, the user clicks "Create Draft." AIME uses the entire outline as a master prompt, expanding each plot point into a full scene or chapter. The generated text appears in a `contenteditable` canvas. The user can then act as an editor, using the **Floating Text Toolbar** to select any piece of text and apply AI-powered refinements like "Rephrase," "Expand," or "Shorten," ensuring the final prose matches their unique authorial voice.
 
 ---
 
