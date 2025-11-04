@@ -1868,17 +1868,25 @@ input:checked + .edit-toggle-slider:before {
 }
 
 /* ========= SCENARIO GUIDE STYLES ========= */
-#app-container.writer-mode {
+#app-container.writer-mode .workspace-layout {
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 300px 1fr 400px;
     height: calc(100vh - 70px);
     gap: 1rem;
     padding: 1rem;
     transition: grid-template-columns 0.3s ease;
 }
 
-#app-container.gm-mode {
+#app-container.gm-mode .workspace-layout {
     grid-template-columns: 300px 1fr 250px;
+}
+
+.writer-mode .gm-mode-only {
+    display: none;
+}
+
+.gm-mode .writer-mode-only {
+    display: none;
 }
 
 .panel {

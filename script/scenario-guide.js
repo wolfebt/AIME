@@ -174,6 +174,7 @@ function initializeApp() {
     loadSettings();
     loadProjectFromLocalStorage();
     renderAddComponentModal();
+    initializeAssetImporter();
     renderAll();
     setupEventListeners();
 }
@@ -712,6 +713,114 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         quickRefList.innerHTML = listHtml;
     };
 
+    // --- ASSET HUB LOGIC ---
+    let loadedAssets = [];
+
+    function initializeAssetImporter() {
+        const importBtn = document.getElementById('import-asset-btn');
+        const fileInput = document.getElementById('asset-upload');
+
+        if (!importBtn || !fileInput) return;
+
+        importBtn.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', (event) => {
+            const files = event.target.files;
+            if (!files.length) return;
+
+            for (const file of files) {
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    const assetData = {
+                        id: `asset-${Date.now()}-${Math.random()}`,
+                        fileName: file.name,
+                        content: e.target.result,
+                        importance: 'Typical',
+                        annotation: ''
+                    };
+
+                    const extension = file.name.split('.').pop().toLowerCase();
+                    const aimeExtensions = ['persona', 'world', 'setting', 'scene', 'species', 'philosophy', 'technology', 'universe'];
+
+                    if (file.type.startsWith('image/')) {
+                        assetData.type = 'image';
+                    } else if (aimeExtensions.includes(extension) || file.name.endsWith('.json')) {
+                        assetData.type = 'json';
+                    } else {
+                        assetData.type = 'text';
+                    }
+
+                    loadedAssets.push(assetData);
+                    renderAssetList();
+                };
+
+                if (file.type.startsWith('image/')) {
+                    reader.readAsDataURL(file);
+                } else {
+                    reader.readAsText(file);
+                }
+            }
+            event.target.value = null;
+        });
+    }
+
+    function renderAssetList() {
+        const assetList = document.getElementById('asset-list');
+        if (!assetList) return;
+
+        assetList.innerHTML = '';
+
+        loadedAssets.forEach(asset => {
+            const assetItem = document.createElement('div');
+            assetItem.className = 'asset-item';
+
+            let iconHtml;
+            let typeClass = '';
+
+            if (asset.type === 'image') {
+                iconHtml = `<img src="${asset.content}" class="asset-thumbnail" alt="${asset.fileName}">`;
+                typeClass = 'image-asset';
+            } else if (asset.type === 'json') {
+                let parsedContent = {};
+                try {
+                    parsedContent = JSON.parse(asset.content);
+                } catch (e) {
+                    console.error(`Failed to parse JSON for asset ${asset.fileName}:`, e);
+                }
+                const assetType = parsedContent.assetType || 'JSON';
+                const isAimeAsset = !!parsedContent.assetType;
+                iconHtml = isAimeAsset ? assetType.slice(0, 4) : 'JSON';
+                typeClass = isAimeAsset ? 'aime-asset' : 'text-asset';
+            } else {
+                iconHtml = 'TXT';
+                typeClass = 'text-asset';
+            }
+
+            const iconSpan = typeClass === 'image-asset' ? iconHtml : `<span class="${typeClass === 'aime-asset' ? 'asset-icon-aime' : 'asset-icon-text'}">${iconHtml}</span>`;
+
+            assetItem.innerHTML = `
+                <div class="asset-main-info">
+                    <div class="asset-info">
+                        ${iconSpan}
+                        <span class="asset-name">${asset.fileName}</span>
+                    </div>
+                    <button class="remove-asset-btn" data-asset-id="${asset.id}">&times;</button>
+                </div>
+                <div class="asset-controls">
+                    <select class="asset-importance-selector" data-asset-id="${asset.id}">
+                        <option value="Typical" ${asset.importance === 'Typical' ? 'selected' : ''}>Typical Importance</option>
+                        <option value="High" ${asset.importance === 'High' ? 'selected' : ''}>High Importance</option>
+                        <option value="Low" ${asset.importance === 'Low' ? 'selected' : ''}>Low Importance</option>
+                        <option value="Non-Informative" ${asset.importance === 'Non-Informative' ? 'selected' : ''}>Non-Informative</option>
+                    </select>
+                    <input type="text" class="asset-annotation-input" data-asset-id="${asset.id}" value="${asset.annotation}" placeholder="Add a directorial note...">
+                </div>
+            `;
+            assetList.appendChild(assetItem);
+        });
+    }
+
     // --- EVENT LISTENERS ---
     function setupEventListeners() {
         window.addEventListener('resize', () => {
@@ -721,6 +830,34 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             }
         });
         undoButton.addEventListener('click', undoLastAction);
+
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('.remove-asset-btn')) {
+                const assetId = e.target.dataset.assetId;
+                loadedAssets = loadedAssets.filter(asset => asset.id !== assetId);
+                renderAssetList();
+            }
+        });
+
+        document.addEventListener('change', e => {
+            if (e.target.matches('.asset-importance-selector')) {
+                const assetId = e.target.dataset.assetId;
+                const asset = loadedAssets.find(a => a.id === assetId);
+                if (asset) {
+                    asset.importance = e.target.value;
+                }
+            }
+        });
+
+        document.addEventListener('input', e => {
+            if (e.target.matches('.asset-annotation-input')) {
+                const assetId = e.target.dataset.assetId;
+                const asset = loadedAssets.find(a => a.id === assetId);
+                if (asset) {
+                    asset.annotation = e.target.value;
+                }
+            }
+        });
 
         tocPanel.addEventListener('click', (e) => {
             const actionTarget = e.target.closest('[data-action]');
@@ -1338,6 +1475,42 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             document.body.removeChild(printArea);
         });
 
+        function craftSuperPrompt(prompt) {
+            let superPrompt = `You are AIME, an AI world-building assistant for tabletop RPGs. Your task is to generate creative content for a scenario component based on the user's request and contextual information.\n\n--- YOUR TASK ---\n${prompt}\n\n`;
+
+            const contextualAssets = loadedAssets.filter(asset => asset.type === 'text' || asset.type === 'json');
+            if (contextualAssets.length > 0) {
+                superPrompt += "\n--- CONTEXTUAL ASSETS (REFERENCE LORE) ---\n";
+                contextualAssets.forEach(asset => {
+                    if (asset.importance === 'Non-Informative') return;
+
+                    let assetEntry = '';
+                    if (asset.type === 'json') {
+                        try {
+                            const parsedContent = JSON.parse(asset.content);
+                            const assetType = parsedContent.assetType || 'JSON Data';
+                            assetEntry += `\n[Reference Asset: ${assetType} | Importance: ${asset.importance}]\n`;
+                            if (asset.annotation) assetEntry += `  - Director's Note: ${asset.annotation}\n`;
+                            assetEntry += JSON.stringify(parsedContent, null, 2) + '\n';
+                        } catch (e) {
+                            console.error(`Skipping malformed JSON asset ${asset.fileName} in super prompt:`, e);
+                            return;
+                        }
+                    } else {
+                        assetEntry += `\n[Reference Asset: Text File | Importance: ${asset.importance}]\n`;
+                        assetEntry += `- Filename: ${asset.fileName}\n`;
+                        if (asset.annotation) assetEntry += `  - Director's Note: ${asset.annotation}\n`;
+                        assetEntry += `--- Text Content ---\n${asset.content}\n--- End Content ---\n`;
+                    }
+                    superPrompt += assetEntry;
+                });
+            }
+
+            superPrompt += `\n--- FINAL INSTRUCTION ---\nGenerate the content as requested. The output MUST be well-structured Markdown.`;
+            console.log("Super Prompt:", superPrompt);
+            return superPrompt;
+        }
+
         aiGenerateButton.addEventListener('click', async () => {
             const prompt = aiPrompt.value;
             if (!prompt || !activeEditorForAI) return;
@@ -1354,8 +1527,9 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             aiGenerateButton.disabled = true;
 
             try {
+                const superPrompt = craftSuperPrompt(prompt);
                 let chatHistory = [];
-                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                chatHistory.push({ role: "user", parts: [{ text: superPrompt }] });
                 const payload = { contents: chatHistory };
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiApiKey}`;
 
