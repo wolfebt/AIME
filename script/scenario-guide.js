@@ -29,6 +29,8 @@ let isPinning = false;
 let pinComponentId = null;
 let activeEditorForAI = null;
 let geminiApiKey = "";
+let lastFocusedEditor = null;
+
 
 // --- DOM ELEMENTS (initialized in initializeDOMElements) ---
 let mainApp, mainContent, projectHeader, mainPanelHeader, loadFileInput, componentImageInput,
@@ -193,6 +195,7 @@ function initializeApp() {
     loadProjectFromLocalStorage();
     renderAddComponentModal();
     initializeAssetImporter();
+    initializeGuidanceGems();
     renderAll();
     setupEventListeners();
 }
@@ -328,7 +331,6 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         nextId = 1;
         activeComponentId = null;
         historyStack = [];
-        isFullViewActive = false;
         renderAll(); // This will handle all UI updates, including clearing the TOC
         saveProjectToLocalStorage(); // Persist the reset state
     };
@@ -338,7 +340,6 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         const newComponent = { id: nextId++, type, data: getTemplateForType(type), children: [] };
         projectData.components.push(newComponent);
         activeComponentId = newComponent.id;
-        isFullViewActive = false;
         renderAll();
                 saveProjectToLocalStorage();
     };
@@ -363,7 +364,6 @@ document.addEventListener('DOMContentLoaded', initializeApp);
 
         if (activeComponentId === id) {
             activeComponentId = projectData.components.length > 0 ? projectData.components[0].id : null;
-            isFullViewActive = false;
         }
         renderAll();
                 saveProjectToLocalStorage();
@@ -380,9 +380,6 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         renderProjectHeader();
         renderTableOfContents();
         renderActiveComponent();
-        gmViewButton.textContent = isFullViewActive ? 'Edit View' : 'GM View';
-        mainApp.classList.toggle('gm-mode', isFullViewActive);
-        mainApp.classList.toggle('writer-mode', !isFullViewActive);
     };
 
     const renderProjectHeader = () => {
@@ -481,11 +478,6 @@ document.addEventListener('DOMContentLoaded', initializeApp);
 
     const renderActiveComponent = () => {
         mainContent.innerHTML = '';
-        if (isFullViewActive) {
-            renderAllComponentsView();
-            renderQuickReferencePanel();
-            return;
-        }
 
         const activeInfo = findComponentAndParent(activeComponentId);
         if (!activeInfo) {
@@ -713,106 +705,206 @@ document.addEventListener('DOMContentLoaded', initializeApp);
     function initializeAssetImporter() {
         const importBtn = document.getElementById('import-asset-btn');
         const fileInput = document.getElementById('asset-upload');
+        const assetList = document.getElementById('asset-list');
 
-        if (!importBtn || !fileInput) return;
+        if (!importBtn || !fileInput || !assetList) return;
 
         importBtn.addEventListener('click', () => fileInput.click());
 
         fileInput.addEventListener('change', (event) => {
-            const files = event.target.files;
-            if (!files.length) return;
-
-            for (const file of files) {
-                const reader = new FileReader();
-
-                reader.onload = (e) => {
-                    const assetData = {
-                        id: `asset-${Date.now()}-${Math.random()}`,
-                        fileName: file.name,
-                        content: e.target.result,
-                        importance: 'Typical',
-                        annotation: ''
-                    };
-
-                    const extension = file.name.split('.').pop().toLowerCase();
-                    const aimeExtensions = ['persona', 'world', 'setting', 'scene', 'species', 'philosophy', 'technology', 'universe'];
-
-                    if (file.type.startsWith('image/')) {
-                        assetData.type = 'image';
-                    } else if (aimeExtensions.includes(extension) || file.name.endsWith('.json')) {
-                        assetData.type = 'json';
-                    } else {
-                        assetData.type = 'text';
-                    }
-
-                    loadedAssets.push(assetData);
-                    renderAssetList();
-                };
-
-                if (file.type.startsWith('image/')) {
-                    reader.readAsDataURL(file);
-                } else {
-                    reader.readAsText(file);
-                }
+            for (const file of event.target.files) {
+                addAssetToList(file);
             }
-            event.target.value = null;
+            event.target.value = null; // Reset for next selection
+        });
+
+        assetList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-asset-btn')) {
+                const assetItem = e.target.closest('.asset-item');
+                assetItem.remove();
+            }
         });
     }
 
-    function renderAssetList() {
+    function addAssetToList(file) {
+        const reader = new FileReader();
         const assetList = document.getElementById('asset-list');
-        if (!assetList) return;
 
-        assetList.innerHTML = '';
-
-        loadedAssets.forEach(asset => {
+        reader.onload = (e) => {
+            const content = e.target.result;
             const assetItem = document.createElement('div');
             assetItem.className = 'asset-item';
 
+            const isJson = file.name.endsWith('.json') || file.name.match(/\.(persona|world|setting|scene|species|philosophy|technology|universe)prompt$/);
+
             let iconHtml;
-            let typeClass = '';
+            let typeLabel;
 
-            if (asset.type === 'image') {
-                iconHtml = `<img src="${asset.content}" class="asset-thumbnail" alt="${asset.fileName}">`;
-                typeClass = 'image-asset';
-            } else if (asset.type === 'json') {
-                let parsedContent = {};
+            if (isJson) {
                 try {
-                    parsedContent = JSON.parse(asset.content);
-                } catch (e) {
-                    console.error(`Failed to parse JSON for asset ${asset.fileName}:`, e);
+                    const assetData = JSON.parse(content);
+                    assetItem.dataset.assetData = content; // Store raw JSON
+                    typeLabel = assetData.assetType || 'AIME Asset';
+                    iconHtml = `<span class="asset-icon-aime">${typeLabel.slice(0, 4)}</span>`;
+                } catch (error) {
+                    console.error("Failed to parse AIME asset:", error);
+                    typeLabel = 'Invalid Asset';
+                    iconHtml = `<span class="asset-icon-text">ERR</span>`;
                 }
-                const assetType = parsedContent.assetType || 'JSON';
-                const isAimeAsset = !!parsedContent.assetType;
-                iconHtml = isAimeAsset ? assetType.slice(0, 4) : 'JSON';
-                typeClass = isAimeAsset ? 'aime-asset' : 'text-asset';
             } else {
-                iconHtml = 'TXT';
-                typeClass = 'text-asset';
+                assetItem.dataset.assetData = content; // Store plain text
+                typeLabel = 'Text File';
+                iconHtml = `<span class="asset-icon-text">TXT</span>`;
             }
-
-            const iconSpan = typeClass === 'image-asset' ? iconHtml : `<span class="${typeClass === 'aime-asset' ? 'asset-icon-aime' : 'asset-icon-text'}">${iconHtml}</span>`;
 
             assetItem.innerHTML = `
                 <div class="asset-main-info">
                     <div class="asset-info">
-                        ${iconSpan}
-                        <span class="asset-name">${asset.fileName}</span>
+                        ${iconHtml}
+                        <span class="asset-name" title="${file.name}">${file.name}</span>
                     </div>
-                    <button class="remove-asset-btn" data-asset-id="${asset.id}">&times;</button>
+                    <button class="remove-asset-btn" title="Remove Asset">&times;</button>
                 </div>
                 <div class="asset-controls">
-                    <select class="asset-importance-selector" data-asset-id="${asset.id}">
-                        <option value="Typical" ${asset.importance === 'Typical' ? 'selected' : ''}>Typical Importance</option>
-                        <option value="High" ${asset.importance === 'High' ? 'selected' : ''}>High Importance</option>
-                        <option value="Low" ${asset.importance === 'Low' ? 'selected' : ''}>Low Importance</option>
-                        <option value="Non-Informative" ${asset.importance === 'Non-Informative' ? 'selected' : ''}>Non-Informative</option>
+                     <select class="asset-importance-selector" title="Set importance for the AI">
+                        <option value="Typical">Typical Importance</option>
+                        <option value="High">High Importance</option>
+                        <option value="Low">Low Importance</option>
+                        <option value="Non-Informative">Non-Informative</option>
                     </select>
-                    <input type="text" class="asset-annotation-input" data-asset-id="${asset.id}" value="${asset.annotation}" placeholder="Add a directorial note...">
+                    <input type="text" class="asset-annotation-input" placeholder="Add a directorial note...">
                 </div>
             `;
             assetList.appendChild(assetItem);
+        };
+
+        reader.readAsText(file);
+    }
+
+    // --- GUIDANCE GEMS LOGIC ---
+    const gemsData = {
+        "Plot Hooks": [
+            "An ancient map is discovered, but it's written in a long-forgotten language.",
+            "A local noble offers a huge reward for the capture of a mythical beast that doesn't officially exist.",
+            "A recurring dream haunts the party, leading them to a place they've never been.",
+            "A friendly NPC is accused of a crime they didn't commit, and the evidence is damning.",
+            "A mysterious plague sweeps through a town, and the only cure is in a monster-infested swamp."
+        ],
+        "Encounter Twists": [
+            "The 'monsters' are actually illusions protecting a scared, non-hostile creature.",
+            "The enemy leader is secretly being controlled by a magical item.",
+            "The treasure chest is a mimic, but a friendly one that just wants to talk.",
+            "The goblins aren't attacking; they're trying to warn the party about a greater threat.",
+            "The 'dungeon' is actually a colossal, sleeping creature, and the party is inside it."
+        ],
+        "NPC Motivations": [
+            "Wants to reclaim a lost family heirloom, no matter the cost.",
+            "Is secretly trying to sabotage the party to protect a loved one.",
+            "Believes they are the chosen one of a prophecy and acts accordingly.",
+            "Is desperately trying to pay off a massive debt to a dangerous organization.",
+            "Is an adrenaline junkie, seeking the next big thrill."
+        ],
+        "Atmospheric Details": [
+            "A strange, sweet smell hangs in the air, but its source is nowhere to be found.",
+            "The wind howls with what sounds like faint, mournful whispers.",
+            "Every reflective surface shows a slightly distorted, more sinister version of reality.",
+            "An unnatural silence blankets the area; not even insects make a sound.",
+            "The ground is soft and spongy underfoot, almost like walking on flesh."
+        ],
+        "Reward Ideas": [
+            "A deed to a small, slightly haunted castle.",
+            "A magical item that is powerful but has a quirky, inconvenient curse.",
+            "A favor from a high-ranking official, to be called upon at any time.",
+            "A map that leads to another, even greater adventure.",
+            "A single, unanswerable question answered by a god."
+        ]
+    };
+
+    function initializeGuidanceGems() {
+        const guidanceGemsBtn = document.getElementById('guidance-gems-btn');
+        const modal = document.getElementById('guidance-gems-modal');
+        const closeBtn = document.getElementById('close-guidance-gems-modal');
+        const categoriesContainer = document.getElementById('gem-categories');
+        const contentContainer = document.getElementById('gem-content-container');
+
+        if (!guidanceGemsBtn || !modal) return;
+
+        // Track the last focused editable field
+        mainContent.addEventListener('focusin', (e) => {
+            if (e.target.isContentEditable) {
+                lastFocusedEditor = e.target;
+            }
         });
+
+        guidanceGemsBtn.addEventListener('click', () => {
+            if (!lastFocusedEditor) {
+                alert("Please click into a text field before using Guidance Gems.");
+                return;
+            }
+            populateGems();
+            modal.classList.remove('hidden');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+
+        function populateGems() {
+            categoriesContainer.innerHTML = '';
+            Object.keys(gemsData).forEach(category => {
+                const categoryBtn = document.createElement('button');
+                categoryBtn.className = 'gem-category-button';
+                categoryBtn.textContent = category;
+                categoryBtn.dataset.category = category;
+                categoriesContainer.appendChild(categoryBtn);
+
+                categoryBtn.addEventListener('click', () => {
+                    document.querySelectorAll('.gem-category-button').forEach(btn => btn.classList.remove('active'));
+                    categoryBtn.classList.add('active');
+                    renderGemContent(category);
+                });
+            });
+            // Auto-click the first category
+            categoriesContainer.querySelector('button').click();
+        }
+
+        function renderGemContent(category) {
+            contentContainer.innerHTML = '';
+            gemsData[category].forEach(gemText => {
+                const gemDiv = document.createElement('div');
+                gemDiv.className = 'gem-item';
+                gemDiv.textContent = gemText;
+                gemDiv.addEventListener('click', () => {
+                    insertTextIntoEditor(gemText);
+                    modal.classList.add('hidden');
+                });
+                contentContainer.appendChild(gemDiv);
+            });
+        }
+
+        function insertTextIntoEditor(text) {
+            if (!lastFocusedEditor) return;
+
+            lastFocusedEditor.focus();
+            const selection = window.getSelection();
+            const range = selection.getRangeAt(0);
+            range.deleteContents();
+            const textNode = document.createTextNode(text);
+            range.insertNode(textNode);
+            range.setStartAfter(textNode);
+            range.setEndAfter(textNode);
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            // Trigger input event to save changes
+            lastFocusedEditor.dispatchEvent(new Event('input', { bubbles: true }));
+        }
     }
 
     // --- EVENT LISTENERS ---
@@ -995,27 +1087,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             const tocItem = e.target.closest('.toc-item');
             if (tocItem) {
                 activeComponentId = parseInt(tocItem.dataset.id);
-                isFullViewActive = false;
-                mainApp.classList.remove('gm-mode');
-                mainApp.classList.add('writer-mode');
                 renderAll();
-                showMainView();
-            }
-        });
-
-        gmViewButton.addEventListener('click', () => {
-            isFullViewActive = !isFullViewActive;
-            if(isFullViewActive) {
-                activeComponentId = null;
-                mainApp.classList.add('gm-mode');
-                mainApp.classList.remove('writer-mode');
-            } else {
-                activeComponentId = projectData.components.length > 0 ? projectData.components[0].id : null;
-                mainApp.classList.remove('gm-mode');
-                mainApp.classList.add('writer-mode');
-            }
-            renderAll();
-            if (isFullViewActive) {
                 showMainView();
             }
         });
@@ -1500,30 +1572,31 @@ document.addEventListener('DOMContentLoaded', initializeApp);
                 superPrompt += "\n";
             }
 
-            // 5. Add loaded assets
-            const contextualAssets = loadedAssets.filter(asset => asset.type === 'text' || asset.type === 'json');
-            if (contextualAssets.length > 0) {
+            // 5. Add loaded assets from the DOM
+            const assetItems = document.querySelectorAll('#asset-list .asset-item');
+            if (assetItems.length > 0) {
                 superPrompt += "--- IMPORTED ASSETS (FOR CONTEXT) ---\n";
-                contextualAssets.forEach(asset => {
-                    if (asset.importance === 'Non-Informative') return;
+                assetItems.forEach(item => {
+                    const importance = item.querySelector('.asset-importance-selector').value;
+                    if (importance === 'Non-Informative') return;
+
+                    const fileName = item.querySelector('.asset-name').textContent;
+                    const annotation = item.querySelector('.asset-annotation-input').value;
+                    const assetData = item.dataset.assetData;
 
                     let assetEntry = '';
-                    if (asset.type === 'json') {
-                        try {
-                            const parsedContent = JSON.parse(asset.content);
-                            const assetType = parsedContent.assetType || 'AIME Asset';
-                            assetEntry += `\n[Asset: ${assetType} | Importance: ${asset.importance}]\n`;
-                            if (asset.annotation) assetEntry += `  - Director's Note: ${asset.annotation}\n`;
-                            assetEntry += JSON.stringify(parsedContent, null, 2) + '\n';
-                        } catch (e) {
-                            console.error(`Skipping malformed JSON asset ${asset.fileName} in super prompt:`, e);
-                            return;
-                        }
-                    } else {
-                        assetEntry += `\n[Asset: Text File | Importance: ${asset.importance}]\n`;
-                        assetEntry += `- Filename: ${asset.fileName}\n`;
-                        if (asset.annotation) assetEntry += `  - Director's Note: ${asset.annotation}\n`;
-                        assetEntry += `--- Text Content ---\n${asset.content}\n--- End Content ---\n`;
+                    try {
+                        const parsedData = JSON.parse(assetData);
+                        const assetType = parsedData.assetType || 'AIME Asset';
+                        assetEntry += `\n[Asset: ${assetType} | Importance: ${importance}]\n`;
+                        if (annotation) assetEntry += `  - Director's Note: ${annotation}\n`;
+                        assetEntry += JSON.stringify(parsedData, null, 2) + '\n';
+                    } catch (e) {
+                        // It's a plain text asset
+                        assetEntry += `\n[Asset: Text File | Importance: ${importance}]\n`;
+                        assetEntry += `- Filename: ${fileName}\n`;
+                        if (annotation) assetEntry += `  - Director's Note: ${annotation}\n`;
+                        assetEntry += `--- Text Content ---\n${assetData}\n--- End Content ---\n`;
                     }
                     superPrompt += assetEntry;
                 });
