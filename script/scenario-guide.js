@@ -1,5 +1,23 @@
+
+// --- CONSTANTS ---
+const COMPONENT_TEMPLATES = {
+    'Story Arc': { name: 'New Story Arc', summary: '', goal: '', 'Key Antagonist': '', resolution: '', description: '', notes: '', tags: '' },
+    'Adventure': { name: 'New Adventure', hook: '', goal: '', stakes: '', resolution: '', description: '', notes: '', tags: '' },
+    'Act': { name: 'New Act', summary: '', 'Key Events': '', 'Rising Action': '', 'Climax': '', 'Falling Action': '', description: '', notes: '', tags: '' },
+    'Scene': { name: 'New Scene', objective: '', 'Entry & Exit': '', 'Key Actions': '', 'Key Dialogue': '', 'Sensory Details': '', description: '', notes: '', tags: '' },
+    'Character': { name: 'New Character', role: 'Quest Giver', appearance: '', motivation: 'To acquire wealth.', secrets: '', 'plot_hooks': '', stats: '', description: '', notes: '', tags: '' },
+    'Location': { name: 'New Location', type: 'City', atmosphere: '', 'key_sights': '', 'sounds_and_smells': '', 'potential_encounters': '', secrets: '', description: '', notes: '', tags: '' },
+    'Faction': { name: 'New Faction', goals: 'Gain political control.', ideology: '', key_members: '', resources: '', description: '', notes: '', tags: '' },
+    'Encounter': { name: 'New Encounter', type: 'Combat', setup: '', resolution: '', mechanic: '', description: '', notes: '', tags: '' },
+    'Item': { name: 'New Item', rarity: 'Uncommon', attunement: 'No', properties: '', history: '', mechanic: '', description: '', notes: '', tags: '' },
+    'Clue': { name: 'New Clue', information: '', location_found: '', conclusion: '', description: '', notes: '', tags: '' },
+    'Map': { name: 'New Map', imageUrl: null, pins: [] },
+    'Handout': { title: 'New Handout', content: 'Information for the players...', imageUrl: null, notes: 'GM notes about this handout...' },
+};
+
+
 // --- STATE MANAGEMENT ---
-let project = {};
+let projectData = {};
 let nextId = 1;
 let activeComponentId = null;
 let historyStack = [];
@@ -87,7 +105,7 @@ const showTocView = () => {
     backButton.classList.add('hidden');
 };
 
-const findComponentAndParent = (id, components = project.components, parent = null) => {
+const findComponentAndParent = (id, components = projectData.components, parent = null) => {
     for (let i = 0; i < components.length; i++) {
         const component = components[i];
         if (component.id === id) {
@@ -123,7 +141,7 @@ const processTextForDisplay = (html) => {
     tempDiv.innerHTML = html;
 
     const internalLinks = tempDiv.querySelectorAll('.internal-link');
-    const allComponents = getAllComponents(project.components);
+    const allComponents = getAllComponents(projectData.components);
 
     internalLinks.forEach(link => {
         const componentName = link.textContent;
@@ -147,7 +165,7 @@ const processTextForDisplay = (html) => {
 // --- LOCAL STORAGE ---
 const saveProjectToLocalStorage = () => {
     try {
-        localStorage.setItem('rpgProject', JSON.stringify(project));
+        localStorage.setItem('rpgProject', JSON.stringify(projectData));
     } catch (e) {
         console.error("Could not save project to local storage.", e);
     }
@@ -157,8 +175,8 @@ const loadProjectFromLocalStorage = () => {
     try {
         const savedProject = localStorage.getItem('rpgProject');
         if (savedProject) {
-            project = JSON.parse(savedProject);
-            nextId = Math.max(0, ...getAllComponents(project.components).map(c => c.id)) + 1 || 1;
+            projectData = JSON.parse(savedProject);
+            nextId = Math.max(0, ...getAllComponents(projectData.components).map(c => c.id)) + 1 || 1;
         } else {
                     resetProject();
                 }
@@ -271,17 +289,17 @@ document.addEventListener('DOMContentLoaded', initializeApp);
     };
 
     const saveStateToHistory = () => {
-        historyStack.push(structuredClone(project));
+        historyStack.push(structuredClone(projectData));
         if (historyStack.length > 20) historyStack.shift();
         updateUndoButtonState();
     };
 
     const undoLastAction = () => {
         if (historyStack.length > 0) {
-            project = historyStack.pop();
-            nextId = Math.max(0, ...getAllComponents(project.components).map(c => c.id)) + 1 || 1;
-            if (!getAllComponents(project.components).some(c => c.id === activeComponentId)) {
-                activeComponentId = project.components.length > 0 ? project.components[0].id : null;
+            projectData = historyStack.pop();
+            nextId = Math.max(0, ...getAllComponents(projectData.components).map(c => c.id)) + 1 || 1;
+            if (!getAllComponents(projectData.components).some(c => c.id === activeComponentId)) {
+                activeComponentId = projectData.components.length > 0 ? projectData.components[0].id : null;
             }
             renderAll();
                     saveProjectToLocalStorage();
@@ -302,7 +320,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
 
     // --- PROJECT & COMPONENT LOGIC ---
     const resetProject = () => {
-        project = {
+        projectData = {
             title: 'New Project',
             pitch: 'A brief, one-paragraph pitch for the campaign or adventure.',
             components: []
@@ -311,13 +329,14 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         activeComponentId = null;
         historyStack = [];
         isFullViewActive = false;
-        renderAll();
+        renderAll(); // This will handle all UI updates, including clearing the TOC
+        saveProjectToLocalStorage(); // Persist the reset state
     };
 
     const addComponent = (type) => {
         saveStateToHistory();
         const newComponent = { id: nextId++, type, data: getTemplateForType(type), children: [] };
-        project.components.push(newComponent);
+        projectData.components.push(newComponent);
         activeComponentId = newComponent.id;
         isFullViewActive = false;
         renderAll();
@@ -340,10 +359,10 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             return false;
         };
 
-        removeRecursively(project.components, id);
+        removeRecursively(projectData.components, id);
 
         if (activeComponentId === id) {
-            activeComponentId = project.components.length > 0 ? project.components[0].id : null;
+            activeComponentId = projectData.components.length > 0 ? projectData.components[0].id : null;
             isFullViewActive = false;
         }
         renderAll();
@@ -351,33 +370,8 @@ document.addEventListener('DOMContentLoaded', initializeApp);
     };
 
     const getTemplateForType = (type) => {
-        const baseTemplate = {
-            description: '',
-            notes: '',
-            tags: ''
-        };
-
-        const specificTemplates = {
-            'Story Arc': { name: 'New Story Arc', summary: '', goal: '', 'Key Antagonist': '', resolution: '' },
-            'Adventure': { name: 'New Adventure', hook: '', goal: '', stakes: '', resolution: '' },
-            'NPC': { name: 'New NPC', role: 'Quest Giver', appearance: '', motivation: 'To acquire wealth.', secrets: '', 'plot_hooks': '', stats: '' },
-            'Location': { name: 'New Location', type: 'City', atmosphere: '', 'key_sights': '', 'sounds_and_smells': '', 'potential_encounters': '', secrets: '' },
-            'Faction': { name: 'New Faction', goals: 'Gain political control.', ideology: '', key_members: '', resources: '' },
-            'Encounter': { name: 'New Encounter', type: 'Combat', setup: '', resolution: '', mechanic: '' },
-            'Item': { name: 'New Item', rarity: 'Uncommon', attunement: 'No', properties: '', history: '', mechanic: '' },
-            'Clue': { name: 'New Clue', information: '', location_found: '', conclusion: '' },
-            'Map': { name: 'New Map', imageUrl: null, pins: [] },
-            'Handout': { title: 'New Handout', content: 'Information for the players...', imageUrl: null, notes: 'GM notes about this handout...' },
-        };
-
-        const specificTemplate = specificTemplates[type] || { name: `New ${type}` };
-         if (type === 'Map' || type === 'Handout') {
-            return specificTemplate;
-        }
-        const nameKey = Object.keys(specificTemplate).find(k => k === 'name' || k === 'title') || 'name';
-        const finalTemplate = { ...baseTemplate, ...specificTemplate };
-        if(!finalTemplate[nameKey]) finalTemplate[nameKey] = `New ${type}`;
-        return finalTemplate;
+        // Return a deep copy of the template to avoid shared object references
+        return structuredClone(COMPONENT_TEMPLATES[type] || { name: `New ${type}`, description: '', notes: '', tags: '' });
     };
 
     // --- RENDER FUNCTIONS ---
@@ -394,12 +388,12 @@ document.addEventListener('DOMContentLoaded', initializeApp);
     const renderProjectHeader = () => {
         const headerContent = `
             <div class="editable-content">
-                <input type="text" data-key="title" value="${project.title}" placeholder="Project Title" class="text-4xl w-full bg-transparent border-b-2 border-transparent focus:border-gray-600 outline-none pb-2 transition-colors">
-                <div data-key="pitch" class="wysiwyg-editor mt-4" contenteditable="true">${project.pitch}</div>
+                <input type="text" data-key="title" value="${projectData.title}" placeholder="Project Title" class="text-4xl w-full bg-transparent border-b-2 border-transparent focus:border-gray-600 outline-none pb-2 transition-colors">
+                <div data-key="pitch" class="wysiwyg-editor mt-4" contenteditable="true">${projectData.pitch}</div>
             </div>
             <div class="viewable-content">
-                <h1 class="text-4xl mb-4">${project.title}</h1>
-                <div class="italic text-gray-400 book-prose">${processTextForDisplay(project.pitch)}</div>
+                <h1 class="text-4xl mb-4">${projectData.title}</h1>
+                <div class="italic text-gray-400 book-prose">${processTextForDisplay(projectData.pitch)}</div>
             </div>
         `;
         projectHeader.innerHTML = headerContent;
@@ -428,7 +422,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             return filtered;
         }
 
-        const componentsToRender = filterText ? filterAndBuild(project.components) : project.components;
+        const componentsToRender = filterText ? filterAndBuild(projectData.components) : projectData.components;
 
         if (componentsToRender.length === 0) {
             tocList.innerHTML = `<p class="text-sm text-gray-400 px-1">No matching components.</p>`;
@@ -479,7 +473,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
     };
 
     const renderAddComponentModal = () => {
-        const componentTypes = ['Story Arc', 'Adventure', 'NPC', 'Location', 'Faction', 'Encounter', 'Item', 'Clue', 'Map', 'Handout'];
+        const componentTypes = Object.keys(COMPONENT_TEMPLATES);
         modalAddComponentList.innerHTML = componentTypes.map(type => `
             <button class="add-component-btn" data-type="${type}">${type}</button>
         `).join('');
@@ -511,7 +505,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             if (key === 'imageUrl' || key === 'pins' || key === nameKey) continue;
             const label = key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ');
             const value = component.data[key] || '';
-            const isTextArea = ['summary', 'description', 'pitch', 'hook', 'stakes', 'resolution', 'motivation', 'appearance', 'secrets', 'goals', 'ideology', 'key_members', 'setup', 'properties', 'information', 'conclusion', 'plot_hooks', 'key_sights', 'sounds_and_smells', 'potential_encounters', 'history', 'mechanic', 'notes', 'content'].includes(key);
+            const isTextArea = ['summary', 'description', 'pitch', 'hook', 'stakes', 'resolution', 'motivation', 'appearance', 'secrets', 'goals', 'ideology', 'key_members', 'setup', 'properties', 'information', 'conclusion', 'plot_hooks', 'key_sights', 'sounds_and_smells', 'potential_encounters', 'history', 'mechanic', 'notes', 'content', 'Key Events', 'Rising Action', 'Climax', 'Falling Action', 'Entry & Exit', 'Key Actions', 'Key Dialogue', 'Sensory Details'].includes(key);
 
             if (isTextArea) {
                 fieldsHTML += `
@@ -559,7 +553,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         }
 
         if (component.type === 'Map') {
-            const allComponents = getAllComponents(project.components).filter(c => c.id !== component.id);
+            const allComponents = getAllComponents(projectData.components).filter(c => c.id !== component.id);
             const options = allComponents.map(c => `<option value="${c.id}">${c.data.name} (${c.type})</option>`).join('');
 
             let pinsHTML = '';
@@ -598,7 +592,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             `;
         }
 
-        const parentArray = parent ? parent.children : project.components;
+        const parentArray = parent ? parent.children : projectData.components;
         const canIndent = index > 0;
         const canOutdent = parent !== null;
 
@@ -668,13 +662,13 @@ document.addEventListener('DOMContentLoaded', initializeApp);
                 }
             });
         };
-        traverseAndRender(project.components);
+        traverseAndRender(projectData.components);
         mainContent.innerHTML = html;
     };
 
     const renderQuickReferencePanel = () => {
         quickRefList.innerHTML = '';
-        const keyComponents = getAllComponents(project.components).filter(c => c.type === 'NPC' || c.type === 'Location' || c.type === 'Handout');
+        const keyComponents = getAllComponents(projectData.components).filter(c => c.type === 'NPC' || c.type === 'Location' || c.type === 'Handout');
         if (keyComponents.length === 0) {
             quickRefList.innerHTML = `<p class="text-sm text-gray-400">No key components found.</p>`;
             return;
@@ -865,12 +859,12 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             const action = actionTarget.dataset.action;
 
             if (action === 'save') {
-                const dataStr = JSON.stringify(project, null, 2);
+                const dataStr = JSON.stringify(projectData, null, 2);
                 const blob = new Blob([dataStr], {type: 'application/json'});
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `${project.title.replace(/[^a-z0-9]/gi, '_') || 'rpg-project'}.json`;
+                a.download = `${projectData.title.replace(/[^a-z0-9]/gi, '_') || 'rpg-project'}.json`;
                 a.click();
                 URL.revokeObjectURL(url);
             } else if (action === 'load') {
@@ -1016,7 +1010,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
                 mainApp.classList.add('gm-mode');
                 mainApp.classList.remove('writer-mode');
             } else {
-                activeComponentId = project.components.length > 0 ? project.components[0].id : null;
+                activeComponentId = projectData.components.length > 0 ? projectData.components[0].id : null;
                 mainApp.classList.remove('gm-mode');
                 mainApp.classList.add('writer-mode');
             }
@@ -1057,7 +1051,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             if (target.matches('[data-key]')) {
                  const key = target.dataset.key;
                  const value = target.isContentEditable ? target.innerHTML : target.value;
-                 project[key] = value;
+                 projectData[key] = value;
                  if(key === 'title') {
                      projectTitleDisplay.textContent = value;
                 }
@@ -1270,7 +1264,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             const info = findComponentAndParent(id);
             if (!info || info.index === 0) return;
 
-            const parentArray = info.parent ? info.parent.children : project.components;
+            const parentArray = info.parent ? info.parent.children : projectData.components;
             const newParent = parentArray[info.index - 1];
             if (!newParent) return;
 
@@ -1294,7 +1288,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             const sourceArray = info.parent.children;
             const [itemToOutdent] = sourceArray.splice(info.index, 1);
 
-            const destinationArray = grandParentInfo.parent ? grandParentInfo.parent.children : project.components;
+            const destinationArray = grandParentInfo.parent ? grandParentInfo.parent.children : projectData.components;
             destinationArray.splice(grandParentInfo.index + 1, 0, itemToOutdent);
             renderAll();
                     saveProjectToLocalStorage();
@@ -1307,14 +1301,14 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             const draggedInfo = findComponentAndParent(draggedId);
             if (!draggedInfo) return;
 
-            const sourceArray = draggedInfo.parent ? draggedInfo.parent.children : project.components;
+            const sourceArray = draggedInfo.parent ? draggedInfo.parent.children : projectData.components;
             const [draggedItem] = sourceArray.splice(draggedInfo.index, 1);
 
             const targetInfo = findComponentAndParent(targetId);
             if (!targetInfo) {
-                project.components.push(draggedItem);
+                projectData.components.push(draggedItem);
             } else {
-                const targetArray = targetInfo.parent ? targetInfo.parent.children : project.components;
+                const targetArray = targetInfo.parent ? targetInfo.parent.children : projectData.components;
                 targetArray.splice(targetInfo.index, 0, draggedItem);
             }
 
@@ -1408,8 +1402,8 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             const importTitle = document.querySelector('[data-import-key="title"]').checked;
             const importPitch = document.querySelector('[data-import-key="pitch"]').checked;
 
-            if (importTitle) project.title = loadedProjectData.title;
-            if (importPitch) project.pitch = loadedProjectData.pitch;
+            if (importTitle) projectData.title = loadedProjectData.title;
+            if (importPitch) projectData.pitch = loadedProjectData.pitch;
 
             const remapIdsAndFilter = (components) => {
                 const newComponents = [];
@@ -1428,7 +1422,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             };
 
             const componentsToImport = remapIdsAndFilter(loadedProjectData.components);
-            project.components.push(...componentsToImport);
+            projectData.components.push(...componentsToImport);
 
             importModal.classList.add('hidden');
             importModal.classList.remove('flex');
@@ -1476,11 +1470,40 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         });
 
         function craftSuperPrompt(prompt) {
-            let superPrompt = `You are AIME, an AI world-building assistant for tabletop RPGs. Your task is to generate creative content for a scenario component based on the user's request and contextual information.\n\n--- YOUR TASK ---\n${prompt}\n\n`;
+            let superPrompt = `You are AIME, an AI world-building assistant for tabletop RPGs. Your task is to generate creative content for a scenario component based on the user's request and all available contextual information.\n\n`;
 
+            // 1. Add Overall Project Context
+            superPrompt += `--- OVERALL PROJECT: ${projectData.title} ---\n`;
+            superPrompt += `Pitch: ${projectData.pitch}\n\n`;
+
+            // 2. Add currently active component
+            const activeComponent = findComponent(activeComponentId);
+            if (activeComponent) {
+                superPrompt += `--- CURRENT COMPONENT: ${activeComponent.data.name || activeComponent.data.title} (${activeComponent.type}) ---\n`;
+                superPrompt += `This is the component you are generating content for. All other components and assets are for context.\n`;
+                superPrompt += JSON.stringify(activeComponent.data, null, 2) + "\n\n";
+            }
+
+            // 3. Add the user's direct prompt
+            superPrompt += `--- USER'S REQUEST ---\n${prompt}\n\n`;
+
+            // 4. Add all other components in the project for context
+            const allComponents = getAllComponents(projectData.components);
+            if (allComponents.length > 1) {
+                superPrompt += "--- OTHER SCENARIO COMPONENTS (FOR CONTEXT) ---\n";
+                allComponents.forEach(component => {
+                    if (component.id === activeComponentId) return; // Skip the active one
+                    const name = component.data.name || component.data.title || `Untitled ${component.type}`;
+                    superPrompt += `\n[Component: ${name} (${component.type})]\n`;
+                    superPrompt += JSON.stringify(component.data, null, 2) + "\n";
+                });
+                superPrompt += "\n";
+            }
+
+            // 5. Add loaded assets
             const contextualAssets = loadedAssets.filter(asset => asset.type === 'text' || asset.type === 'json');
             if (contextualAssets.length > 0) {
-                superPrompt += "\n--- CONTEXTUAL ASSETS (REFERENCE LORE) ---\n";
+                superPrompt += "--- IMPORTED ASSETS (FOR CONTEXT) ---\n";
                 contextualAssets.forEach(asset => {
                     if (asset.importance === 'Non-Informative') return;
 
@@ -1488,8 +1511,8 @@ document.addEventListener('DOMContentLoaded', initializeApp);
                     if (asset.type === 'json') {
                         try {
                             const parsedContent = JSON.parse(asset.content);
-                            const assetType = parsedContent.assetType || 'JSON Data';
-                            assetEntry += `\n[Reference Asset: ${assetType} | Importance: ${asset.importance}]\n`;
+                            const assetType = parsedContent.assetType || 'AIME Asset';
+                            assetEntry += `\n[Asset: ${assetType} | Importance: ${asset.importance}]\n`;
                             if (asset.annotation) assetEntry += `  - Director's Note: ${asset.annotation}\n`;
                             assetEntry += JSON.stringify(parsedContent, null, 2) + '\n';
                         } catch (e) {
@@ -1497,7 +1520,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
                             return;
                         }
                     } else {
-                        assetEntry += `\n[Reference Asset: Text File | Importance: ${asset.importance}]\n`;
+                        assetEntry += `\n[Asset: Text File | Importance: ${asset.importance}]\n`;
                         assetEntry += `- Filename: ${asset.fileName}\n`;
                         if (asset.annotation) assetEntry += `  - Director's Note: ${asset.annotation}\n`;
                         assetEntry += `--- Text Content ---\n${asset.content}\n--- End Content ---\n`;
@@ -1506,7 +1529,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
                 });
             }
 
-            superPrompt += `\n--- FINAL INSTRUCTION ---\nGenerate the content as requested. The output MUST be well-structured Markdown.`;
+            superPrompt += `\n--- FINAL INSTRUCTION ---\nBased on all the context provided, fulfill the user's request. The output should be the creative content itself, formatted in well-structured Markdown, suitable for direct insertion into the active component's field. Do not include any conversational filler or explanations.`;
             console.log("Super Prompt:", superPrompt);
             return superPrompt;
         }
