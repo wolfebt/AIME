@@ -23,9 +23,10 @@
     </header>
 
     <div id="app-container" class="writer-mode">
-        <!-- Left Panel: Table of Contents -->
-        <aside id="toc-panel" class="panel">
-            <div class="panel-header flex justify-between items-center">
+        <div class="workspace-layout">
+            <!-- Left Panel: Table of Contents -->
+            <aside id="toc-panel" class="panel">
+                <div class="panel-header flex justify-between items-center">
                 <h2 class="text-xl">Table of Contents</h2>
                 <div class="flex items-center gap-1">
                      <button data-action="save" title="Save Project" class="p-2 rounded-md hover:bg-gray-700 writer-mode-only">
@@ -66,30 +67,41 @@
             </div>
         </aside>
 
-        <!-- Center Panel: Main Content -->
-        <main id="main-panel" class="panel">
-             <div id="main-panel-header" class="panel-header flex items-center gap-4">
-                <button id="backButton" data-action="back" title="Back to Contents" class="p-2 rounded-md hover:bg-gray-700 hidden lg:hidden">
-                   <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
-               </button>
-                <h1 id="project-title-display" class="text-2xl truncate">New Project</h1>
+            <!-- Center Panel: Main Content -->
+            <div class="main-column">
+                <main id="main-panel" class="panel">
+                    <div id="main-panel-header" class="panel-header flex items-center gap-4">
+                        <button id="backButton" data-action="back" title="Back to Contents" class="p-2 rounded-md hover:bg-gray-700 hidden lg:hidden">
+                            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+                        </button>
+                        <h1 id="project-title-display" class="text-2xl truncate">New Project</h1>
+                    </div>
+                    <div id="main-scroll-area" class="panel-content">
+                        <div id="projectHeader" class="mb-12"></div>
+                        <div id="mainContent" class="space-y-8">
+                            <!-- Active component content will be dynamically inserted here -->
+                        </div>
+                    </div>
+                </main>
             </div>
-            <div id="main-scroll-area" class="panel-content">
-                <div id="projectHeader" class="mb-12"></div>
-                <div id="mainContent" class="space-y-8">
-                    <!-- Active component content will be dynamically inserted here -->
+
+            <!-- Right Panel: Asset Hub & Quick Reference -->
+            <aside class="side-column">
+                <div class="asset-hub-panel glass-panel writer-mode-only">
+                    <h3 class="side-panel-title">Asset Hub</h3>
+                    <p class="asset-hub-subtitle">Import AIME elements and files for contextual reference.</p>
+                    <button id="import-asset-btn" class="import-btn">Import Asset</button>
+                    <div id="asset-list" class="asset-list"></div>
                 </div>
-            </div>
-        </main>
-    </div>
-    
-    <!-- GM View Quick Reference Panel -->
-    <aside id="quick-ref-panel" class="panel">
-        <div class="panel-header">
-            <h2 class="text-xl">Quick Reference</h2>
+                <div id="quick-ref-panel" class="panel gm-mode-only">
+                    <div class="panel-header">
+                        <h2 class="text-xl">Quick Reference</h2>
+                    </div>
+                    <div id="quick-ref-list" class="panel-content"></div>
+                </div>
+            </aside>
         </div>
-        <div id="quick-ref-list" class="panel-content"></div>
-    </aside>
+    </div>
     
     <!-- Confirmation Modal -->
     <div id="confirmModal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
@@ -198,6 +210,7 @@
     <!-- Hidden file inputs -->
     <input type="file" id="loadFileInput" class="hidden" accept=".json">
     <input type="file" id="componentImageInput" class="hidden" accept="image/*">
+    <input type="file" id="asset-upload" class="hidden" multiple>
 
     <script src="../script/scenario-guide.js"></script>
 </body>
