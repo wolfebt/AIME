@@ -1,17 +1,18 @@
 <!--
-    File: writer.html
-    Reference: Story Weaver
-    Creator: Wolfe.BT, TangentLLC
+    File: sg-adventure.html
+    Reference: Scenario Guide - Adventure
+    Creator: AIME
 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIME - Story Weaver</title>
+    <title>AIME - Adventure</title>
     <link rel="stylesheet" href="../style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../script/global-ui.js"></script>
-    <script src="../script/writer-bundle.js"></script>
+    <script src="../script/sg-bundle.js"></script>
 </head>
 <body>
     <header class="main-header">
@@ -23,47 +24,53 @@
         </div>
         <nav class="main-nav">
             <a href="elements.html">Elements</a>
-            <a href="writer.html" class="active">Writer</a>
-            <a href="sg-hub.html">Scenario Guide</a>
+            <a href="writer.html">Writer</a>
+            <a href="sg-hub.html" class="active">Scenario Guide</a>
         </nav>
     </header>
 
     <main class="container">
-        <div class="writer-nav glass-panel">
-            <button class="writer-nav-button active" data-tab="brainstorm">1. Brainstorm</button>
-            <button class="writer-nav-button" data-tab="outline">2. Outline</button>
-            <button class="writer-nav-button" data-tab="treatment">3. Draft</button>
+        <div class="element-header">
+            <h2 class="element-title animated-gradient">Adventure</h2>
+            <div class="header-actions">
+                <p class="element-subtitle">Create a self-contained adventure with hooks, goals, and stakes.</p>
+            </div>
         </div>
         <div class="workspace-layout">
             <div class="main-column">
-                <!-- Brainstorm Tab -->
-                <div id="brainstorm-tab" class="writer-tab active">
-                    <div class="tab-controls glass-panel">
-                        <h3 class="tab-title">Brainstorm Concepts</h3>
-                    </div>
-                    <div id="brainstorm-response-area" class="response-area-cards" contenteditable="true">
-                        <p class="placeholder-text">Enter a core idea in the prompt box and click "Generate" to generate story ideas.</p>
+                <div class="element-nav glass-panel">
+                    <button class="element-nav-button active" data-tab="core-concept">Core Concept</button>
+                    <button class="element-nav-button" data-tab="narrative-elements">Narrative Elements</button>
+                    <button class="element-nav-button" data-tab="details">Details</button>
+                </div>
+
+                <!-- Core Concept Tab -->
+                <div id="core-concept-tab" class="element-tab active">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="adventure-name">Name</label><input type="text" id="adventure-name" class="input-field" data-field-id="name" placeholder="e.g., The Sunken Temple of Anubis" autocomplete="off"></div>
+                        <div class="form-group"><label for="adventure-hook">Hook</label><textarea id="adventure-hook" class="input-field" data-field-id="hook" placeholder="How are the players drawn into this adventure?"></textarea></div>
+                        <div class="form-group"><label for="adventure-goal">Goal</label><textarea id="adventure-goal" class="input-field" data-field-id="goal" placeholder="What is the primary objective for the players?"></textarea></div>
                     </div>
                 </div>
-                <!-- Outline Tab -->
-                <div id="outline-tab" class="writer-tab">
-                    <div class="tab-controls glass-panel">
-                        <h3 class="tab-title">Build Your Outline</h3>
-                        <button id="create-treatment-from-outline-btn" class="action-btn">Create Draft</button>
-                    </div>
-                    <ul id="outline-list" class="outline-list" contenteditable="true">
-                        <p class="placeholder-text">Click "Develop Outline" on a concept card to generate an outline here.</p>
-                    </ul>
-                </div>
-                <!-- Treatment Tab -->
-                <div id="treatment-tab" class="writer-tab">
-                    <div class="tab-controls glass-panel">
-                        <h3 class="tab-title">Draft Your Story</h3>
-                    </div>
-                    <div id="treatment-canvas" class="writing-canvas glass-panel" contenteditable="true">
-                         <p class="placeholder-text">Generate an outline, then click "Create Draft" to create a story draft here.</p>
+
+                <!-- Narrative Elements Tab -->
+                <div id="narrative-elements-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="adventure-stakes">Stakes</label><textarea id="adventure-stakes" class="input-field" data-field-id="stakes" placeholder="What are the consequences of success or failure?"></textarea></div>
+                        <div class="form-group"><label for="adventure-resolution">Resolution</label><textarea id="adventure-resolution" class="input-field" data-field-id="resolution" placeholder="How might this adventure conclude?"></textarea></div>
                     </div>
                 </div>
+
+                <!-- Details Tab -->
+                <div id="details-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="adventure-description">Description</label><textarea id="adventure-description" class="input-field" data-field-id="description" placeholder="A more detailed overview of the adventure."></textarea></div>
+                        <div class="form-group"><label for="adventure-notes">Notes</label><textarea id="adventure-notes" class="input-field" data-field-id="notes" placeholder="General notes, ideas, or reminders."></textarea></div>
+                        <div class="form-group"><label for="adventure-tags">Tags</label><input type="text" id="adventure-tags" class="input-field" data-field-id="tags" placeholder="e.g., dungeon-crawl, investigation, social" autocomplete="off"></div>
+                    </div>
+                </div>
+
+                <div id="response-container" class="response-container glass-panel" contenteditable="true"></div>
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
@@ -73,16 +80,13 @@
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <div class="prompt-box">
-                            <textarea id="main-prompt" class="input-field" data-field-id="main-prompt" placeholder="Enter your core idea, a theme, or a character concept..."></textarea>
-                        </div>
                         <div class="generation-controls-buttons">
-                            <button id="generate-button" class="generate-btn-large">Generate</button>
+                            <button id="generate-button" data-element-type="ADVENTURE" class="generate-btn-large">Generate</button>
                             <button id="iterate-button" class="generate-btn-large hidden">Iterate</button>
 
                             <div id="update-field-container" class="form-group hidden">
                                 <label for="update-instructions">Update Instructions</label>
-                                <textarea id="update-instructions" class="input-field" placeholder="e.g., make this more dramatic..."></textarea>
+                                <textarea id="update-instructions" class="input-field" placeholder="e.g., Make the backstory more tragic..."></textarea>
                             </div>
 
                             <div class="generation-controls-row">
@@ -110,9 +114,9 @@
                     <div class="asset-hub-panel glass-panel">
                         <h3 class="side-panel-title">Asset Hub</h3>
                         <div class="asset-hub-container">
-                            <p class="asset-hub-subtitle">Import files to guide the story.</p>
+                            <p class="asset-hub-subtitle">Import files to provide contextual reference for this Adventure.</p>
                             <div class="asset-import-area">
-                                <input type="file" id="asset-upload" multiple style="display: none;">
+                                <input type="file" id="asset-upload" multiple="" style="display: none;">
                                 <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
                             </div>
                             <div id="asset-list" class="asset-list"></div>
@@ -123,19 +127,12 @@
         </div>
     </main>
 
-    <!-- NEW Floating Text Toolbar -->
-    <div id="text-toolbar" class="glass-panel hidden">
-        <button class="toolbar-btn" data-action="rephrase">Rephrase</button>
-        <button class="toolbar-btn" data-action="shorten">Shorten</button>
-        <button class="toolbar-btn" data-action="expand">Expand</button>
-        <button class="toolbar-btn" data-action="custom">Custom...</button>
-        <div id="custom-prompt-container" class="hidden">
-            <input type="text" id="custom-prompt-input" placeholder="e.g., make this more dramatic">
-            <button id="custom-prompt-submit">Go</button>
-        </div>
-    </div>
+    <!-- Floating text toolbar removed -->
 
-    <!-- Settings Modal (from global-ui.js) -->
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Settings Modal -->
     <div id="settings-modal-overlay" class="modal-overlay hidden">
         <div class="modal-content glass-panel">
             <div class="modal-header">
@@ -154,6 +151,26 @@
             </div>
             <div class="modal-footer">
                 <button id="modal-save-btn" class="generate-btn-large">Save Key</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guidance Selection Modal -->
+    <div id="gem-selection-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3 id="gem-modal-title">Select Options</h3>
+                <button id="gem-modal-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div id="gem-modal-options-container" class="modal-body">
+                <!-- Clickable option buttons will be dynamically inserted here -->
+            </div>
+            <div class="gem-modal-custom-input-area">
+                <input type="text" id="custom-gem-input" class="input-field" placeholder="Add a custom option...">
+                <button id="add-custom-gem-btn" class="action-btn">Add</button>
+            </div>
+            <div class="modal-footer">
+                <button id="gem-modal-save-btn" class="generate-btn-large">Save Selections</button>
             </div>
         </div>
     </div>

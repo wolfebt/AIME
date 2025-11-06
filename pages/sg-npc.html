@@ -1,17 +1,18 @@
 <!--
-    File: writer.html
-    Reference: Story Weaver
-    Creator: Wolfe.BT, TangentLLC
+    File: sg-npc.html
+    Reference: Scenario Guide - NPC
+    Creator: AIME
 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIME - Story Weaver</title>
+    <title>AIME - NPC</title>
     <link rel="stylesheet" href="../style/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="../script/global-ui.js"></script>
-    <script src="../script/writer-bundle.js"></script>
+    <script src="../script/sg-bundle.js"></script>
 </head>
 <body>
     <header class="main-header">
@@ -23,47 +24,62 @@
         </div>
         <nav class="main-nav">
             <a href="elements.html">Elements</a>
-            <a href="writer.html" class="active">Writer</a>
-            <a href="sg-hub.html">Scenario Guide</a>
+            <a href="writer.html">Writer</a>
+            <a href="sg-hub.html" class="active">Scenario Guide</a>
         </nav>
     </header>
 
     <main class="container">
-        <div class="writer-nav glass-panel">
-            <button class="writer-nav-button active" data-tab="brainstorm">1. Brainstorm</button>
-            <button class="writer-nav-button" data-tab="outline">2. Outline</button>
-            <button class="writer-nav-button" data-tab="treatment">3. Draft</button>
+        <div class="element-header">
+            <h2 class="element-title animated-gradient">NPC</h2>
+            <div class="header-actions">
+                <p class="element-subtitle">Design non-player characters with roles, motivations, and secrets.</p>
+            </div>
         </div>
         <div class="workspace-layout">
             <div class="main-column">
-                <!-- Brainstorm Tab -->
-                <div id="brainstorm-tab" class="writer-tab active">
-                    <div class="tab-controls glass-panel">
-                        <h3 class="tab-title">Brainstorm Concepts</h3>
-                    </div>
-                    <div id="brainstorm-response-area" class="response-area-cards" contenteditable="true">
-                        <p class="placeholder-text">Enter a core idea in the prompt box and click "Generate" to generate story ideas.</p>
+                <div class="element-nav glass-panel">
+                    <button class="element-nav-button active" data-tab="overview">Overview</button>
+                    <button class="element-nav-button" data-tab="psychology">Psychology</button>
+                    <button class="element-nav-button" data-tab="gm-info">GM Info</button>
+                    <button class="element-nav-button" data-tab="details">Details</button>
+                </div>
+
+                <!-- Overview Tab -->
+                <div id="overview-tab" class="element-tab active">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="npc-name">Name</label><input type="text" id="npc-name" class="input-field" data-field-id="name" placeholder="e.g., Elara Swift" autocomplete="off"></div>
+                        <div class="form-group"><label for="npc-role">Role</label><input type="text" id="npc-role" class="input-field" data-field-id="role" placeholder="e.g., Quest Giver, Rival, Information Broker" autocomplete="off"></div>
+                        <div class="form-group"><label for="npc-appearance">Appearance</label><textarea id="npc-appearance" class="input-field" data-field-id="appearance" placeholder="A brief description of the NPC's physical appearance."></textarea></div>
                     </div>
                 </div>
-                <!-- Outline Tab -->
-                <div id="outline-tab" class="writer-tab">
-                    <div class="tab-controls glass-panel">
-                        <h3 class="tab-title">Build Your Outline</h3>
-                        <button id="create-treatment-from-outline-btn" class="action-btn">Create Draft</button>
-                    </div>
-                    <ul id="outline-list" class="outline-list" contenteditable="true">
-                        <p class="placeholder-text">Click "Develop Outline" on a concept card to generate an outline here.</p>
-                    </ul>
-                </div>
-                <!-- Treatment Tab -->
-                <div id="treatment-tab" class="writer-tab">
-                    <div class="tab-controls glass-panel">
-                        <h3 class="tab-title">Draft Your Story</h3>
-                    </div>
-                    <div id="treatment-canvas" class="writing-canvas glass-panel" contenteditable="true">
-                         <p class="placeholder-text">Generate an outline, then click "Create Draft" to create a story draft here.</p>
+
+                <!-- Psychology Tab -->
+                <div id="psychology-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="npc-motivation">Motivation</label><textarea id="npc-motivation" class="input-field" data-field-id="motivation" placeholder="What drives this NPC's actions?"></textarea></div>
+                        <div class="form-group"><label for="npc-secrets">Secrets</label><textarea id="npc-secrets" class="input-field" data-field-id="secrets" placeholder="What does this NPC know that isn't public knowledge?"></textarea></div>
                     </div>
                 </div>
+
+                <!-- GM Info Tab -->
+                <div id="gm-info-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="npc-plot-hooks">Plot Hooks</label><textarea id="npc-plot-hooks" class="input-field" data-field-id="plot_hooks" placeholder="Ideas for how this NPC can introduce new adventures or plot points."></textarea></div>
+                        <div class="form-group"><label for="npc-stats">Stats</label><textarea id="npc-stats" class="input-field" data-field-id="stats" placeholder="Game-specific stats, abilities, or combat information."></textarea></div>
+                    </div>
+                </div>
+
+                <!-- Details Tab -->
+                <div id="details-tab" class="element-tab hidden">
+                    <div class="form-section glass-panel">
+                        <div class="form-group"><label for="npc-description">Description</label><textarea id="npc-description" class="input-field" data-field-id="description" placeholder="A more detailed description of the NPC."></textarea></div>
+                        <div class="form-group"><label for="npc-notes">Notes</label><textarea id="npc-notes" class="input-field" data-field-id="notes" placeholder="General notes, ideas, or reminders."></textarea></div>
+                        <div class="form-group"><label for="npc-tags">Tags</label><input type="text" id="npc-tags" class="input-field" data-field-id="tags" placeholder="e.g., friendly, untrustworthy, knowledgeable" autocomplete="off"></div>
+                    </div>
+                </div>
+
+                <div id="response-container" class="response-container glass-panel" contenteditable="true"></div>
             </div>
             <div class="resize-handle"></div>
             <div class="side-column">
@@ -73,16 +89,13 @@
                         <svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="accordion-content">
-                        <div class="prompt-box">
-                            <textarea id="main-prompt" class="input-field" data-field-id="main-prompt" placeholder="Enter your core idea, a theme, or a character concept..."></textarea>
-                        </div>
                         <div class="generation-controls-buttons">
-                            <button id="generate-button" class="generate-btn-large">Generate</button>
+                            <button id="generate-button" data-element-type="NPC" class="generate-btn-large">Generate</button>
                             <button id="iterate-button" class="generate-btn-large hidden">Iterate</button>
 
                             <div id="update-field-container" class="form-group hidden">
                                 <label for="update-instructions">Update Instructions</label>
-                                <textarea id="update-instructions" class="input-field" placeholder="e.g., make this more dramatic..."></textarea>
+                                <textarea id="update-instructions" class="input-field" placeholder="e.g., Make the backstory more tragic..."></textarea>
                             </div>
 
                             <div class="generation-controls-row">
@@ -110,9 +123,9 @@
                     <div class="asset-hub-panel glass-panel">
                         <h3 class="side-panel-title">Asset Hub</h3>
                         <div class="asset-hub-container">
-                            <p class="asset-hub-subtitle">Import files to guide the story.</p>
+                            <p class="asset-hub-subtitle">Import files to provide contextual reference for this NPC.</p>
                             <div class="asset-import-area">
-                                <input type="file" id="asset-upload" multiple style="display: none;">
+                                <input type="file" id="asset-upload" multiple="" style="display: none;">
                                 <button id="import-asset-btn" class="import-btn">Import Asset(s)</button>
                             </div>
                             <div id="asset-list" class="asset-list"></div>
@@ -123,19 +136,12 @@
         </div>
     </main>
 
-    <!-- NEW Floating Text Toolbar -->
-    <div id="text-toolbar" class="glass-panel hidden">
-        <button class="toolbar-btn" data-action="rephrase">Rephrase</button>
-        <button class="toolbar-btn" data-action="shorten">Shorten</button>
-        <button class="toolbar-btn" data-action="expand">Expand</button>
-        <button class="toolbar-btn" data-action="custom">Custom...</button>
-        <div id="custom-prompt-container" class="hidden">
-            <input type="text" id="custom-prompt-input" placeholder="e.g., make this more dramatic">
-            <button id="custom-prompt-submit">Go</button>
-        </div>
-    </div>
+    <!-- Floating text toolbar removed -->
 
-    <!-- Settings Modal (from global-ui.js) -->
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <!-- Settings Modal -->
     <div id="settings-modal-overlay" class="modal-overlay hidden">
         <div class="modal-content glass-panel">
             <div class="modal-header">
@@ -154,6 +160,26 @@
             </div>
             <div class="modal-footer">
                 <button id="modal-save-btn" class="generate-btn-large">Save Key</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Guidance Selection Modal -->
+    <div id="gem-selection-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3 id="gem-modal-title">Select Options</h3>
+                <button id="gem-modal-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div id="gem-modal-options-container" class="modal-body">
+                <!-- Clickable option buttons will be dynamically inserted here -->
+            </div>
+            <div class="gem-modal-custom-input-area">
+                <input type="text" id="custom-gem-input" class="input-field" placeholder="Add a custom option...">
+                <button id="add-custom-gem-btn" class="action-btn">Add</button>
+            </div>
+            <div class="modal-footer">
+                <button id="gem-modal-save-btn" class="generate-btn-large">Save Selections</button>
             </div>
         </div>
     </div>
