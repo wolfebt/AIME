@@ -1718,6 +1718,9 @@ input:checked + .edit-toggle-slider:before {
 .gem-modal-custom-input-area .action-btn {
     flex-shrink: 0;
     background-color: var(--accent-blue);
+    width: auto; /* Override the default 100% width for this specific button */
+    padding-left: 1.5rem; /* Add some horizontal padding */
+    padding-right: 1.5rem;
 }
 
 .gem-modal-custom-input-area .action-btn:hover {
