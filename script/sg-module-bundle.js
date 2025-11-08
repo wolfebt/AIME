@@ -8,13 +8,14 @@ let loadedAssets = [];
 let selectedGems = {};
 
 const gemsData = {
-    "Genre": ["Action", "Adventure", "Comedy", "Drama", "Fantasy", "Sci-Fi", "Horror", "Mystery", "Romance", "Thriller", "Whimsical", "Gritty", "Noir"],
-    "Tone": ["Serious", "Humorous", "Formal", "Informal", "Optimistic", "Pessimistic", "Joyful", "Sad", "Hopeful", "Cynical", "Dark", "Uplifting"],
-    "Pacing": ["Fast-paced", "Slow-burn", "Steady", "Urgent", "Relaxed", "Meditative", "Action-Packed"],
-    "Point of View": ["First Person", "Third Person Limited", "Third Person Omniscient", "Second Person", "Alternating POV"],
-    "Literary Devices": ["Metaphor", "Simile", "Personification", "Alliteration", "Symbolism", "Irony", "Foreshadowing", "Satire"],
-    "Structure": ["Linear", "Non-linear", "Episodic", "In Medias Res", "Frame Story"],
-    "Themes": ["Redemption", "Betrayal", "Discovery", "Survival", "Love", "Hate", "Power", "Corruption", "Nature vs. Nurture"]
+    "Genre": ["High Fantasy", "Dark Fantasy", "Science Fiction", "Cyberpunk", "Cosmic Horror", "Modern Urban", "Post-Apocalyptic"],
+    "System": ["System Agnostic", "D&D 5e", "Pathfinder 2e", "Call of Cthulhu", "Cyberpunk RED", "GURPS", "Powered by the Apocalypse"],
+    "Adventure Structures": ["Dungeon Crawl", "Wilderness Exploration", "Urban Investigation", "Political Intrigue", "Heist", "Episodic Questline"],
+    "Plot Hooks": ["Mysterious Map", "Urgent Plea for Help", "Personal Vendetta", "Stolen Artifact", "Escaped Prisoner", "Prophecy Foretold"],
+    "Pacing & Tension": ["Ticking Clock", "Rising Stakes", "A Traitor Within", "Moral Dilemma", "Sudden Reveal", "Environmental Pressure"],
+    "Encounter Design": ["Dynamic Combat", "Social Negotiation", "Environmental Hazard", "Complex Puzzle", "Stealth Infiltration", "Skill Challenge"],
+    "Reward & Motivation": ["Legendary Artifact", "Key Information", "Political Favor", "Safe Haven", "Personal Growth", "Vengeance Satisfied"],
+    "Narrative Tropes": ["MacGuffin Hunt", "Sealed Evil in a Can", "The Mentor's Secret", "A Test of Faith", "Rebellion Against Tyranny", "The Unlikely Alliance"]
 };
 
 function initializeResizableColumns() {
