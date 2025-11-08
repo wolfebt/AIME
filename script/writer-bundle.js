@@ -49,24 +49,12 @@ function initializeAccordions() {
     accordions.forEach(accordion => {
         const header = accordion.querySelector('.accordion-header');
         const content = accordion.querySelector('.accordion-content');
-        const chevron = header.querySelector('.accordion-chevron');
-        if (!header || !content || !chevron) return;
+        if (!header || !content) return;
+
         header.addEventListener('click', () => {
-            const isOpen = header.classList.toggle('active');
-            chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-            if (isOpen) {
-                content.style.maxHeight = content.scrollHeight + "px";
-                content.style.padding = '1.5rem';
-            } else {
-                content.style.maxHeight = null;
-                content.style.padding = '0 1.5rem';
-            }
+            header.classList.toggle('active');
+            content.classList.toggle('active');
         });
-        if (header.classList.contains('active')) {
-            content.style.maxHeight = content.scrollHeight + "px";
-            content.style.padding = '1.5rem';
-            chevron.style.transform = 'rotate(180deg)';
-        }
     });
 }
 
@@ -432,6 +420,45 @@ function initializeIteration() {
             showToast(aiResponse, "error");
         }
     });
+}
+
+async function generateOutline(concept) {
+    const outlineList = document.getElementById('outline-list');
+    if (!outlineList) return;
+    outlineList.innerHTML = '<div class="loading-indicator"><div class="loading-spinner"></div></div>';
+    const prompt = `You are AIME, a master storyteller. Based on the following concept, generate a detailed 5-step plot outline. For each step, provide a "Title:" and a "Description:".\n\n--- CONCEPT ---\n${concept}`;
+    const aiResponse = await generateContent(prompt);
+    if (aiResponse.startsWith("Error:")) {
+        outlineList.innerHTML = `<p class="error-text">${aiResponse}</p>`;
+    } else {
+        outlineList.innerHTML = ''; // Clear loading
+        const plotPoints = aiResponse.split(/Title:/).filter(p => p.trim());
+        plotPoints.forEach(pointText => {
+            const descriptionMatch = pointText.match(/Description:\s*([\s\S]*)/);
+            if (descriptionMatch) {
+                const title = pointText.replace(/Description:[\s\S]*/, '').trim();
+                const description = descriptionMatch[1].trim();
+                const li = document.createElement('li');
+                li.className = 'outline-item glass-panel';
+                li.innerHTML = `<div class="outline-item-header"><span class="outline-item-title editable-content">${title}</span><button class="remove-item-btn">&times;</button></div><p class="outline-item-description editable-content">${description.replace(/\n/g, '<br>')}</p>`;
+                outlineList.appendChild(li);
+            }
+        });
+    }
+}
+
+async function generateTreatment() {
+    const treatmentCanvas = document.getElementById('treatment-canvas');
+    if (!treatmentCanvas) return;
+    treatmentCanvas.innerHTML = '<div class="loading-indicator"><div class="loading-spinner"></div></div>';
+    const outlineItems = Array.from(document.querySelectorAll('#outline-list .outline-item')).map(item => item.innerText).join('\n\n');
+    const prompt = `You are AIME, a master storyteller. Based on the following outline, write a detailed story treatment. Expand on the plot points, describe character emotions, and flesh out the scenes.\n\n--- OUTLINE ---\n${outlineItems}`;
+    const aiResponse = await generateContent(prompt);
+    if (aiResponse.startsWith("Error:")) {
+        treatmentCanvas.innerHTML = `<p class="error-text">${aiResponse}</p>`;
+    } else {
+        treatmentCanvas.innerHTML = `<p>${aiResponse.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p>`;
+    }
 }
 
 

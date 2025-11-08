@@ -1574,6 +1574,11 @@ input:checked + .edit-toggle-slider:before {
 }
 .modal-close-btn:hover { color: var(--light-text); }
 
+.modal-body {
+    display: flex;
+    flex-direction: column;
+}
+
 .modal-body p {
     color: var(--medium-text);
     margin-top: 0;

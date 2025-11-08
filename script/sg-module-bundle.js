@@ -49,24 +49,12 @@ function initializeAccordions() {
     accordions.forEach(accordion => {
         const header = accordion.querySelector('.accordion-header');
         const content = accordion.querySelector('.accordion-content');
-        const chevron = header.querySelector('.accordion-chevron');
-        if (!header || !content || !chevron) return;
+        if (!header || !content) return;
+
         header.addEventListener('click', () => {
-            const isOpen = header.classList.toggle('active');
-            chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-            if (isOpen) {
-                content.style.maxHeight = content.scrollHeight + "px";
-                content.style.padding = '1.5rem';
-            } else {
-                content.style.maxHeight = null;
-                content.style.padding = '0 1.5rem';
-            }
+            header.classList.toggle('active');
+            content.classList.toggle('active');
         });
-        if (header.classList.contains('active')) {
-            content.style.maxHeight = content.scrollHeight + "px";
-            content.style.padding = '1.5rem';
-            chevron.style.transform = 'rotate(180deg)';
-        }
     });
 }
 

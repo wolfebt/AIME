@@ -3,7 +3,7 @@ import json
 from playwright.sync_api import Page, expect, sync_playwright
 
 # It's a good practice to define the URL and any other constants at the top
-BASE_URL = "http://127.0.0.1:5001/pages/writer.html"
+BASE_URL = "http://127.0.0.1:5001/pages/compose.html"
 
 # --- Test Functions ---
 
@@ -255,16 +255,16 @@ Test Concept
     expect(page.locator(".brainstorm-card")).not_to_be_visible()
 
     # Set up the file chooser handler
+    page.locator(".accordion-header", has_text="Generation Controls").click()
+    page.wait_for_timeout(500)
     with page.expect_file_chooser() as fc_info:
-            page.locator(".accordion-header", has_text="Generation Controls").click()
-            page.wait_for_timeout(500)
         page.locator("#load-button").click()
     file_chooser = fc_info.value
     file_chooser.set_files(file_path)
 
-        # Verify content is loaded back
-        expect(page.locator(".brainstorm-card", has_text="Test Title")).to_be_visible()
-        expect(page.locator(".brainstorm-card", has_text="Test Logline")).to_be_visible()
+    # Verify content is loaded back
+    expect(page.locator(".brainstorm-card", has_text="Test Title")).to_be_visible()
+    expect(page.locator(".brainstorm-card", has_text="Test Logline")).to_be_visible()
 
 def test_new_button_functionality(page: Page):
     """
