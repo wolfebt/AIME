@@ -1712,6 +1712,7 @@ input:checked + .edit-toggle-slider:before {
 
 .gem-modal-custom-input-area .input-field {
     flex-grow: 1;
+    width: auto; /* Override default width to allow flexbox to control it */
 }
 
 .gem-modal-custom-input-area .action-btn {
