@@ -171,7 +171,8 @@ body {
 .hub-grid {
     display: grid;
     gap: 1.5rem;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, 350px);
+    justify-content: center;
 }
 
 .hub-card {
@@ -190,6 +191,10 @@ body {
     border-color: rgba(76, 29, 149, 0.7);
 }
 
+.hub-card-double {
+    grid-column: span 2;
+}
+
 .card-title {
     font-size: 1.5rem;
     font-weight: 600;
@@ -197,6 +202,11 @@ body {
     margin-bottom: 0.75rem;
     border-left: 3px solid var(--accent-purple);
     padding-left: 0.75rem;
+}
+
+.card-title.animated-gradient {
+    border-left: none;
+    padding-left: 0;
 }
 
 .card-description {
