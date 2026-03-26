@@ -108,7 +108,7 @@ function createGuideButton() {
 function initializeGuideModal() {
     const guideContent = `
         <h2>Our Mission: Elevating the Human Creator</h2>
-        <p>Welcome to AIME (Artificial Intellect Musoikos Environ). Our philosophy is simple: <strong>we champion the human creator.</strong> AI should be a powerful instrument to amplify your ingenuity, not a substitute for it.</p>
+        <p>Welcome to AIME (Artificial Intellect Mythopoeic Environ). Our philosophy is simple: <strong>we champion the human creator.</strong> AI should be a powerful instrument to amplify your ingenuity, not a substitute for it.</p>
         <p>In the current landscape, there are two paths for AI creation:</p>
         <ol>
             <li><strong>AI Slop:</strong> Raw, unedited, and often soulless output from a single, generic prompt. It is a product of automation, not creation. It's generic, lacks coherence, and is devoid of a unique authorial voice.</li>
