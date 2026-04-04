@@ -1701,6 +1701,52 @@ input:checked + .edit-toggle-slider:before {
     }
 }
 
+/* Inline Guidance Gems (e.g. Video Suite) */
+.gem-category {
+    margin-bottom: 1.25rem;
+}
+
+.gem-category:last-child {
+    margin-bottom: 0;
+}
+
+.gem-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--light-text);
+    margin-bottom: 0.5rem;
+}
+
+.gem-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.gem-option {
+    width: auto;
+    background-color: transparent;
+    border: 1px solid var(--panel-border);
+    color: var(--medium-text);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.gem-option:hover {
+    color: var(--light-text);
+    border-color: var(--accent-blue);
+}
+
+.gem-option.active {
+    color: var(--light-text);
+    font-weight: 600;
+    border-color: var(--accent-purple);
+    background-color: rgba(76, 29, 149, 0.2);
+}
+
 /* Custom Guidance Gems Additions */
 .gem-modal-custom-input-area {
     display: flex;
