@@ -24,10 +24,10 @@
         <nav class="main-nav">
             <a href="writer.html">Writer</a>
             <a href="sg-hub.html">Scenario</a>
+            <a href="imaging-hub.html" class="active">Imaging</a>
         </nav>
     </header>
     <main class="container">
-        <!-- ... rest of video.html content ... -->
         <div class="workspace-layout">
             <div class="main-column">
                 <div class="video-player-container glass-panel"><h3 class="player-title">Sequence Preview</h3><div class="video-placeholder" style="background: #000; height: 300px; display:flex; align-items:center; justify-content:center; border-radius: 8px;"><p class="placeholder-text">Video preview will appear here.</p></div><div class="player-controls"><button class="player-btn"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg></button><span class="time-display">0:00 / 0:00</span></div></div>
@@ -35,7 +35,7 @@
             </div>
             <div class="side-column">
                 <div class="accordion glass-panel active"><button class="accordion-header active"><span>Generation Controls</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><textarea id="shot-prompt" class="input-field" placeholder="Describe the shot or sequence..."></textarea><button id="generate-shot-btn" class="generate-btn-large">Generate Shot</button></div></div>
-                <div class="accordion glass-panel active" style="margin-top: 1.5rem;"><button class="accordion-header active"><span>Guidance</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div id="guidance-gems-container"></div></div></div>
+                <div class="accordion glass-panel active" style="margin-top: 1.5rem;"><button class="accordion-header active"><span>Shot Properties</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div id="guidance-gems-container"></div></div></div>
                 <div class="accordion glass-panel" style="margin-top: 1.5rem;"><button class="accordion-header"><span>Media Bin</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content"><div id="media-bin-list" class="media-bin-list"><p class="placeholder-text">Generated video, image, and audio clips will appear here.</p></div></div></div>
                 <div class="accordion glass-panel" style="margin-top: 1.5rem;"><button class="accordion-header"><span>Asset Hub</span><svg class="accordion-chevron" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button><div class="accordion-content asset-hub-container"><p class="asset-hub-subtitle">Import Scene, Persona, and Audio files to build your video.</p><div class="asset-import-area"><input type="file" id="asset-upload" multiple="" style="display: none;"><button id="import-asset-btn" class="import-btn">Import Asset(s)</button></div><div id="asset-list" class="asset-list"></div></div></div>
             </div>
@@ -65,7 +65,3 @@
     </div>
 </body>
 </html>
-
-
-
-
