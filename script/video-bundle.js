@@ -20,19 +20,12 @@ function initializeAccordions() {
 
         header.addEventListener('click', () => {
             const isOpen = header.classList.toggle('active');
-            chevron.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-            if (isOpen) {
-                content.style.padding = '1.5rem';
-                content.style.maxHeight = content.scrollHeight + "px";
-            } else {
-                content.style.maxHeight = null;
-                content.style.padding = '0 1.5rem';
-            }
+            content.classList.toggle('active', isOpen);
         });
 
+        // Initialize content state based on header
         if (header.classList.contains('active')) {
-            content.style.padding = '1.5rem';
-            content.style.maxHeight = content.scrollHeight + "px";
+            content.classList.add('active');
         }
     });
 }
