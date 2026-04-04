@@ -73,7 +73,6 @@ function initializeDOMElements() {
     settingsModalCloseButton = document.getElementById('settingsModalCloseButton');
     geminiApiKeyInput = document.getElementById('geminiApiKeyInput');
     settingsSaveButton = document.getElementById('settingsSaveButton');
-    gameSystemSelect = document.getElementById('gameSystemSelect');
 }
 
 // --- HELPER FUNCTIONS ---
@@ -182,7 +181,7 @@ function initializeApp() {
     setupEventListeners();
 }
 
-document.addEventListener('DOMContentLoaded', initializeApp);
+if (document) document.addEventListener('DOMContentLoaded', initializeApp);
 
     // --- MODAL & HISTORY MANAGEMENT ---
     const showConfirm = (message, callback) => {
@@ -734,16 +733,16 @@ document.addEventListener('DOMContentLoaded', initializeApp);
     };
 
     // --- EVENT LISTENERS ---
-    window.addEventListener('resize', () => {
+    if (window) window.addEventListener('resize', () => {
         if (!isMobile()) {
-            mainApp.classList.remove('mobile-view-main');
-            backButton.classList.add('hidden');
+            if (mainApp) mainApp.classList.remove('mobile-view-main');
+            if (backButton) backButton.classList.add('hidden');
         }
     });
-    undoButton.addEventListener('click', undoLastAction);
-    settingsButton.addEventListener('click', openSettingsModal);
+    if (undoButton) undoButton.addEventListener('click', undoLastAction);
+    if (settingsButton) settingsButton.addEventListener('click', openSettingsModal);
 
-    tocPanel.addEventListener('click', (e) => {
+    if (tocPanel) tocPanel.addEventListener('click', (e) => {
         const actionTarget = e.target.closest('[data-action]');
         if (!actionTarget) return;
         const action = actionTarget.dataset.action;
@@ -776,7 +775,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         }
     });
 
-    mainPanelHeader.addEventListener('click', (e) => {
+    if (mainPanelHeader) mainPanelHeader.addEventListener('click', (e) => {
         const actionTarget = e.target.closest('[data-action]');
         if (!actionTarget) return;
         const action = actionTarget.dataset.action;
@@ -849,7 +848,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
     `;
     }
 
-    loadFileInput.addEventListener('change', (e) => {
+    if (loadFileInput) loadFileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
@@ -869,19 +868,19 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         e.target.value = '';
     });
 
-    addComponentButton.addEventListener('click', () => {
+    if (addComponentButton) addComponentButton.addEventListener('click', () => {
         addComponentModal.classList.remove('hidden');
         addComponentModal.classList.add('flex');
     });
 
-    modalAddComponentList.addEventListener('click', (e) => {
+    if (modalAddComponentList) modalAddComponentList.addEventListener('click', (e) => {
         if (e.target.matches('.add-component-btn')) {
             addComponent(e.target.dataset.type);
             closeAddComponentModal();
         }
     });
 
-    tocList.addEventListener('click', (e) => {
+    if (tocList) tocList.addEventListener('click', (e) => {
         const tocItem = e.target.closest('.toc-item');
         if (tocItem) {
             activeComponentId = parseInt(tocItem.dataset.id);
@@ -893,32 +892,15 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         }
     });
 
-    gmViewButton.addEventListener('click', () => {
-        isFullViewActive = !isFullViewActive;
-        if(isFullViewActive) {
-            activeComponentId = null;
-            mainApp.classList.add('gm-mode');
-            mainApp.classList.remove('writer-mode');
-        } else {
-            activeComponentId = project.components.length > 0 ? project.components[0].id : null;
-            mainApp.classList.remove('gm-mode');
-            mainApp.classList.add('writer-mode');
-        }
-        renderAll();
-        if (isFullViewActive) {
-            showMainView();
-        }
-    });
-
-    confirmOkButton.addEventListener('click', () => {
+    if (confirmOkButton) confirmOkButton.addEventListener('click', () => {
         if (typeof confirmCallback === 'function') {
             confirmCallback();
         }
         closeConfirm();
     });
-    confirmCancelButton.addEventListener('click', closeConfirm);
+    if (confirmCancelButton) confirmCancelButton.addEventListener('click', closeConfirm);
 
-    mainContent.addEventListener('input', (e) => {
+    if (mainContent) mainContent.addEventListener('input', (e) => {
         const target = e.target;
         if (target.matches('[data-key]')) {
             const component = findComponent(activeComponentId);
@@ -934,23 +916,23 @@ document.addEventListener('DOMContentLoaded', initializeApp);
             }
         }
     });
-    mainContent.addEventListener('focusout', (e) => { if (e.target.matches('[data-key]')) saveStateToHistory(); });
+    if (mainContent) mainContent.addEventListener('focusout', (e) => { if (e.target.matches('[data-key]')) saveStateToHistory(); });
 
-    projectHeader.addEventListener('input', (e) => {
+    if (projectHeader) projectHeader.addEventListener('input', (e) => {
         const target = e.target;
         if (target.matches('[data-key]')) {
              const key = target.dataset.key;
              const value = target.isContentEditable ? target.innerHTML : target.value;
              project[key] = value;
-             if(key === 'title') {
+             if(key === 'title' && projectTitleDisplay) {
                  projectTitleDisplay.textContent = value;
             }
                     saveProjectToLocalStorage();
         }
     });
-    projectHeader.addEventListener('focusout', (e) => { if (e.target.matches('[data-key]')) saveStateToHistory(); });
+    if (projectHeader) projectHeader.addEventListener('focusout', (e) => { if (e.target.matches('[data-key]')) saveStateToHistory(); });
 
-    mainContent.addEventListener('click', (e) => {
+    if (mainContent) mainContent.addEventListener('click', (e) => {
         const actionTarget = e.target.closest('[data-action]');
         const commandTarget = e.target.closest('[data-command]');
         const mapContainer = e.target.closest('.map-container');
@@ -1086,7 +1068,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
     });
 
     // --- RTF SHORTCUTS ---
-    mainContent.addEventListener('keydown', (e) => {
+    if (mainContent) mainContent.addEventListener('keydown', (e) => {
         if (!e.ctrlKey || !e.target.isContentEditable) {
             return;
         }
@@ -1119,7 +1101,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         }
     });
 
-    quickRefList.addEventListener('click', (e) => {
+    if (quickRefList) quickRefList.addEventListener('click', (e) => {
         if(e.target.matches('.quick-ref-link')) {
             e.preventDefault();
             const targetId = e.target.dataset.scrollToId;
@@ -1130,7 +1112,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         }
     });
 
-    componentImageInput.addEventListener('change', (e) => {
+    if (componentImageInput) componentImageInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
@@ -1147,7 +1129,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         e.target.value = '';
     });
 
-    tocFilterInput.addEventListener('input', renderTableOfContents);
+    if (tocFilterInput) tocFilterInput.addEventListener('input', renderTableOfContents);
 
     // --- HIERARCHY AND DRAG/DROP LOGIC ---
     const indentComponent = (id) => {
@@ -1206,7 +1188,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
                 saveProjectToLocalStorage();
     };
 
-    tocList.addEventListener('dragstart', e => {
+    if (tocList) tocList.addEventListener('dragstart', e => {
         const target = e.target.closest('.toc-item');
         if (target) {
             draggingItemId = parseInt(target.dataset.id);
@@ -1215,14 +1197,14 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         }
     });
 
-    tocList.addEventListener('dragend', e => {
+    if (tocList) tocList.addEventListener('dragend', e => {
         draggingItemId = null;
         document.querySelectorAll('.toc-item').forEach(el => {
             el.classList.remove('dragging', 'drop-target');
         });
     });
 
-    tocList.addEventListener('dragover', e => {
+    if (tocList) tocList.addEventListener('dragover', e => {
         e.preventDefault();
         const dropTargetElement = e.target.closest('.toc-item');
         if (!dropTargetElement) return;
@@ -1234,7 +1216,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         dropTargetElement.classList.add('drop-target');
     });
 
-    tocList.addEventListener('drop', e => {
+    if (tocList) tocList.addEventListener('drop', e => {
         e.preventDefault();
         const dropTargetElement = e.target.closest('.toc-item');
         document.querySelectorAll('.toc-item').forEach(el => el.classList.remove('drop-target'));
@@ -1279,13 +1261,13 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         importModal.classList.add('flex');
     };
 
-    importCancelButton.addEventListener('click', () => {
+    if (importCancelButton) importCancelButton.addEventListener('click', () => {
         importModal.classList.add('hidden');
         importModal.classList.remove('flex');
         loadedProjectData = null;
     });
 
-    importConfirmButton.addEventListener('click', () => {
+    if (importConfirmButton) importConfirmButton.addEventListener('click', () => {
         if (!loadedProjectData) return;
         saveStateToHistory();
 
@@ -1322,47 +1304,51 @@ document.addEventListener('DOMContentLoaded', initializeApp);
     });
 
     // --- MODAL CLOSE LISTENERS ---
-    addComponentModalCloseButton.addEventListener('click', closeAddComponentModal);
-    addComponentModal.addEventListener('click', (e) => { if (e.target === addComponentModal) closeAddComponentModal(); });
-    aiModalCloseButton.addEventListener('click', closeAiModal);
-    aiModal.addEventListener('click', (e) => { if (e.target === aiModal) closeAiModal(); });
-    settingsModalCloseButton.addEventListener('click', closeSettingsModal);
-    settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) closeSettingsModal(); });
-    settingsSaveButton.addEventListener('click', saveSettings);
-    helpCloseButton.addEventListener('click', closeHelpModal);
-    helpModal.addEventListener('click', (e) => { if(e.target === helpModal) closeHelpModal(); });
-    importModal.addEventListener('click', (e) => { if(e.target === importModal) importCancelButton.click(); });
-    confirmModal.addEventListener('click', (e) => { if(e.target === confirmModal) closeConfirm(); });
-    mapModalCloseButton.addEventListener('click', closeMapModal);
-    mapModal.addEventListener('click', (e) => {
-        if (e.target === mapModal) {
-            closeMapModal();
-        }
-        const linkTarget = e.target.closest('.component-link');
-        if (linkTarget) {
-            e.preventDefault();
-            const linkId = parseInt(linkTarget.dataset.linkId);
-            activeComponentId = linkId;
-            isFullViewActive = false;
-            mainApp.classList.remove('gm-mode');
-            mainApp.classList.add('writer-mode');
-            closeMapModal();
-            renderAll();
-            showMainView();
-        }
-    });
-    handoutCloseButton.addEventListener('click', closeHandoutModal);
-    handoutPrintButton.addEventListener('click', () => {
-        const printContent = handoutModalContent.innerHTML;
-        const printArea = document.createElement('div');
-        printArea.id = 'print-area';
-        printArea.innerHTML = `<div class="handout-print-content"><h2>${handoutModalTitle.textContent}</h2>${printContent}<div class="print-creator-tag">RPG SCENARIO GUIDE by Wolfe.BT@TangentLLC</div></div>`;
-        document.body.appendChild(printArea);
-        window.print();
-        document.body.removeChild(printArea);
-    });
+    if (addComponentModalCloseButton) addComponentModalCloseButton.addEventListener('click', closeAddComponentModal);
+    if (addComponentModal) addComponentModal.addEventListener('click', (e) => { if (e.target === addComponentModal) closeAddComponentModal(); });
+    if (aiModalCloseButton) aiModalCloseButton.addEventListener('click', closeAiModal);
+    if (aiModal) aiModal.addEventListener('click', (e) => { if (e.target === aiModal) closeAiModal(); });
+    if (settingsModalCloseButton) settingsModalCloseButton.addEventListener('click', closeSettingsModal);
+    if (settingsModal) settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) closeSettingsModal(); });
+    if (settingsSaveButton) settingsSaveButton.addEventListener('click', saveSettings);
+    if (helpCloseButton) helpCloseButton.addEventListener('click', closeHelpModal);
+    if (helpModal) helpModal.addEventListener('click', (e) => { if(e.target === helpModal) closeHelpModal(); });
+    if (importModal) importModal.addEventListener('click', (e) => { if(e.target === importModal) importCancelButton.click(); });
+    if (confirmModal) confirmModal.addEventListener('click', (e) => { if(e.target === confirmModal) closeConfirm(); });
+    if (mapModalCloseButton) mapModalCloseButton.addEventListener('click', closeMapModal);
+    if (mapModal) {
+        if (mapModal) mapModal.addEventListener('click', (e) => {
+            if (e.target === mapModal) {
+                closeMapModal();
+            }
+            const linkTarget = e.target.closest('.component-link');
+            if (linkTarget) {
+                e.preventDefault();
+                const linkId = parseInt(linkTarget.dataset.linkId);
+                activeComponentId = linkId;
+                isFullViewActive = false;
+                mainApp.classList.remove('gm-mode');
+                mainApp.classList.add('writer-mode');
+                closeMapModal();
+                renderAll();
+                showMainView();
+            }
+        });
+    }
+    if (handoutCloseButton) handoutCloseButton.addEventListener('click', closeHandoutModal);
+    if (handoutPrintButton) {
+        if (handoutPrintButton) handoutPrintButton.addEventListener('click', () => {
+            const printContent = handoutModalContent.innerHTML;
+            const printArea = document.createElement('div');
+            printArea.id = 'print-area';
+            printArea.innerHTML = `<div class="handout-print-content"><h2>${handoutModalTitle.textContent}</h2>${printContent}<div class="print-creator-tag">RPG SCENARIO GUIDE by Wolfe.BT@TangentLLC</div></div>`;
+            document.body.appendChild(printArea);
+            window.print();
+            document.body.removeChild(printArea);
+        });
+    }
 
-    aiGenerateButton.addEventListener('click', async () => {
+    if (aiGenerateButton) aiGenerateButton.addEventListener('click', async () => {
         const prompt = aiPrompt.value;
         if (!prompt || !activeEditorForAI) return;
 
@@ -1412,7 +1398,7 @@ document.addEventListener('DOMContentLoaded', initializeApp);
         }
     });
 
-    window.addEventListener('keydown', (e) => {
+    if (window) window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             if (!helpModal.classList.contains('hidden')) closeHelpModal();
             if (!importModal.classList.contains('hidden')) importCancelButton.click();
@@ -1432,16 +1418,16 @@ document.addEventListener('DOMContentLoaded', initializeApp);
 
 
 function setupEventListeners() {
-    window.addEventListener('resize', () => {
+    if (window) window.addEventListener('resize', () => {
         if (!isMobile()) {
             mainApp.classList.remove('mobile-view-main');
             backButton.classList.add('hidden');
         }
     });
-    undoButton.addEventListener('click', undoLastAction);
-    settingsButton.addEventListener('click', openSettingsModal);
+    if (undoButton) undoButton.addEventListener('click', undoLastAction);
+    if (settingsButton) settingsButton.addEventListener('click', openSettingsModal);
 
-    tocPanel.addEventListener('click', (e) => {
+    if (tocPanel) tocPanel.addEventListener('click', (e) => {
         const actionTarget = e.target.closest('[data-action]');
         if (!actionTarget) return;
         const action = actionTarget.dataset.action;
@@ -1474,7 +1460,7 @@ function setupEventListeners() {
         }
     });
 
-    mainPanelHeader.addEventListener('click', (e) => {
+    if (mainPanelHeader) mainPanelHeader.addEventListener('click', (e) => {
         const actionTarget = e.target.closest('[data-action]');
         if (!actionTarget) return;
         const action = actionTarget.dataset.action;
@@ -1484,7 +1470,7 @@ function setupEventListeners() {
         }
     });
 
-    loadFileInput.addEventListener('change', (e) => {
+    if (loadFileInput) loadFileInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
@@ -1504,31 +1490,35 @@ function setupEventListeners() {
         e.target.value = '';
     });
 
-    addComponentButton.addEventListener('click', () => {
-        addComponentModal.classList.remove('hidden');
-        addComponentModal.classList.add('flex');
+    if (addComponentButton) addComponentButton.addEventListener('click', () => {
+        if (addComponentModal) {
+            addComponentModal.classList.remove('hidden');
+            addComponentModal.classList.add('flex');
+        }
     });
 
-    modalAddComponentList.addEventListener('click', (e) => {
+    if (modalAddComponentList) modalAddComponentList.addEventListener('click', (e) => {
         if (e.target.matches('.add-component-btn')) {
             addComponent(e.target.dataset.type);
             closeAddComponentModal();
         }
     });
 
-    tocList.addEventListener('click', (e) => {
+    if (tocList) tocList.addEventListener('click', (e) => {
         const tocItem = e.target.closest('.toc-item');
         if (tocItem) {
             activeComponentId = parseInt(tocItem.dataset.id);
             isFullViewActive = false;
-            mainApp.classList.remove('gm-mode');
-            mainApp.classList.add('writer-mode');
+            if (mainApp) {
+                mainApp.classList.remove('gm-mode');
+                mainApp.classList.add('writer-mode');
+            }
             renderAll();
             showMainView();
         }
     });
 
-    gmViewButton.addEventListener('click', () => {
+    if (gmViewButton) gmViewButton.addEventListener('click', () => {
         isFullViewActive = !isFullViewActive;
         if(isFullViewActive) {
             activeComponentId = null;
@@ -1545,15 +1535,15 @@ function setupEventListeners() {
         }
     });
 
-    confirmOkButton.addEventListener('click', () => {
+    if (confirmOkButton) confirmOkButton.addEventListener('click', () => {
         if (typeof confirmCallback === 'function') {
             confirmCallback();
         }
         closeConfirm();
     });
-    confirmCancelButton.addEventListener('click', closeConfirm);
+    if (confirmCancelButton) confirmCancelButton.addEventListener('click', closeConfirm);
 
-    mainContent.addEventListener('input', (e) => {
+    if (mainContent) mainContent.addEventListener('input', (e) => {
         const target = e.target;
         if (target.matches('[data-key]')) {
             const component = findComponent(activeComponentId);
@@ -1569,9 +1559,9 @@ function setupEventListeners() {
             }
         }
     });
-    mainContent.addEventListener('focusout', (e) => { if (e.target.matches('[data-key]')) saveStateToHistory(); });
+    if (mainContent) mainContent.addEventListener('focusout', (e) => { if (e.target.matches('[data-key]')) saveStateToHistory(); });
 
-    projectHeader.addEventListener('input', (e) => {
+    if (projectHeader) projectHeader.addEventListener('input', (e) => {
         const target = e.target;
         if (target.matches('[data-key]')) {
              const key = target.dataset.key;
@@ -1583,9 +1573,9 @@ function setupEventListeners() {
                     saveProjectToLocalStorage();
         }
     });
-    projectHeader.addEventListener('focusout', (e) => { if (e.target.matches('[data-key]')) saveStateToHistory(); });
+    if (projectHeader) projectHeader.addEventListener('focusout', (e) => { if (e.target.matches('[data-key]')) saveStateToHistory(); });
 
-    mainContent.addEventListener('click', (e) => {
+    if (mainContent) mainContent.addEventListener('click', (e) => {
         const actionTarget = e.target.closest('[data-action]');
         const commandTarget = e.target.closest('[data-command]');
         const mapContainer = e.target.closest('.map-container');
@@ -1721,7 +1711,7 @@ function setupEventListeners() {
     });
 
     // --- RTF SHORTCUTS ---
-    mainContent.addEventListener('keydown', (e) => {
+    if (mainContent) mainContent.addEventListener('keydown', (e) => {
         if (!e.ctrlKey || !e.target.isContentEditable) {
             return;
         }
@@ -1754,7 +1744,7 @@ function setupEventListeners() {
         }
     });
 
-    quickRefList.addEventListener('click', (e) => {
+    if (quickRefList) quickRefList.addEventListener('click', (e) => {
         if(e.target.matches('.quick-ref-link')) {
             e.preventDefault();
             const targetId = e.target.dataset.scrollToId;
@@ -1765,7 +1755,7 @@ function setupEventListeners() {
         }
     });
 
-    componentImageInput.addEventListener('change', (e) => {
+    if (componentImageInput) componentImageInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
         const reader = new FileReader();
@@ -1782,7 +1772,7 @@ function setupEventListeners() {
         e.target.value = '';
     });
 
-    tocFilterInput.addEventListener('input', renderTableOfContents);
+    if (tocFilterInput) tocFilterInput.addEventListener('input', renderTableOfContents);
 
     // --- HIERARCHY AND DRAG/DROP LOGIC ---
     const indentComponent = (id) => {
@@ -1841,7 +1831,7 @@ function setupEventListeners() {
                 saveProjectToLocalStorage();
     };
 
-    tocList.addEventListener('dragstart', e => {
+    if (tocList) tocList.addEventListener('dragstart', e => {
         const target = e.target.closest('.toc-item');
         if (target) {
             draggingItemId = parseInt(target.dataset.id);
@@ -1850,14 +1840,14 @@ function setupEventListeners() {
         }
     });
 
-    tocList.addEventListener('dragend', e => {
+    if (tocList) tocList.addEventListener('dragend', e => {
         draggingItemId = null;
         document.querySelectorAll('.toc-item').forEach(el => {
             el.classList.remove('dragging', 'drop-target');
-});
+        });
     });
 
-    tocList.addEventListener('dragover', e => {
+    if (tocList) tocList.addEventListener('dragover', e => {
         e.preventDefault();
         const dropTargetElement = e.target.closest('.toc-item');
         if (!dropTargetElement) return;
@@ -1869,7 +1859,7 @@ function setupEventListeners() {
         dropTargetElement.classList.add('drop-target');
     });
 
-    tocList.addEventListener('drop', e => {
+    if (tocList) tocList.addEventListener('drop', e => {
         e.preventDefault();
         const dropTargetElement = e.target.closest('.toc-item');
         document.querySelectorAll('.toc-item').forEach(el => el.classList.remove('drop-target'));
@@ -1914,13 +1904,13 @@ function setupEventListeners() {
         importModal.classList.add('flex');
     };
 
-    importCancelButton.addEventListener('click', () => {
+    if (importCancelButton) importCancelButton.addEventListener('click', () => {
         importModal.classList.add('hidden');
         importModal.classList.remove('flex');
         loadedProjectData = null;
     });
 
-    importConfirmButton.addEventListener('click', () => {
+    if (importConfirmButton) importConfirmButton.addEventListener('click', () => {
         if (!loadedProjectData) return;
         saveStateToHistory();
 
@@ -1957,19 +1947,19 @@ function setupEventListeners() {
     });
 
     // --- MODAL CLOSE LISTENERS ---
-    addComponentModalCloseButton.addEventListener('click', closeAddComponentModal);
-    addComponentModal.addEventListener('click', (e) => { if (e.target === addComponentModal) closeAddComponentModal(); });
-    aiModalCloseButton.addEventListener('click', closeAiModal);
-    aiModal.addEventListener('click', (e) => { if (e.target === aiModal) closeAiModal(); });
-    settingsModalCloseButton.addEventListener('click', closeSettingsModal);
-    settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) closeSettingsModal(); });
-    settingsSaveButton.addEventListener('click', saveSettings);
-    helpCloseButton.addEventListener('click', closeHelpModal);
-    helpModal.addEventListener('click', (e) => { if(e.target === helpModal) closeHelpModal(); });
-    importModal.addEventListener('click', (e) => { if(e.target === importModal) importCancelButton.click(); });
-    confirmModal.addEventListener('click', (e) => { if(e.target === confirmModal) closeConfirm(); });
-    mapModalCloseButton.addEventListener('click', closeMapModal);
-    mapModal.addEventListener('click', (e) => {
+    if (addComponentModalCloseButton) addComponentModalCloseButton.addEventListener('click', closeAddComponentModal);
+    if (addComponentModal) addComponentModal.addEventListener('click', (e) => { if (e.target === addComponentModal) closeAddComponentModal(); });
+    if (aiModalCloseButton) aiModalCloseButton.addEventListener('click', closeAiModal);
+    if (aiModal) aiModal.addEventListener('click', (e) => { if (e.target === aiModal) closeAiModal(); });
+    if (settingsModalCloseButton) settingsModalCloseButton.addEventListener('click', closeSettingsModal);
+    if (settingsModal) settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) closeSettingsModal(); });
+    if (settingsSaveButton) settingsSaveButton.addEventListener('click', saveSettings);
+    if (helpCloseButton) helpCloseButton.addEventListener('click', closeHelpModal);
+    if (helpModal) helpModal.addEventListener('click', (e) => { if(e.target === helpModal) closeHelpModal(); });
+    if (importModal) importModal.addEventListener('click', (e) => { if(e.target === importModal) importCancelButton.click(); });
+    if (confirmModal) confirmModal.addEventListener('click', (e) => { if(e.target === confirmModal) closeConfirm(); });
+    if (mapModalCloseButton) mapModalCloseButton.addEventListener('click', closeMapModal);
+    if (mapModal) mapModal.addEventListener('click', (e) => {
         if (e.target === mapModal) {
             closeMapModal();
         }
@@ -1986,8 +1976,8 @@ function setupEventListeners() {
             showMainView();
         }
     });
-    handoutCloseButton.addEventListener('click', closeHandoutModal);
-    handoutPrintButton.addEventListener('click', () => {
+    if (handoutCloseButton) handoutCloseButton.addEventListener('click', closeHandoutModal);
+    if (handoutPrintButton) handoutPrintButton.addEventListener('click', () => {
         const printContent = handoutModalContent.innerHTML;
         const printArea = document.createElement('div');
         printArea.id = 'print-area';
@@ -1997,7 +1987,7 @@ function setupEventListeners() {
         document.body.removeChild(printArea);
     });
 
-    aiGenerateButton.addEventListener('click', async () => {
+    if (aiGenerateButton) aiGenerateButton.addEventListener('click', async () => {
         const prompt = aiPrompt.value;
         if (!prompt || !activeEditorForAI) return;
 
@@ -2047,7 +2037,7 @@ function setupEventListeners() {
         }
     });
 
-    window.addEventListener('keydown', (e) => {
+    if (window) window.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             if (!helpModal.classList.contains('hidden')) closeHelpModal();
             if (!importModal.classList.contains('hidden')) importCancelButton.click();
