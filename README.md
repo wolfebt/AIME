@@ -1,4 +1,4 @@
-# AIME - The Artificial Intellect Musoikos Environ
+# AIME - The Artificial Intellect Mythopoeic Environ
 
 AIME is a powerful, web-based creative assistant designed to augment and amplify human ingenuity through a suite of AI-powered tools. It serves as a central hub for creators, providing a seamless workflow for various artistic endeavors, from writing and world-building to generating images, 3D models, audio, and video.
 

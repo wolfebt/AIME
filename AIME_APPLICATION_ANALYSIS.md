@@ -3,7 +3,7 @@
 ## 1. HIGH-LEVEL OVERVIEW
 
 ### Philosophy: AI Craft over AI Slop
-AIME (Artificial Intellect Musoikos Environ) is a web-based creative suite for writers and world-builders. Its core philosophy is to champion the human creator by providing a structured environment for AI Craft, which is a collaborative process where the creator directs the AI with a clear vision, contrasting with generic, unedited "AI slop" from a single prompt.
+AIME (Artificial Intellect Mythopoeic Environ) is a web-based creative suite for writers and world-builders. Its core philosophy is to champion the human creator by providing a structured environment for AI Craft, which is a collaborative process where the creator directs the AI with a clear vision, contrasting with generic, unedited "AI slop" from a single prompt.
 
 ### The AIME Ecosystem: Context is Everything
 The application achieves narrative consistency through rich context and consists of two main components:
